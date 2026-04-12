@@ -16,7 +16,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid messages" }, { status: 400 });
     }
 
-    const freya = await runFreyaAgent(messages, attachments, fileNames);
+    // Fetch session's persona so Claude responds in the right role
+    let personaId = "assistant";
+    if (sessionId) {
+      const { data: sessionRow } = await supabaseAdmin
+        .from("chat_sessions")
+        .select("persona")
+        .eq("id", sessionId)
+        .single();
+      if (sessionRow?.persona) personaId = sessionRow.persona;
+    }
+
+    const freya = await runFreyaAgent(messages, attachments, fileNames, personaId);
 
     // Persist to Supabase if sessionId provided
     if (sessionId) {

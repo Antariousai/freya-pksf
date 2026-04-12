@@ -121,6 +121,26 @@ export default function ChatPage() {
     }
   }, [activeSession?.id]);
 
+  // Called when user picks a new persona from the header dropdown:
+  // creates a fresh session with that persona and switches to it
+  const handlePersonaChange = useCallback(async (personaId: string) => {
+    try {
+      const res = await fetch("/api/sessions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ persona: personaId }),
+      });
+      if (res.ok) {
+        const session: ChatSession = await res.json();
+        setActiveSession(session);
+        setPanels([]);
+        setActiveTab("");
+      }
+    } catch (e) {
+      console.error("Failed to create persona session", e);
+    }
+  }, []);
+
   const handleFreyaResponse = useCallback((response: FreyaResponse) => {
     if (response.panels && response.panels.length > 0) {
       const now = new Date();
@@ -168,6 +188,7 @@ export default function ChatPage() {
               <ChatArea
                 session={activeSession}
                 onFreyaResponse={handleFreyaResponse}
+                onPersonaChange={handlePersonaChange}
               />
               <DragHandle onDrag={dragRight} />
               <div style={{ width: rightWidth, flexShrink: 0, display: "flex", overflow: "hidden" }}>
@@ -198,6 +219,7 @@ export default function ChatPage() {
               <ChatArea
                 session={activeSession}
                 onFreyaResponse={handleFreyaResponse}
+                onPersonaChange={handlePersonaChange}
               />
             </main>
 

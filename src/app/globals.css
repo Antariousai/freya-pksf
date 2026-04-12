@@ -243,32 +243,110 @@ span[style*="animation: typing-dot"] { display: inline-block; }
   color: var(--text-primary);
 }
 
-/* HTML content in output panels */
-.output-content table { width: 100%; border-collapse: collapse; font-size: 11px; }
+/* ─── HTML content in output panels ──────────────────────────────────────── */
+.output-content { font-size: 12px; line-height: 1.65; color: var(--o-text); }
+
+/* Headings */
+.output-content h1, .output-content h2, .output-content h3, .output-content h4 {
+  color: var(--o-title);
+  font-weight: 700;
+  margin: 14px 0 6px;
+  line-height: 1.3;
+}
+.output-content h1 { font-size: 15px; }
+.output-content h2 { font-size: 13px; border-bottom: 1px solid var(--o-border-section); padding-bottom: 5px; }
+.output-content h3 { font-size: 12px; color: var(--o-mono); }
+.output-content h4 { font-size: 11px; color: var(--o-label); text-transform: uppercase; letter-spacing: 0.6px; font-family: "JetBrains Mono", monospace; }
+
+/* Paragraphs & text */
+.output-content p { margin: 6px 0; }
+.output-content strong { color: var(--o-mono); font-weight: 700; }
+.output-content em { color: var(--o-label); font-style: italic; }
+.output-content code {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  background: var(--o-surface-2);
+  border: 1px solid var(--o-border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  color: var(--o-mono);
+}
+
+/* Lists */
+.output-content ul, .output-content ol { padding-left: 18px; margin: 6px 0; }
+.output-content li { margin: 3px 0; color: var(--o-text); }
+.output-content li::marker { color: var(--o-label); }
+
+/* Tables */
+.output-content table { width: 100%; border-collapse: collapse; font-size: 11px; margin: 8px 0; }
 .output-content th {
   padding: 6px 8px;
   text-align: left;
-  color: var(--text-muted);
+  color: var(--o-label);
   border-bottom: 1px solid var(--output-th-border);
   font-family: "JetBrains Mono", monospace;
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.5px;
   text-transform: uppercase;
+  background: var(--o-surface);
 }
 .output-content td {
   padding: 5px 8px;
-  color: var(--text-secondary);
+  color: var(--o-text);
   border-bottom: 1px solid var(--output-td-border);
 }
-.output-content .highlight-green { color: #10b981; }
-.output-content .highlight-red { color: #ef4444; }
-.output-content .highlight-amber { color: #f59e0b; }
+.output-content tr:hover td { background: var(--o-surface); }
+
+/* Status / highlight utilities */
+.output-content .highlight-green { color: #10b981; font-weight: 600; }
+.output-content .highlight-red   { color: #ef4444; font-weight: 600; }
+.output-content .highlight-amber { color: #f59e0b; font-weight: 600; }
+.output-content .highlight-blue  { color: #3b82f6; font-weight: 600; }
+.output-content .highlight-violet { color: #a78bfa; font-weight: 600; }
+.output-content .highlight-cyan  { color: #06b6d4; font-weight: 600; }
+
+/* Badge / pill */
+.output-content .badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 7px; border-radius: 100px;
+  font-size: 10px; font-weight: 700;
+  font-family: "JetBrains Mono", monospace;
+}
+.output-content .badge-green  { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.25); }
+.output-content .badge-red    { background: rgba(239,68,68,0.12);  color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
+.output-content .badge-amber  { background: rgba(245,158,11,0.12); color: #f59e0b; border: 1px solid rgba(245,158,11,0.25); }
+.output-content .badge-blue   { background: rgba(59,130,246,0.12); color: #3b82f6; border: 1px solid rgba(59,130,246,0.25); }
+.output-content .badge-violet { background: rgba(124,58,237,0.12); color: #a78bfa; border: 1px solid rgba(124,58,237,0.25); }
+.output-content .badge-cyan   { background: rgba(6,182,212,0.10);  color: #06b6d4; border: 1px solid rgba(6,182,212,0.22); }
+
+/* Metric row */
 .output-content .metric-row {
   display: flex;
   justify-content: space-between;
-  padding: 4px 0;
+  align-items: center;
+  padding: 5px 0;
   border-bottom: 1px solid var(--output-metric-border);
+}
+.output-content .metric-row:last-child { border-bottom: none; }
+
+/* Divider */
+.output-content hr {
+  border: none;
+  border-top: 1px solid var(--o-border-subtle);
+  margin: 12px 0;
+}
+
+/* Blockquote / callout */
+.output-content blockquote {
+  border-left: 3px solid var(--o-border-section);
+  padding: 6px 12px;
+  margin: 8px 0;
+  background: var(--o-surface);
+  border-radius: 0 6px 6px 0;
+  color: var(--o-label);
+  font-style: italic;
+  font-size: 11px;
 }
 
 /* Smooth theme transitions on key surfaces */

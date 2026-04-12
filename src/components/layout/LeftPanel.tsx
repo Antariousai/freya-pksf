@@ -12,6 +12,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { useIsMobile } from "@/lib/use-mobile";
+import { getPersona } from "@/lib/personas";
 import type { ChatSession } from "@/lib/types";
 
 interface LeftPanelProps {
@@ -83,13 +84,19 @@ function SessionItem({
         display: "flex",
         alignItems: "center",
         gap: "8px",
-        padding: "7px 8px",
+        padding: "7px 8px 7px 10px",
         borderRadius: "8px",
         width: "100%",
         cursor: "pointer",
         transition: "all 0.12s",
         background: isActive ? "rgba(124,58,237,0.08)" : hovered ? "var(--surface-hover)" : "transparent",
-        border: `1px solid ${isActive ? "rgba(124,58,237,0.15)" : hovered ? "var(--glass-border)" : "transparent"}`,
+        borderTop: "1px solid transparent",
+        borderRight: "1px solid transparent",
+        borderBottom: "1px solid transparent",
+        borderLeft: `3px solid ${(() => {
+          const p = getPersona(session.persona ?? "assistant");
+          return isActive ? p.color : hovered ? p.color + "80" : p.color + "40";
+        })()}`,
         position: "relative",
       }}
     >

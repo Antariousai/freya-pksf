@@ -27,6 +27,7 @@ export interface ChatSession {
   id: string;
   title: string;
   color: string;
+  persona: string;   // persona id — e.g. "analyst" | "project_manager" | "risk_officer" etc.
   created_at: string;
   updated_at: string;
 }

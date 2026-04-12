@@ -12,7 +12,7 @@ export async function GET(
     const [sessionRes, messagesRes] = await Promise.all([
       supabaseAdmin
         .from("chat_sessions")
-        .select("id, title, color, created_at, updated_at")
+        .select("id, title, color, persona, created_at, updated_at")
         .eq("id", id)
         .single(),
       supabaseAdmin
@@ -36,24 +36,30 @@ export async function GET(
   }
 }
 
-// PATCH /api/sessions/[id] — rename a session
+// PATCH /api/sessions/[id] — rename or update persona of a session
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
-    const { title } = await req.json();
+    const body = await req.json();
+    const { title, persona } = body;
 
-    if (!title?.trim()) {
-      return NextResponse.json({ error: "Title required" }, { status: 400 });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const updates: Record<string, any> = {};
+    if (title?.trim()) updates.title = title.trim();
+    if (persona) updates.persona = persona;
+
+    if (Object.keys(updates).length === 0) {
+      return NextResponse.json({ error: "Nothing to update" }, { status: 400 });
     }
 
     const { data, error } = await supabaseAdmin
       .from("chat_sessions")
-      .update({ title: title.trim() })
+      .update(updates)
       .eq("id", id)
-      .select("id, title, color, created_at, updated_at")
+      .select("id, title, color, persona, created_at, updated_at")
       .single();
 
     if (error) throw error;

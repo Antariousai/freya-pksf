@@ -24,9 +24,13 @@ create table if not exists chat_sessions (
   id          uuid primary key default gen_random_uuid(),
   title       text not null default 'New Session',
   color       text not null default '#06b6d4',
+  persona     text not null default 'assistant',
   created_at  timestamptz default now(),
   updated_at  timestamptz default now()
 );
+
+-- Migration: add persona column if upgrading from an older schema
+alter table chat_sessions add column if not exists persona text not null default 'assistant';
 
 -- ── Chat Messages ────────────────────────────────────────────
 create table if not exists chat_messages (

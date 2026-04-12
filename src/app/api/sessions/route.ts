@@ -11,7 +11,7 @@ export async function GET() {
   try {
     const { data, error } = await supabaseAdmin
       .from("chat_sessions")
-      .select("id, title, color, created_at, updated_at")
+      .select("id, title, color, persona, created_at, updated_at")
       .order("updated_at", { ascending: false })
       .limit(50);
 
@@ -28,11 +28,12 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json().catch(() => ({}));
     const color = body.color ?? SESSION_COLORS[Math.floor(Math.random() * SESSION_COLORS.length)];
+    const persona = body.persona ?? "analyst";
 
     const { data, error } = await supabaseAdmin
       .from("chat_sessions")
-      .insert({ title: "New Session", color })
-      .select("id, title, color, created_at, updated_at")
+      .insert({ title: "New Session", color, persona })
+      .select("id, title, color, persona, created_at, updated_at")
       .single();
 
     if (error) throw error;

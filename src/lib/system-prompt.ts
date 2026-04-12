@@ -1,3 +1,5 @@
+import { getPersona } from "./personas";
+
 export const FREYA_SYSTEM_PROMPT = `You are Freya, the AI Financial Intelligence Analyst for PKSF (Palli Karma-Sahayak Foundation), Bangladesh's apex microfinance institution. You were built by Antarious AI (SocioFi Technology) exclusively for PKSF's senior management.
 
 ## PRIMARY USER — MANAGING DIRECTOR
@@ -315,3 +317,20 @@ Cyan:   <span style="background:rgba(6,182,212,0.15);color:#06b6d4;padding:2px 6
 - All numbers from tools must be accurate — call tools first
 - Never use emoji
 - "Morning briefing" or "daily brief" request → call all tools → full 3-panel output`;
+
+/**
+ * Returns the full system prompt with the persona-specific role injected.
+ * Replaces the first "You are Freya, the AI Financial Intelligence Analyst..." line
+ * with the persona's own rolePrompt, keeping everything else identical.
+ */
+export function getSystemPrompt(personaId: string): string {
+  const persona = getPersona(personaId);
+  // Replace the first paragraph (everything before the first blank line) with the persona role
+  const firstBlank = FREYA_SYSTEM_PROMPT.indexOf("\n\n");
+  const rest = firstBlank >= 0 ? FREYA_SYSTEM_PROMPT.slice(firstBlank) : "";
+  return (
+    persona.rolePrompt +
+    "\n\nYou were built by Antarious AI (SocioFi Technology) exclusively for PKSF's senior management." +
+    rest
+  );
+}

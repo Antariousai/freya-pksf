@@ -1,17 +1,19 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { ArrowRight, Paperclip, X, FileText, Mic, Square } from "lucide-react";
+import { ArrowRight, Paperclip, X, FileText, Mic, Square, ChevronDown, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Message from "./Message";
-import TypingIndicator from "./TypingIndicator";
+import FreyaThinking from "./FreyaThinking";
 import SuggestionPills from "./SuggestionPills";
 import { useVoiceRecorder } from "@/lib/use-voice-recorder";
+import { getPersona, PERSONAS } from "@/lib/personas";
 import type { Message as MessageType, Attachment, FreyaResponse, ChatSession } from "@/lib/types";
 
 interface ChatAreaProps {
   session: ChatSession | null;
   onFreyaResponse: (response: FreyaResponse) => void;
+  onPersonaChange?: (personaId: string) => void;
 }
 
 interface PendingFile {
@@ -20,13 +22,15 @@ interface PendingFile {
   base64: string | null;
 }
 
-const WELCOME_MESSAGE: MessageType = {
-  id: "welcome",
-  role: "assistant",
-  content:
-    "Good morning, Dr. Uddin. I am Freya, your AI Financial Intelligence Analyst for PKSF.\n\nI have full situational awareness of the portfolio — disbursements, PO performance, project utilization, compliance status, and disaster risk indicators. I can also search the PKSF knowledge base for policies, governance details, and institutional context.\n\nI can help you with:\n- Portfolio analysis and financial summaries\n- PO risk assessments (JCF, ESDO, Padakhep)\n- RAISE IFR preparation and project compliance\n- Sylhet flood impact modeling and borrower risk\n- CES bank utilization and fund source analysis\n- Morning executive briefings\n\nWhat would you like to analyze today, Sir?",
-  timestamp: new Date(),
-};
+function makeWelcomeMessage(personaId: string): MessageType {
+  const p = getPersona(personaId);
+  return {
+    id: "welcome",
+    role: "assistant",
+    content: p.welcomeMessage,
+    timestamp: new Date(),
+  };
+}
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
@@ -68,10 +72,12 @@ function dbMsgToUiMsg(m: {
   };
 }
 
-export default function ChatArea({ session, onFreyaResponse }: ChatAreaProps) {
-  const [messages, setMessages] = useState<MessageType[]>([WELCOME_MESSAGE]);
+export default function ChatArea({ session, onFreyaResponse, onPersonaChange }: ChatAreaProps) {
+  const [messages, setMessages] = useState<MessageType[]>(() => [makeWelcomeMessage("assistant")]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [lastUserMessage, setLastUserMessage] = useState("");
+  const [personaMenuOpen, setPersonaMenuOpen] = useState(false);
   const [loadingHistory, setLoadingHistory] = useState(false);
   const [inputFocused, setInputFocused] = useState(false);
   const [pendingFiles, setPendingFiles] = useState<PendingFile[]>([]);
@@ -101,22 +107,23 @@ export default function ChatArea({ session, onFreyaResponse }: ChatAreaProps) {
   // Load session history when session changes
   useEffect(() => {
     if (!session) {
-      setMessages([WELCOME_MESSAGE]);
+      setMessages([makeWelcomeMessage("assistant")]);
       prevSessionId.current = null;
       return;
     }
     if (session.id === prevSessionId.current) return;
     prevSessionId.current = session.id;
 
+    const welcome = makeWelcomeMessage(session.persona ?? "assistant");
     setLoadingHistory(true);
-    setMessages([WELCOME_MESSAGE]);
+    setMessages([welcome]);
 
     fetch(`/api/sessions/${session.id}`)
       .then((r) => r.json())
       .then((data) => {
         const dbMessages: MessageType[] = (data.messages ?? []).map(dbMsgToUiMsg);
         if (dbMessages.length > 0) {
-          setMessages([WELCOME_MESSAGE, ...dbMessages]);
+          setMessages([welcome, ...dbMessages]);
           // Re-emit structured responses to repopulate right panel
           dbMessages
             .filter((m) => m.role === "assistant" && m.panels && m.panels.length > 0)
@@ -178,6 +185,7 @@ export default function ChatArea({ session, onFreyaResponse }: ChatAreaProps) {
     };
 
     setMessages((prev) => [...prev, userMessage]);
+    setLastUserMessage(text.trim());
     setInput("");
 
     // All base64-encoded files (images + PDFs) go to Claude as content blocks
@@ -250,23 +258,137 @@ export default function ChatArea({ session, onFreyaResponse }: ChatAreaProps) {
 
   const canSend = (input.trim().length > 0 || pendingFiles.length > 0) && !isLoading;
 
+  const persona = getPersona(session?.persona ?? "analyst");
+
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", background: "var(--bg-0)" }}>
       {/* Chat header */}
-      <div style={{ height: "46px", display: "flex", alignItems: "center", padding: "0 16px", background: "rgba(255,255,255,0.015)", borderBottom: "1px solid var(--glass-border)", backdropFilter: "blur(8px)", flexShrink: 0, gap: "10px" }}>
-        <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "linear-gradient(135deg, #06b6d4, #0891b2)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 0 12px rgba(6,182,212,0.35)" }}>
+      <div style={{ height: "46px", display: "flex", alignItems: "center", padding: "0 16px", background: "rgba(255,255,255,0.015)", borderBottom: "1px solid var(--glass-border)", backdropFilter: "blur(8px)", flexShrink: 0, gap: "10px", position: "relative" }}>
+        <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: `linear-gradient(135deg, ${persona.color}, ${persona.color}bb)`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: `0 0 12px ${persona.color}55` }}>
           <span style={{ color: "#fff", fontWeight: 700, fontSize: "14px" }}>F</span>
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
             <span style={{ color: "var(--text-primary)", fontSize: "13px", fontWeight: 700 }}>Freya</span>
-            <span style={{ color: "#22d3ee", fontSize: "10px", fontFamily: "var(--font-jetbrains-mono), monospace" }}>AI Analyst</span>
+
+            {/* Persona dropdown trigger */}
+            <button
+              onClick={() => setPersonaMenuOpen((o) => !o)}
+              style={{
+                display: "flex", alignItems: "center", gap: "5px",
+                color: persona.color, fontSize: "10px",
+                fontFamily: "var(--font-jetbrains-mono), monospace",
+                background: personaMenuOpen ? persona.bg : "transparent",
+                border: `1px solid ${personaMenuOpen ? persona.border : "transparent"}`,
+                padding: "2px 7px 2px 6px", borderRadius: "100px",
+                cursor: "pointer", transition: "all 0.15s",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.background = persona.bg;
+                (e.currentTarget as HTMLButtonElement).style.borderColor = persona.border;
+              }}
+              onMouseLeave={(e) => {
+                if (!personaMenuOpen) {
+                  (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = "transparent";
+                }
+              }}
+            >
+              <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: persona.color, flexShrink: 0 }} />
+              {persona.label}
+              <ChevronDown size={10} strokeWidth={2.5} style={{ transition: "transform 0.15s", transform: personaMenuOpen ? "rotate(180deg)" : "rotate(0deg)" }} />
+            </button>
           </div>
           <div style={{ color: "var(--text-muted)", fontSize: "10px", marginTop: "1px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
             {session ? session.title : "PKSF Financial Intelligence"}
           </div>
         </div>
       </div>
+
+      {/* Persona dropdown menu */}
+      <AnimatePresence>
+        {personaMenuOpen && (
+          <>
+            {/* Click-away backdrop */}
+            <div
+              style={{ position: "fixed", inset: 0, zIndex: 90 }}
+              onClick={() => setPersonaMenuOpen(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, y: -6, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -4, scale: 0.97 }}
+              transition={{ duration: 0.15, ease: "easeOut" }}
+              style={{
+                position: "absolute", top: "54px", left: "16px",
+                zIndex: 100, width: "260px",
+                background: "var(--bg-1)",
+                border: "1px solid var(--glass-border-hover)",
+                borderRadius: "12px",
+                boxShadow: "0 12px 40px rgba(0,0,0,0.4)",
+                overflow: "hidden",
+              }}
+            >
+              <div style={{ padding: "8px 10px 4px", borderBottom: "1px solid var(--glass-border)" }}>
+                <span style={{ color: "var(--text-dim)", fontSize: "9px", fontWeight: 600, letterSpacing: "1.2px", textTransform: "uppercase", fontFamily: "var(--font-jetbrains-mono), monospace" }}>
+                  Switch Role · New Session
+                </span>
+              </div>
+              <div style={{ padding: "6px" }}>
+                {PERSONAS.map((p) => {
+                  const isCurrent = p.id === (session?.persona ?? "analyst");
+                  return (
+                    <button
+                      key={p.id}
+                      onClick={() => {
+                        setPersonaMenuOpen(false);
+                        if (!isCurrent) onPersonaChange?.(p.id);
+                      }}
+                      style={{
+                        display: "flex", alignItems: "center", gap: "10px",
+                        width: "100%", padding: "8px 10px", borderRadius: "8px",
+                        background: isCurrent ? p.bg : "transparent",
+                        border: `1px solid ${isCurrent ? p.border : "transparent"}`,
+                        cursor: isCurrent ? "default" : "pointer",
+                        transition: "all 0.1s", textAlign: "left",
+                        marginBottom: "2px",
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!isCurrent) {
+                          (e.currentTarget as HTMLButtonElement).style.background = p.bg;
+                          (e.currentTarget as HTMLButtonElement).style.borderColor = p.border;
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!isCurrent) {
+                          (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+                          (e.currentTarget as HTMLButtonElement).style.borderColor = "transparent";
+                        }
+                      }}
+                    >
+                      <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: p.color, flexShrink: 0, opacity: isCurrent ? 1 : 0.55 }} />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ color: isCurrent ? p.color : "var(--text-secondary)", fontSize: "12px", fontWeight: 600 }}>
+                          {p.label}
+                        </div>
+                        <div style={{ color: "var(--text-dim)", fontSize: "10px", marginTop: "1px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                          {p.description}
+                        </div>
+                      </div>
+                      {isCurrent && <Check size={12} color={p.color} strokeWidth={2.5} style={{ flexShrink: 0 }} />}
+                    </button>
+                  );
+                })}
+              </div>
+              <div style={{ padding: "6px 10px 8px", borderTop: "1px solid var(--glass-border)" }}>
+                <span style={{ color: "var(--text-dim)", fontSize: "9px", fontFamily: "var(--font-jetbrains-mono), monospace" }}>
+                  Switching role opens a new session
+                </span>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Messages */}
       <div style={{ flex: 1, overflowY: "auto", padding: "16px 16px 8px", display: "flex", flexDirection: "column", gap: "4px" }}>
@@ -278,12 +400,14 @@ export default function ChatArea({ session, onFreyaResponse }: ChatAreaProps) {
         <AnimatePresence initial={false}>
           {messages.map((msg) => <Message key={msg.id} message={msg} />)}
         </AnimatePresence>
-        {isLoading && <TypingIndicator />}
+        <AnimatePresence>
+          {isLoading && <FreyaThinking key="thinking" lastMessage={lastUserMessage} />}
+        </AnimatePresence>
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Suggestion pills */}
-      <SuggestionPills onSelect={sendMessage} />
+      {/* Suggestion pills — persona-specific */}
+      <SuggestionPills onSelect={sendMessage} suggestions={persona.suggestions} />
 
       {/* Input area */}
       <div style={{ padding: "0 12px 4px" }}>

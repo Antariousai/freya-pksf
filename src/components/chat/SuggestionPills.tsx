@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 
-const SUGGESTIONS = [
+interface SuggestionPillsProps {
+  onSelect: (text: string) => void;
+  suggestions?: string[];
+}
+
+const DEFAULT_SUGGESTIONS = [
   "Portfolio Brief",
   "JCF Analysis",
   "RAISE IFR Status",
@@ -11,11 +16,7 @@ const SUGGESTIONS = [
   "Morning Briefing",
 ];
 
-interface SuggestionPillsProps {
-  onSelect: (text: string) => void;
-}
-
-export default function SuggestionPills({ onSelect }: SuggestionPillsProps) {
+export default function SuggestionPills({ onSelect, suggestions = DEFAULT_SUGGESTIONS }: SuggestionPillsProps) {
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
 
   return (
@@ -27,7 +28,7 @@ export default function SuggestionPills({ onSelect }: SuggestionPillsProps) {
         padding: "4px 16px 8px",
       }}
     >
-      {SUGGESTIONS.map((text, idx) => (
+      {suggestions.map((text, idx) => (
         <button
           key={idx}
           onClick={() => onSelect(text)}

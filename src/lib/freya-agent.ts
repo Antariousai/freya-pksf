@@ -660,7 +660,7 @@ function getPsychometricProfiles(poId?: string) {
 // ── System Prompt ────────────────────────────────────────────
 // (Imported from system-prompt.ts, extended with tool guidance)
 
-import { FREYA_SYSTEM_PROMPT } from "./system-prompt";
+import { getSystemPrompt } from "./system-prompt";
 
 // ── Agentic Loop ────────────────────────────────────────────
 
@@ -691,7 +691,8 @@ type ClaudeMessage = {
 export async function runFreyaAgent(
   conversationHistory: AgentMessage[],
   attachments?: FileAttachment[],  // images + PDFs
-  fileNames?: string[]             // non-encodable files (xlsx, docx, etc.)
+  fileNames?: string[],            // non-encodable files (xlsx, docx, etc.)
+  personaId?: string               // persona id to use for system prompt
 ): Promise<FreyaResponse> {
   // Build message list for the API
   const messages: ClaudeMessage[] = conversationHistory.slice(0, -1).map((m) => ({
@@ -760,7 +761,7 @@ export async function runFreyaAgent(
     const response = await anthropic.messages.create({
       model: "claude-sonnet-4-6",
       max_tokens: 4096,
-      system: FREYA_SYSTEM_PROMPT,
+      system: getSystemPrompt(personaId ?? "assistant"),
       tools: FREYA_TOOLS,
       messages: messages as Anthropic.MessageParam[],
     });
