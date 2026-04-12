@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { ArrowRight, Paperclip, X, FileText } from "lucide-react";
+import { ArrowRight, Paperclip, X, FileText, Mic, Square } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Message from "./Message";
 import TypingIndicator from "./TypingIndicator";
 import SuggestionPills from "./SuggestionPills";
+import { useVoiceRecorder } from "@/lib/use-voice-recorder";
 import type { Message as MessageType, Attachment, FreyaResponse, ChatSession } from "@/lib/types";
 
 interface ChatAreaProps {
@@ -74,9 +75,16 @@ export default function ChatArea({ session, onFreyaResponse }: ChatAreaProps) {
   const [loadingHistory, setLoadingHistory] = useState(false);
   const [inputFocused, setInputFocused] = useState(false);
   const [pendingFiles, setPendingFiles] = useState<PendingFile[]>([]);
+  const [interimText, setInterimText] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const prevSessionId = useRef<string | null>(null);
+
+  // Voice recorder — appends final transcript to the input field
+  const { isRecording, isSupported: voiceSupported, toggle: toggleVoice } = useVoiceRecorder({
+    onFinalTranscript: (text) => setInput((prev) => (prev ? `${prev} ${text}` : text)),
+    onInterimTranscript: setInterimText,
+  });
 
   // Auto-scroll
   useEffect(() => {
@@ -303,7 +311,7 @@ export default function ChatArea({ session, onFreyaResponse }: ChatAreaProps) {
         )}
 
         {/* Input row */}
-        <div style={{ display: "flex", alignItems: "center", gap: "6px", padding: "6px 6px 6px 10px", borderRadius: "100px", background: "var(--bg-1)", border: `1px solid ${inputFocused ? "rgba(6,182,212,0.4)" : "rgba(255,255,255,0.07)"}`, boxShadow: inputFocused ? "0 0 16px rgba(6,182,212,0.1)" : "none", transition: "border-color 0.15s, box-shadow 0.15s" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "6px", padding: "6px 6px 6px 10px", borderRadius: "100px", background: "var(--bg-1)", border: `1px solid ${isRecording ? "rgba(239,68,68,0.45)" : inputFocused ? "rgba(6,182,212,0.4)" : "rgba(255,255,255,0.07)"}`, boxShadow: isRecording ? "0 0 16px rgba(239,68,68,0.12)" : inputFocused ? "0 0 16px rgba(6,182,212,0.1)" : "none", transition: "border-color 0.15s, box-shadow 0.15s" }}>
           <input ref={fileInputRef} type="file" multiple accept="image/*,.pdf,.xlsx,.xls,.docx,.doc,.txt,.csv" onChange={handleFileSelect} style={{ display: "none" }} />
 
           <button
@@ -314,15 +322,45 @@ export default function ChatArea({ session, onFreyaResponse }: ChatAreaProps) {
             <Paperclip size={16} strokeWidth={2} />
           </button>
 
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            onFocus={() => setInputFocused(true)}
-            onBlur={() => setInputFocused(false)}
-            placeholder="Ask Freya about PKSF operations…"
-            style={{ flex: 1, background: "transparent", border: "none", outline: "none", color: "var(--text-primary)", fontSize: "15px", fontFamily: "var(--font-dm-sans), 'DM Sans', 'Noto Sans Bengali', sans-serif" }}
-          />
+          <div style={{ flex: 1, position: "relative" }}>
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              onFocus={() => setInputFocused(true)}
+              onBlur={() => setInputFocused(false)}
+              placeholder={isRecording ? "Listening…" : "Ask Freya about PKSF operations…"}
+              style={{ width: "100%", background: "transparent", border: "none", outline: "none", color: "var(--text-primary)", fontSize: "15px", fontFamily: "var(--font-dm-sans), 'DM Sans', 'Noto Sans Bengali', sans-serif" }}
+            />
+            {/* Interim transcript shown below the input as live preview */}
+            {interimText && (
+              <div style={{ position: "absolute", top: "100%", left: 0, right: 0, color: "var(--text-dim)", fontSize: "12px", fontStyle: "italic", pointerEvents: "none", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", marginTop: "2px" }}>
+                {interimText}
+              </div>
+            )}
+          </div>
+
+          {/* Mic button — only when Speech API is supported */}
+          {voiceSupported && (
+            <button
+              onClick={toggleVoice}
+              title={isRecording ? "Stop recording" : "Voice input"}
+              style={{
+                width: "32px", height: "32px", borderRadius: "50%",
+                background: isRecording ? "rgba(239,68,68,0.15)" : "none",
+                border: isRecording ? "1px solid rgba(239,68,68,0.35)" : "none",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                cursor: "pointer", flexShrink: 0,
+                transition: "all 0.15s",
+                animation: isRecording ? "pulse-green 1.2s ease-in-out infinite" : "none",
+              }}
+            >
+              {isRecording
+                ? <Square size={13} color="#ef4444" strokeWidth={2.5} />
+                : <Mic size={15} color="var(--text-muted)" strokeWidth={2} />
+              }
+            </button>
+          )}
 
           <button
             onClick={() => sendMessage(input)}
