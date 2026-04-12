@@ -3,12 +3,12 @@
 import { useState } from "react";
 
 const SUGGESTIONS = [
-  "Summarize Report",
-  "Find Discrepancies",
+  "Portfolio Brief",
   "JCF Analysis",
-  "RAISE IFR",
-  "Risk Analysis",
-  "Compare POs",
+  "RAISE IFR Status",
+  "Flood Risk",
+  "Summarize Report",
+  "Morning Briefing",
 ];
 
 interface SuggestionPillsProps {
@@ -22,10 +22,9 @@ export default function SuggestionPills({ onSelect }: SuggestionPillsProps) {
     <div
       style={{
         display: "flex",
+        flexWrap: "wrap",
         gap: "6px",
-        overflowX: "auto",
-        padding: "0 16px 8px",
-        scrollbarWidth: "none",
+        padding: "4px 16px 8px",
       }}
     >
       {SUGGESTIONS.map((text, idx) => (
@@ -35,12 +34,12 @@ export default function SuggestionPills({ onSelect }: SuggestionPillsProps) {
           onMouseEnter={() => setHoveredIdx(idx)}
           onMouseLeave={() => setHoveredIdx(null)}
           style={{
-            padding: "4px 11px",
+            padding: "4px 10px",
             borderRadius: "100px",
             border: `1px solid ${hoveredIdx === idx ? "#06b6d4" : "var(--glass-border)"}`,
             background: hoveredIdx === idx ? "rgba(6,182,212,0.07)" : "transparent",
             color: hoveredIdx === idx ? "#22d3ee" : "var(--text-muted)",
-            fontSize: "12px",
+            fontSize: "11px",
             fontWeight: 500,
             cursor: "pointer",
             whiteSpace: "nowrap",
