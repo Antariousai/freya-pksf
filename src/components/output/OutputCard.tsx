@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { Download, Maximize2, X } from "lucide-react";
-import type { OutputTab } from "@/lib/types";
+import type { OutputPanel } from "@/lib/types";
 
 interface OutputCardProps {
-  item: OutputTab;
+  item: OutputPanel;
   iconColor: string;
   iconBg: string;
   tabIcon: React.ElementType;
@@ -17,7 +17,7 @@ function ExpandModal({
   tabIcon: Icon,
   onClose,
 }: {
-  item: OutputTab;
+  item: OutputPanel;
   iconColor: string;
   tabIcon: React.ElementType;
   onClose: () => void;

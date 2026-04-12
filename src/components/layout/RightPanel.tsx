@@ -1,70 +1,35 @@
 "use client";
 
-import { FileText, Search, Lightbulb, BarChart3 } from "lucide-react";
-import OutputTabs from "@/components/output/OutputTabs";
+import { BarChart3 } from "lucide-react";
+import OutputTabs, { getTabStyle } from "@/components/output/OutputTabs";
 import OutputCard from "@/components/output/OutputCard";
-import type { OutputTab } from "@/lib/types";
+import type { OutputPanel } from "@/lib/types";
 import type { TabId } from "@/components/output/OutputTabs";
 
 interface RightPanelProps {
-  briefs: OutputTab[];
-  discrepancies: OutputTab[];
-  recommendations: OutputTab[];
+  panels: OutputPanel[];
   activeTab: TabId;
   onTabChange: (tab: TabId) => void;
 }
 
+export default function RightPanel({ panels, activeTab, onTabChange }: RightPanelProps) {
+  const hasContent = panels.length > 0;
 
-const TAB_ICON: Record<TabId, React.ElementType> = {
-  brief: FileText,
-  discrepancies: Search,
-  recommendations: Lightbulb,
-};
+  // All unique types in order of first appearance
+  const tabTypes = panels.reduce<string[]>((acc, p) => {
+    if (!acc.includes(p.type)) acc.push(p.type);
+    return acc;
+  }, []);
 
-const TAB_COLOR: Record<TabId, string> = {
-  brief: "#06b6d4",
-  discrepancies: "#ef4444",
-  recommendations: "#10b981",
-};
+  // Auto-switch: if activeTab has no panels, pick the first available type
+  const effectiveTab =
+    panels.some((p) => p.type === activeTab)
+      ? activeTab
+      : tabTypes[0] ?? activeTab;
 
-const TAB_BG: Record<TabId, string> = {
-  brief: "rgba(6,182,212,0.12)",
-  discrepancies: "rgba(239,68,68,0.12)",
-  recommendations: "rgba(16,185,129,0.12)",
-};
-
-export default function RightPanel({
-  briefs,
-  discrepancies,
-  recommendations,
-  activeTab,
-  onTabChange,
-}: RightPanelProps) {
-  const hasAnyContent =
-    briefs.length > 0 || discrepancies.length > 0 || recommendations.length > 0;
-
-  const currentItems =
-    activeTab === "brief"
-      ? briefs
-      : activeTab === "discrepancies"
-      ? discrepancies
-      : recommendations;
-
-  // Auto-switch to a tab that has content if current is empty
-  const effectiveTab = currentItems.length > 0
-    ? activeTab
-    : briefs.length > 0
-    ? "brief"
-    : discrepancies.length > 0
-    ? "discrepancies"
-    : "recommendations";
-
-  const effectiveItems =
-    effectiveTab === "brief"
-      ? briefs
-      : effectiveTab === "discrepancies"
-      ? discrepancies
-      : recommendations;
+  // Items for the active tab
+  const activeItems = panels.filter((p) => p.type === effectiveTab);
+  const activeStyle = getTabStyle(effectiveTab);
 
   return (
     <aside
@@ -84,7 +49,7 @@ export default function RightPanel({
           display: "flex",
           alignItems: "center",
           padding: "0 14px",
-          borderBottom: hasAnyContent ? "none" : "1px solid var(--glass-border)",
+          borderBottom: hasContent ? "none" : "1px solid var(--glass-border)",
           background: "rgba(255,255,255,0.015)",
           flexShrink: 0,
           gap: "8px",
@@ -102,7 +67,7 @@ export default function RightPanel({
         <span style={{ color: "var(--text-primary)", fontSize: "13px", fontWeight: 700 }}>
           Analysis Output
         </span>
-        {hasAnyContent && (
+        {hasContent && (
           <span
             style={{
               marginLeft: "auto",
@@ -115,25 +80,23 @@ export default function RightPanel({
               borderRadius: "10px",
             }}
           >
-            {briefs.length + discrepancies.length + recommendations.length} ITEMS
+            {panels.length} {panels.length === 1 ? "ITEM" : "ITEMS"}
           </span>
         )}
       </div>
 
-      {/* Dynamic tabs — only rendered when content exists */}
-      {hasAnyContent && (
+      {/* Dynamic tabs */}
+      {hasContent && (
         <OutputTabs
           activeTab={effectiveTab}
           onTabChange={onTabChange}
-          briefCount={briefs.length}
-          discrepancyCount={discrepancies.length}
-          recommendationCount={recommendations.length}
+          panels={panels}
         />
       )}
 
       {/* Content area */}
       <div style={{ flex: 1, overflowY: "auto", padding: "14px" }}>
-        {!hasAnyContent ? (
+        {!hasContent ? (
           /* ── Empty state ── */
           <div
             style={{
@@ -145,7 +108,6 @@ export default function RightPanel({
               gap: "6px",
             }}
           >
-            {/* Animated icon */}
             <div
               style={{
                 width: "52px", height: "52px", borderRadius: "14px",
@@ -157,7 +119,6 @@ export default function RightPanel({
             >
               <BarChart3 size={24} color="#6a6a90" strokeWidth={1.5} />
             </div>
-
             <p style={{ color: "var(--text-secondary)", fontSize: "13px", fontWeight: 600, margin: 0 }}>
               No Analysis Yet
             </p>
@@ -172,13 +133,13 @@ export default function RightPanel({
           </div>
         ) : (
           /* ── Content cards ── */
-          effectiveItems.map((item, idx) => (
+          activeItems.map((item, idx) => (
             <OutputCard
-              key={idx}
+              key={`${effectiveTab}-${idx}`}
               item={item}
-              iconColor={TAB_COLOR[effectiveTab]}
-              iconBg={TAB_BG[effectiveTab]}
-              tabIcon={TAB_ICON[effectiveTab]}
+              iconColor={activeStyle.color}
+              iconBg={`${activeStyle.color}1a`}
+              tabIcon={activeStyle.icon}
             />
           ))
         )}

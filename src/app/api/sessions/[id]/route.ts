@@ -17,9 +17,7 @@ export async function GET(
         .single(),
       supabaseAdmin
         .from("chat_messages")
-        .select(
-          "id, session_id, role, content, brief_title, brief_html, discrepancies_title, discrepancies_html, recommendations_title, recommendations_html, created_at"
-        )
+        .select("id, session_id, role, content, output_panels, created_at")
         .eq("session_id", id)
         .order("created_at", { ascending: true }),
     ]);

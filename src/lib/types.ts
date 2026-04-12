@@ -4,22 +4,22 @@ export interface Attachment {
   previewUrl?: string; // object URL for image thumbnails
 }
 
+/** A single structured output panel produced by Freya */
+export interface OutputPanel {
+  type: string;    // e.g. "brief" | "summary" | "discrepancies" | "recommendations" | "risk_analysis" | ...
+  label: string;   // display name shown in the tab
+  title: string;   // card heading
+  html: string;
+  timestamp: Date;
+}
+
 export interface Message {
   id: string;
   role: "user" | "assistant";
   content: string;
   timestamp: Date;
   attachments?: Attachment[];
-  // Structured output from Freya (assistant only)
-  brief?: { title: string; html: string } | null;
-  discrepancies?: { title: string; html: string } | null;
-  recommendations?: { title: string; html: string } | null;
-}
-
-export interface OutputTab {
-  title: string;
-  html: string;
-  timestamp: Date;
+  panels?: OutputPanel[];   // structured output from Freya (assistant only)
 }
 
 /** Live session record from Supabase */
@@ -33,9 +33,7 @@ export interface ChatSession {
 
 export interface FreyaResponse {
   answer: string;
-  brief: { title: string; html: string } | null;
-  discrepancies: { title: string; html: string } | null;
-  recommendations: { title: string; html: string } | null;
+  panels: OutputPanel[];
 }
 
 export interface POProfile {

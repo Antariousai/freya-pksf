@@ -805,31 +805,18 @@ export async function runFreyaAgent(
     const raw = textBlock.text.trim();
     const jsonMatch = raw.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
-      // Fallback: return as plain answer
-      return {
-        answer: raw,
-        brief: null,
-        discrepancies: null,
-        recommendations: null,
-      };
+      return { answer: raw, panels: [] };
     }
 
     try {
       return JSON.parse(jsonMatch[0]) as FreyaResponse;
     } catch {
-      return {
-        answer: textBlock.text,
-        brief: null,
-        discrepancies: null,
-        recommendations: null,
-      };
+      return { answer: textBlock.text, panels: [] };
     }
   }
 
   return {
     answer: "I reached the maximum analysis depth. Please try a more specific question.",
-    brief: null,
-    discrepancies: null,
-    recommendations: null,
+    panels: [],
   };
 }

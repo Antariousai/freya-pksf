@@ -8,23 +8,21 @@ export async function POST(req: NextRequest) {
     const { messages, sessionId, attachments, fileNames } = await req.json() as {
       messages: { role: "user" | "assistant"; content: string }[];
       sessionId?: string;
-      attachments?: FileAttachment[];   // images + PDFs (base64)
-      fileNames?: string[];             // non-encodable filenames
+      attachments?: FileAttachment[];
+      fileNames?: string[];
     };
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return NextResponse.json({ error: "Invalid messages" }, { status: 400 });
     }
 
-    // Run the Freya agent with full tool-use loop
     const freya = await runFreyaAgent(messages, attachments, fileNames);
 
-    // Persist to Supabase if sessionId is provided
+    // Persist to Supabase if sessionId provided
     if (sessionId) {
       const lastUserMsg = [...messages].reverse().find((m) => m.role === "user");
 
       if (lastUserMsg) {
-        // Save user message
         await supabaseAdmin.from("chat_messages").insert({
           session_id: sessionId,
           role: "user",
@@ -32,20 +30,19 @@ export async function POST(req: NextRequest) {
         });
       }
 
-      // Save assistant message with structured output
+      // Save assistant message — panels stored as JSONB (type, label, title, html only — no timestamp)
+      const panelsToSave = (freya.panels ?? []).map(({ type, label, title, html }) => ({
+        type, label, title, html,
+      }));
+
       await supabaseAdmin.from("chat_messages").insert({
         session_id: sessionId,
         role: "assistant",
         content: freya.answer,
-        brief_title: freya.brief?.title ?? null,
-        brief_html: freya.brief?.html ?? null,
-        discrepancies_title: freya.discrepancies?.title ?? null,
-        discrepancies_html: freya.discrepancies?.html ?? null,
-        recommendations_title: freya.recommendations?.title ?? null,
-        recommendations_html: freya.recommendations?.html ?? null,
+        output_panels: panelsToSave.length > 0 ? panelsToSave : null,
       });
 
-      // Auto-generate session title from first user message (if session still has default title)
+      // Auto-title session from first user message
       const { data: session } = await supabaseAdmin
         .from("chat_sessions")
         .select("title")
@@ -65,13 +62,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("Freya API error:", error);
     return NextResponse.json(
-      {
-        answer:
-          "I encountered an error processing your request. Please verify the API configuration and try again.",
-        brief: null,
-        discrepancies: null,
-        recommendations: null,
-      },
+      { answer: "I encountered an error. Please check the API configuration and try again.", panels: [] },
       { status: 500 }
     );
   }

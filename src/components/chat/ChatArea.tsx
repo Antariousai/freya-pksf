@@ -53,12 +53,7 @@ function dbMsgToUiMsg(m: {
   id: string;
   role: "user" | "assistant";
   content: string;
-  brief_title?: string | null;
-  brief_html?: string | null;
-  discrepancies_title?: string | null;
-  discrepancies_html?: string | null;
-  recommendations_title?: string | null;
-  recommendations_html?: string | null;
+  output_panels?: { type: string; label: string; title: string; html: string }[] | null;
   created_at: string;
 }): MessageType {
   return {
@@ -66,9 +61,9 @@ function dbMsgToUiMsg(m: {
     role: m.role,
     content: m.content,
     timestamp: new Date(m.created_at),
-    brief: m.brief_title ? { title: m.brief_title, html: m.brief_html ?? "" } : undefined,
-    discrepancies: m.discrepancies_title ? { title: m.discrepancies_title, html: m.discrepancies_html ?? "" } : undefined,
-    recommendations: m.recommendations_title ? { title: m.recommendations_title, html: m.recommendations_html ?? "" } : undefined,
+    panels: m.output_panels
+      ? m.output_panels.map((p) => ({ ...p, timestamp: new Date(m.created_at) }))
+      : undefined,
   };
 }
 
@@ -114,17 +109,12 @@ export default function ChatArea({ session, onFreyaResponse }: ChatAreaProps) {
         const dbMessages: MessageType[] = (data.messages ?? []).map(dbMsgToUiMsg);
         if (dbMessages.length > 0) {
           setMessages([WELCOME_MESSAGE, ...dbMessages]);
-          // Re-emit all Freya responses to repopulate right panel
+          // Re-emit structured responses to repopulate right panel
           dbMessages
-            .filter((m) => m.role === "assistant" && (m.brief || m.discrepancies || m.recommendations))
-            .slice(-3) // last 3 structured responses
+            .filter((m) => m.role === "assistant" && m.panels && m.panels.length > 0)
+            .slice(-3)
             .forEach((m) => {
-              onFreyaResponse({
-                answer: m.content,
-                brief: m.brief ?? null,
-                discrepancies: m.discrepancies ?? null,
-                recommendations: m.recommendations ?? null,
-              });
+              onFreyaResponse({ answer: m.content, panels: m.panels! });
             });
         }
       })
@@ -217,14 +207,13 @@ export default function ChatArea({ session, onFreyaResponse }: ChatAreaProps) {
 
       const freya: FreyaResponse = await res.json();
 
+      const now = new Date();
       const botMessage: MessageType = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
         content: freya.answer,
-        timestamp: new Date(),
-        brief: freya.brief,
-        discrepancies: freya.discrepancies,
-        recommendations: freya.recommendations,
+        timestamp: now,
+        panels: freya.panels?.map((p) => ({ ...p, timestamp: now })),
       };
 
       setMessages((prev) => [...prev, botMessage]);

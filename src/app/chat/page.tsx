@@ -8,7 +8,7 @@ import ChatArea from "@/components/chat/ChatArea";
 import RightPanel from "@/components/layout/RightPanel";
 import { useIsMobile } from "@/lib/use-mobile";
 import { useRequireAuth } from "@/lib/use-auth";
-import type { FreyaResponse, OutputTab, ChatSession } from "@/lib/types";
+import type { FreyaResponse, OutputPanel, ChatSession } from "@/lib/types";
 import type { TabId } from "@/components/output/OutputTabs";
 
 const LEFT_MIN = 160;
@@ -67,12 +67,9 @@ export default function ChatPage() {
   // Session state
   const [activeSession, setActiveSession] = useState<ChatSession | null>(null);
 
-  // Output panel state
-  const [activeTab, setActiveTab] = useState<TabId>("brief");
-  const [briefs, setBriefs] = useState<OutputTab[]>([]);
-  const [discrepancies, setDiscrepancies] = useState<OutputTab[]>([]);
-  const [recommendations, setRecommendations] = useState<OutputTab[]>([]);
-
+  // All output panels — dynamic, any type
+  const [panels, setPanels] = useState<OutputPanel[]>([]);
+  const [activeTab, setActiveTab] = useState<TabId>("");
 
   // Panel widths (desktop only)
   const [leftWidth, setLeftWidth] = useState(200);
@@ -88,14 +85,12 @@ export default function ChatPage() {
     if (!checked || !authed || initialized.current) return;
     initialized.current = true;
 
-    // Load sessions and pick the most recent, or create a new one
     fetch("/api/sessions")
       .then((r) => r.json())
       .then((sessions: ChatSession[]) => {
         if (sessions.length > 0) {
           setActiveSession(sessions[0]);
         } else {
-          // Create a fresh session
           fetch("/api/sessions", { method: "POST" })
             .then((r) => r.json())
             .then((s: ChatSession) => setActiveSession(s))
@@ -108,44 +103,33 @@ export default function ChatPage() {
   // Clear output panels when switching sessions
   const handleSessionSelect = useCallback((session: ChatSession) => {
     setActiveSession(session);
-    setBriefs([]);
-    setDiscrepancies([]);
-    setRecommendations([]);
-    setActiveTab("brief");
+    setPanels([]);
+    setActiveTab("");
   }, []);
 
   const handleNewSession = useCallback((session: ChatSession) => {
     setActiveSession(session);
-    setBriefs([]);
-    setDiscrepancies([]);
-    setRecommendations([]);
-    setActiveTab("brief");
+    setPanels([]);
+    setActiveTab("");
   }, []);
 
   const handleSessionDeleted = useCallback((deletedId: string) => {
     if (activeSession?.id === deletedId) {
       setActiveSession(null);
-      setBriefs([]);
-      setDiscrepancies([]);
-      setRecommendations([]);
+      setPanels([]);
+      setActiveTab("");
     }
   }, [activeSession?.id]);
 
   const handleFreyaResponse = useCallback((response: FreyaResponse) => {
-    const now = new Date();
-    if (response.brief) {
-      setBriefs((prev) => [{ title: response.brief!.title, html: response.brief!.html, timestamp: now }, ...prev]);
-      setActiveTab("brief");
+    if (response.panels && response.panels.length > 0) {
+      const now = new Date();
+      const newPanels = response.panels.map((p) => ({ ...p, timestamp: now }));
+      setPanels((prev) => [...newPanels, ...prev]);
+      // Auto-switch to the first new panel type
+      setActiveTab(newPanels[0].type);
+      if (isMobile) setMobileRightOpen(true);
     }
-    if (response.discrepancies) {
-      setDiscrepancies((prev) => [{ title: response.discrepancies!.title, html: response.discrepancies!.html, timestamp: now }, ...prev]);
-      if (!response.brief) setActiveTab("discrepancies");
-    }
-    if (response.recommendations) {
-      setRecommendations((prev) => [{ title: response.recommendations!.title, html: response.recommendations!.html, timestamp: now }, ...prev]);
-      if (!response.brief && !response.discrepancies) setActiveTab("recommendations");
-    }
-    if (isMobile) setMobileRightOpen(true);
   }, [isMobile]);
 
   const dragLeft = useCallback((dx: number) => {
@@ -155,8 +139,6 @@ export default function ChatPage() {
   const dragRight = useCallback((dx: number) => {
     setRightWidth((w) => Math.min(RIGHT_MAX, Math.max(RIGHT_MIN, w - dx)));
   }, []);
-
-  const hasOutput = briefs.length > 0 || discrepancies.length > 0 || recommendations.length > 0;
 
   // Block render until auth is confirmed
   if (!checked || !authed) return null;
@@ -190,9 +172,7 @@ export default function ChatPage() {
               <DragHandle onDrag={dragRight} />
               <div style={{ width: rightWidth, flexShrink: 0, display: "flex", overflow: "hidden" }}>
                 <RightPanel
-                  briefs={briefs}
-                  discrepancies={discrepancies}
-                  recommendations={recommendations}
+                  panels={panels}
                   activeTab={activeTab}
                   onTabChange={setActiveTab}
                 />
@@ -204,7 +184,6 @@ export default function ChatPage() {
         {/* ── MOBILE layout ── */}
         {isMobile && (
           <>
-            {/* Left drawer */}
             <LeftPanel
               width="100%"
               activeSessionId={activeSession?.id}
@@ -215,7 +194,6 @@ export default function ChatPage() {
               onMobileClose={() => setMobileLeftOpen(false)}
             />
 
-            {/* Full-width chat */}
             <main style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", minWidth: 0 }}>
               <ChatArea
                 session={activeSession}
@@ -223,7 +201,6 @@ export default function ChatPage() {
               />
             </main>
 
-            {/* Right panel overlay */}
             {mobileRightOpen && (
               <>
                 <div
@@ -234,9 +211,7 @@ export default function ChatPage() {
                   style={{ position: "fixed", top: "54px", right: 0, width: "92vw", maxWidth: "380px", height: "calc(100dvh - 54px)", zIndex: 200, display: "flex", overflow: "hidden", boxShadow: "-4px 0 24px rgba(0,0,0,0.25)" }}
                 >
                   <RightPanel
-                    briefs={briefs}
-                    discrepancies={discrepancies}
-                    recommendations={recommendations}
+                    panels={panels}
                     activeTab={activeTab}
                     onTabChange={setActiveTab}
                   />
@@ -245,7 +220,7 @@ export default function ChatPage() {
             )}
 
             {/* Output FAB */}
-            {hasOutput && !mobileRightOpen && (
+            {panels.length > 0 && !mobileRightOpen && (
               <button
                 onClick={() => setMobileRightOpen(true)}
                 style={{ position: "fixed", bottom: "80px", right: "16px", zIndex: 150, width: "48px", height: "48px", borderRadius: "50%", background: "linear-gradient(135deg, #7c3aed, #06b6d4)", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 20px rgba(124,58,237,0.45)" }}

@@ -90,12 +90,6 @@ function SessionItem({
         position: "relative",
       }}
     >
-      <div
-        style={{
-          width: "6px", height: "6px", borderRadius: "50%",
-          background: session.color, flexShrink: 0,
-        }}
-      />
       <span
         style={{
           flex: 1,
