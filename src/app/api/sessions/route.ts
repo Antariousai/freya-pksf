@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json().catch(() => ({}));
     const color = body.color ?? SESSION_COLORS[Math.floor(Math.random() * SESSION_COLORS.length)];
-    const persona = body.persona ?? "analyst";
+    const persona = body.persona ?? "assistant";
 
     const { data, error } = await supabaseAdmin
       .from("chat_sessions")
