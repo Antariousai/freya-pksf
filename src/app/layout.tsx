@@ -28,6 +28,10 @@ export const metadata: Metadata = {
   title: "Freya | Antarious AI — PKSF Intelligence",
   description:
     "Antarious AI Freya — Financial Intelligence Platform for PKSF (Palli Karma-Sahayak Foundation)",
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+  },
 };
 
 export default function RootLayout({
