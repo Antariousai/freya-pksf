@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
+import { requireAuth } from "@/lib/auth-server";
 
 // GET /api/sessions/[id] — get a session with its messages
 export async function GET(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const auth = await requireAuth(req);
+  if (!auth.ok) return auth.response;
+
   try {
     const { id } = await params;
 
@@ -41,6 +45,9 @@ export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const auth = await requireAuth(req);
+  if (!auth.ok) return auth.response;
+
   try {
     const { id } = await params;
     const body = await req.json();
@@ -66,15 +73,18 @@ export async function PATCH(
     return NextResponse.json(data);
   } catch (error) {
     console.error("Session PATCH error:", error);
-    return NextResponse.json({ error: "Failed to rename session" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to update session" }, { status: 500 });
   }
 }
 
 // DELETE /api/sessions/[id] — delete a session and all its messages (cascade)
 export async function DELETE(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const auth = await requireAuth(req);
+  if (!auth.ok) return auth.response;
+
   try {
     const { id } = await params;
 

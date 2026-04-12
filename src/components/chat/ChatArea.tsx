@@ -8,6 +8,7 @@ import FreyaThinking from "./FreyaThinking";
 import SuggestionPills from "./SuggestionPills";
 import { useVoiceRecorder } from "@/lib/use-voice-recorder";
 import { getPersona, PERSONAS } from "@/lib/personas";
+import { apiFetch } from "@/lib/api-client";
 import type { Message as MessageType, Attachment, FreyaResponse, ChatSession } from "@/lib/types";
 
 interface ChatAreaProps {
@@ -118,7 +119,7 @@ export default function ChatArea({ session, onFreyaResponse, onPersonaChange }: 
     setLoadingHistory(true);
     setMessages([welcome]);
 
-    fetch(`/api/sessions/${session.id}`)
+    apiFetch(`/api/sessions/${session.id}`)
       .then((r) => r.json())
       .then((data) => {
         const dbMessages: MessageType[] = (data.messages ?? []).map(dbMsgToUiMsg);
@@ -208,7 +209,7 @@ export default function ChatArea({ session, onFreyaResponse, onPersonaChange }: 
         .concat(userMessage)
         .map((m) => ({ role: m.role, content: m.content }));
 
-      const res = await fetch("/api/chat", {
+      const res = await apiFetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

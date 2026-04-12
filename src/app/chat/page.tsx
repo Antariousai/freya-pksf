@@ -7,6 +7,7 @@ import LeftPanel from "@/components/layout/LeftPanel";
 import ChatArea from "@/components/chat/ChatArea";
 import RightPanel from "@/components/layout/RightPanel";
 import { useIsMobile } from "@/lib/use-mobile";
+import { apiFetch } from "@/lib/api-client";
 import { useRequireAuth } from "@/lib/use-auth";
 import type { FreyaResponse, OutputPanel, ChatSession } from "@/lib/types";
 import type { TabId } from "@/components/output/OutputTabs";
@@ -85,13 +86,13 @@ export default function ChatPage() {
     if (!checked || !authed || initialized.current) return;
     initialized.current = true;
 
-    fetch("/api/sessions")
+    apiFetch("/api/sessions")
       .then((r) => r.json())
       .then((sessions: ChatSession[]) => {
         if (sessions.length > 0) {
           setActiveSession(sessions[0]);
         } else {
-          fetch("/api/sessions", { method: "POST" })
+          apiFetch("/api/sessions", { method: "POST" })
             .then((r) => r.json())
             .then((s: ChatSession) => setActiveSession(s))
             .catch(console.error);
@@ -125,7 +126,7 @@ export default function ChatPage() {
   // creates a fresh session with that persona and switches to it
   const handlePersonaChange = useCallback(async (personaId: string) => {
     try {
-      const res = await fetch("/api/sessions", {
+      const res = await apiFetch("/api/sessions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ persona: personaId }),

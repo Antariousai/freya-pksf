@@ -26,6 +26,7 @@ export interface DBSession {
   id: string;
   title: string;
   color: string;
+  persona: string;
   created_at: string;
   updated_at: string;
 }
@@ -35,11 +36,11 @@ export interface DBMessage {
   session_id: string;
   role: "user" | "assistant";
   content: string;
-  brief_title?: string;
-  brief_html?: string;
-  discrepancies_title?: string;
-  discrepancies_html?: string;
-  recommendations_title?: string;
-  recommendations_html?: string;
+  output_panels?: {
+    type: string;
+    label: string;
+    title: string;
+    html: string;
+  }[] | null;
   created_at: string;
 }

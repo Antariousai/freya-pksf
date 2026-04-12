@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useIsMobile } from "@/lib/use-mobile";
 import { getPersona } from "@/lib/personas";
+import { apiFetch } from "@/lib/api-client";
 import type { ChatSession } from "@/lib/types";
 
 interface LeftPanelProps {
@@ -165,7 +166,7 @@ export default function LeftPanel({
     if (!isChat) return;
     setLoadingSessions(true);
     try {
-      const res = await fetch("/api/sessions");
+      const res = await apiFetch("/api/sessions");
       if (res.ok) {
         const data = await res.json();
         setSessions(data);
@@ -193,7 +194,7 @@ export default function LeftPanel({
     if (creatingSession) return;
     setCreatingSession(true);
     try {
-      const res = await fetch("/api/sessions", { method: "POST" });
+      const res = await apiFetch("/api/sessions", { method: "POST" });
       if (res.ok) {
         const session: ChatSession = await res.json();
         setSessions((prev) => [session, ...prev]);
@@ -211,7 +212,7 @@ export default function LeftPanel({
     setSessions((prev) => prev.filter((s) => s.id !== id));
     onSessionDeleted?.(id);
     try {
-      await fetch(`/api/sessions/${id}`, { method: "DELETE" });
+      await apiFetch(`/api/sessions/${id}`, { method: "DELETE" });
     } catch (e) {
       console.error("Failed to delete session", e);
       loadSessions(); // reload on error

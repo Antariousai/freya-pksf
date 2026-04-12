@@ -2,8 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { runFreyaAgent } from "@/lib/freya-agent";
 import type { FileAttachment } from "@/lib/freya-agent";
 import { supabaseAdmin } from "@/lib/supabase";
+import { requireAuth } from "@/lib/auth-server";
 
 export async function POST(req: NextRequest) {
+  const auth = await requireAuth(req);
+  if (!auth.ok) return auth.response;
+
   try {
     const { messages, sessionId, attachments, fileNames } = await req.json() as {
       messages: { role: "user" | "assistant"; content: string }[];
@@ -16,15 +20,21 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid messages" }, { status: 400 });
     }
 
-    // Fetch session's persona so Claude responds in the right role
+    // Single query: fetch both persona and title to avoid two round trips
     let personaId = "assistant";
+    let sessionTitle: string | null = null;
+
     if (sessionId) {
       const { data: sessionRow } = await supabaseAdmin
         .from("chat_sessions")
-        .select("persona")
+        .select("persona, title")
         .eq("id", sessionId)
         .single();
-      if (sessionRow?.persona) personaId = sessionRow.persona;
+
+      if (sessionRow) {
+        personaId = sessionRow.persona ?? "assistant";
+        sessionTitle = sessionRow.title;
+      }
     }
 
     const freya = await runFreyaAgent(messages, attachments, fileNames, personaId);
@@ -41,7 +51,7 @@ export async function POST(req: NextRequest) {
         });
       }
 
-      // Save assistant message — panels stored as JSONB (type, label, title, html only — no timestamp)
+      // Save assistant message — panels stored as JSONB
       const panelsToSave = (freya.panels ?? []).map(({ type, label, title, html }) => ({
         type, label, title, html,
       }));
@@ -53,14 +63,8 @@ export async function POST(req: NextRequest) {
         output_panels: panelsToSave.length > 0 ? panelsToSave : null,
       });
 
-      // Auto-title session from first user message
-      const { data: session } = await supabaseAdmin
-        .from("chat_sessions")
-        .select("title")
-        .eq("id", sessionId)
-        .single();
-
-      if (session?.title === "New Session" && lastUserMsg) {
+      // Auto-title session from first user message (uses already-fetched title)
+      if (sessionTitle === "New Session" && lastUserMsg) {
         const titleText = lastUserMsg.content.slice(0, 55).replace(/\n/g, " ");
         await supabaseAdmin
           .from("chat_sessions")

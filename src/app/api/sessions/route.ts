@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
+import { requireAuth } from "@/lib/auth-server";
 
 const SESSION_COLORS = [
   "#06b6d4", "#7c3aed", "#10b981", "#f59e0b", "#3b82f6",
@@ -7,7 +8,10 @@ const SESSION_COLORS = [
 ];
 
 // GET /api/sessions — list all sessions ordered by updated_at desc
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const auth = await requireAuth(req);
+  if (!auth.ok) return auth.response;
+
   try {
     const { data, error } = await supabaseAdmin
       .from("chat_sessions")
@@ -25,6 +29,9 @@ export async function GET() {
 
 // POST /api/sessions — create a new session
 export async function POST(req: NextRequest) {
+  const auth = await requireAuth(req);
+  if (!auth.ok) return auth.response;
+
   try {
     const body = await req.json().catch(() => ({}));
     const color = body.color ?? SESSION_COLORS[Math.floor(Math.random() * SESSION_COLORS.length)];
