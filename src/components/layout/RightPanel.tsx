@@ -1,6 +1,6 @@
 "use client";
 
-import { FileText, Search, Lightbulb, Upload, BarChart3 } from "lucide-react";
+import { FileText, Search, Lightbulb, BarChart3 } from "lucide-react";
 import OutputTabs from "@/components/output/OutputTabs";
 import OutputCard from "@/components/output/OutputCard";
 import type { OutputTab } from "@/lib/types";
@@ -12,39 +12,8 @@ interface RightPanelProps {
   recommendations: OutputTab[];
   activeTab: TabId;
   onTabChange: (tab: TabId) => void;
-  onPromptSelect?: (text: string) => void;
 }
 
-const EMPTY_PROMPTS = [
-  {
-    icon: FileText,
-    color: "#06b6d4",
-    bg: "rgba(6,182,212,0.08)",
-    border: "rgba(6,182,212,0.15)",
-    text: "Give me a portfolio brief",
-  },
-  {
-    icon: Search,
-    color: "#ef4444",
-    bg: "rgba(239,68,68,0.06)",
-    border: "rgba(239,68,68,0.12)",
-    text: "Audit the JCF PO",
-  },
-  {
-    icon: Upload,
-    color: "#a78bfa",
-    bg: "rgba(124,58,237,0.06)",
-    border: "rgba(124,58,237,0.12)",
-    text: "Upload annual report",
-  },
-  {
-    icon: Lightbulb,
-    color: "#10b981",
-    bg: "rgba(16,185,129,0.06)",
-    border: "rgba(16,185,129,0.12)",
-    text: "Morning executive brief",
-  },
-];
 
 const TAB_ICON: Record<TabId, React.ElementType> = {
   brief: FileText,
@@ -70,7 +39,6 @@ export default function RightPanel({
   recommendations,
   activeTab,
   onTabChange,
-  onPromptSelect,
 }: RightPanelProps) {
   const hasAnyContent =
     briefs.length > 0 || discrepancies.length > 0 || recommendations.length > 0;
@@ -196,37 +164,11 @@ export default function RightPanel({
             <p
               style={{
                 color: "var(--text-dim)", fontSize: "11px", lineHeight: 1.6,
-                maxWidth: "200px", textAlign: "center", margin: "0 0 20px",
+                maxWidth: "200px", textAlign: "center", margin: 0,
               }}
             >
               Ask Freya a question or upload an annual report to see structured output here.
             </p>
-
-            {/* Prompt chips */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "7px", width: "100%" }}>
-              {EMPTY_PROMPTS.map((p) => {
-                const Icon = p.icon;
-                return (
-                  <button
-                    key={p.text}
-                    onClick={() => onPromptSelect?.(p.text)}
-                    style={{
-                      display: "flex", alignItems: "center", gap: "9px",
-                      padding: "8px 10px", borderRadius: "8px",
-                      background: p.bg, border: `1px solid ${p.border}`,
-                      cursor: onPromptSelect ? "pointer" : "default",
-                      textAlign: "left", width: "100%",
-                      transition: "opacity 0.15s",
-                    }}
-                    onMouseEnter={(e) => { if (onPromptSelect) e.currentTarget.style.opacity = "0.75"; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
-                  >
-                    <Icon size={13} color={p.color} strokeWidth={2} style={{ flexShrink: 0 }} />
-                    <span style={{ color: "var(--text-muted)", fontSize: "11px" }}>{p.text}</span>
-                  </button>
-                );
-              })}
-            </div>
           </div>
         ) : (
           /* ── Content cards ── */

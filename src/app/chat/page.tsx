@@ -73,8 +73,6 @@ export default function ChatPage() {
   const [discrepancies, setDiscrepancies] = useState<OutputTab[]>([]);
   const [recommendations, setRecommendations] = useState<OutputTab[]>([]);
 
-  // Prompt injected from RightPanel chips
-  const [injectedMessage, setInjectedMessage] = useState<string | null>(null);
 
   // Panel widths (desktop only)
   const [leftWidth, setLeftWidth] = useState(200);
@@ -188,8 +186,6 @@ export default function ChatPage() {
               <ChatArea
                 session={activeSession}
                 onFreyaResponse={handleFreyaResponse}
-                injectedMessage={injectedMessage}
-                onInjectedMessageConsumed={() => setInjectedMessage(null)}
               />
               <DragHandle onDrag={dragRight} />
               <div style={{ width: rightWidth, flexShrink: 0, display: "flex", overflow: "hidden" }}>
@@ -199,7 +195,6 @@ export default function ChatPage() {
                   recommendations={recommendations}
                   activeTab={activeTab}
                   onTabChange={setActiveTab}
-                  onPromptSelect={setInjectedMessage}
                 />
               </div>
             </main>
@@ -225,8 +220,6 @@ export default function ChatPage() {
               <ChatArea
                 session={activeSession}
                 onFreyaResponse={handleFreyaResponse}
-                injectedMessage={injectedMessage}
-                onInjectedMessageConsumed={() => setInjectedMessage(null)}
               />
             </main>
 
@@ -246,7 +239,6 @@ export default function ChatPage() {
                     recommendations={recommendations}
                     activeTab={activeTab}
                     onTabChange={setActiveTab}
-                    onPromptSelect={(text) => { setInjectedMessage(text); setMobileRightOpen(false); }}
                   />
                 </div>
               </>

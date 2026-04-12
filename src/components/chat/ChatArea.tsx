@@ -11,8 +11,6 @@ import type { Message as MessageType, Attachment, FreyaResponse, ChatSession } f
 interface ChatAreaProps {
   session: ChatSession | null;
   onFreyaResponse: (response: FreyaResponse) => void;
-  injectedMessage?: string | null;
-  onInjectedMessageConsumed?: () => void;
 }
 
 interface PendingFile {
@@ -74,7 +72,7 @@ function dbMsgToUiMsg(m: {
   };
 }
 
-export default function ChatArea({ session, onFreyaResponse, injectedMessage, onInjectedMessageConsumed }: ChatAreaProps) {
+export default function ChatArea({ session, onFreyaResponse }: ChatAreaProps) {
   const [messages, setMessages] = useState<MessageType[]>([WELCOME_MESSAGE]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -96,14 +94,6 @@ export default function ChatArea({ session, onFreyaResponse, injectedMessage, on
       pendingFiles.forEach((pf) => { if (pf.previewUrl) URL.revokeObjectURL(pf.previewUrl); });
     };
   }, [pendingFiles]);
-
-  // Fire injected message (from RightPanel prompt chips or other external triggers)
-  useEffect(() => {
-    if (!injectedMessage) return;
-    onInjectedMessageConsumed?.();
-    sendMessage(injectedMessage);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [injectedMessage]);
 
   // Load session history when session changes
   useEffect(() => {
