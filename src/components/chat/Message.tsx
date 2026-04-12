@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { FileText, FileSpreadsheet, File } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 import type { Message as MessageType } from "@/lib/types";
 
 function AttachmentIcon({ type, size = 12 }: { type: string; size?: number }) {
@@ -142,19 +143,34 @@ export default function Message({ message }: MessageProps) {
 
         {/* Message text */}
         {message.content && (
-          <p
-            style={{
-              color: isUser ? "#fff" : "var(--text-secondary)",
-              fontSize: "15px",
-              lineHeight: 1.6,
-              margin: 0,
-              fontFamily: "var(--font-dm-sans), 'DM Sans', 'Noto Sans Bengali', sans-serif",
-              whiteSpace: "pre-wrap",
-              wordBreak: "break-word",
-            }}
-          >
-            {message.content}
-          </p>
+          isUser ? (
+            <p
+              style={{
+                color: "#fff",
+                fontSize: "15px",
+                lineHeight: 1.6,
+                margin: 0,
+                fontFamily: "var(--font-dm-sans), 'DM Sans', 'Noto Sans Bengali', sans-serif",
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
+              }}
+            >
+              {message.content}
+            </p>
+          ) : (
+            <div
+              style={{
+                color: "var(--text-secondary)",
+                fontSize: "15px",
+                lineHeight: 1.6,
+                fontFamily: "var(--font-dm-sans), 'DM Sans', 'Noto Sans Bengali', sans-serif",
+                wordBreak: "break-word",
+              }}
+              className="freya-markdown"
+            >
+              <ReactMarkdown>{message.content}</ReactMarkdown>
+            </div>
+          )
         )}
 
         <div

@@ -259,7 +259,7 @@ export default function ChatArea({ session, onFreyaResponse, onPersonaChange }: 
 
   const canSend = (input.trim().length > 0 || pendingFiles.length > 0) && !isLoading;
 
-  const persona = getPersona(session?.persona ?? "analyst");
+  const persona = getPersona(session?.persona ?? "assistant");
 
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", background: "var(--bg-0)" }}>
