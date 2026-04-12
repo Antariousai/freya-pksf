@@ -12,6 +12,7 @@ interface RightPanelProps {
   recommendations: OutputTab[];
   activeTab: TabId;
   onTabChange: (tab: TabId) => void;
+  onPromptSelect?: (text: string) => void;
 }
 
 const EMPTY_PROMPTS = [
@@ -69,6 +70,7 @@ export default function RightPanel({
   recommendations,
   activeTab,
   onTabChange,
+  onPromptSelect,
 }: RightPanelProps) {
   const hasAnyContent =
     briefs.length > 0 || discrepancies.length > 0 || recommendations.length > 0;
@@ -205,17 +207,23 @@ export default function RightPanel({
               {EMPTY_PROMPTS.map((p) => {
                 const Icon = p.icon;
                 return (
-                  <div
+                  <button
                     key={p.text}
+                    onClick={() => onPromptSelect?.(p.text)}
                     style={{
                       display: "flex", alignItems: "center", gap: "9px",
                       padding: "8px 10px", borderRadius: "8px",
                       background: p.bg, border: `1px solid ${p.border}`,
+                      cursor: onPromptSelect ? "pointer" : "default",
+                      textAlign: "left", width: "100%",
+                      transition: "opacity 0.15s",
                     }}
+                    onMouseEnter={(e) => { if (onPromptSelect) e.currentTarget.style.opacity = "0.75"; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
                   >
-                    <Icon size={13} color={p.color} strokeWidth={2} />
+                    <Icon size={13} color={p.color} strokeWidth={2} style={{ flexShrink: 0 }} />
                     <span style={{ color: "var(--text-muted)", fontSize: "11px" }}>{p.text}</span>
-                  </div>
+                  </button>
                 );
               })}
             </div>
