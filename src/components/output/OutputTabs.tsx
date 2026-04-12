@@ -2,7 +2,7 @@
 
 import {
   FileText, Search, Lightbulb, AlertTriangle,
-  Users, Activity, Shield, BarChart2,
+  Users, Activity, Shield, BarChart2, Info,
 } from "lucide-react";
 import type { OutputPanel } from "@/lib/types";
 
@@ -22,6 +22,7 @@ const TAB_STYLE_MAP: Record<string, {
   po_analysis:     { color: "#a78bfa", bg: "rgba(124,58,237,0.06)", border: "rgba(124,58,237,0.3)", countBg: "rgba(124,58,237,0.15)", icon: Users },
   project_status:  { color: "#3b82f6", bg: "rgba(59,130,246,0.06)", border: "rgba(59,130,246,0.3)", countBg: "rgba(59,130,246,0.15)", icon: Activity },
   flood_impact:    { color: "#f59e0b", bg: "rgba(245,158,11,0.06)", border: "rgba(245,158,11,0.3)", countBg: "rgba(245,158,11,0.15)", icon: BarChart2 },
+  data_needed:     { color: "#f59e0b", bg: "rgba(245,158,11,0.06)", border: "rgba(245,158,11,0.35)", countBg: "rgba(245,158,11,0.18)", icon: Info },
 };
 
 const DEFAULT_STYLE = {
