@@ -196,6 +196,7 @@ export default function ChatPage() {
                   panels={panels}
                   activeTab={activeTab}
                   onTabChange={setActiveTab}
+                  persona={activeSession?.persona}
                 />
               </div>
             </main>
@@ -236,6 +237,7 @@ export default function ChatPage() {
                     panels={panels}
                     activeTab={activeTab}
                     onTabChange={setActiveTab}
+                    persona={activeSession?.persona}
                   />
                 </div>
               </>

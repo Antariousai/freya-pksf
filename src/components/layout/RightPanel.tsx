@@ -4,6 +4,7 @@ import { BarChart3 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import OutputTabs, { getTabStyle } from "@/components/output/OutputTabs";
 import OutputCard from "@/components/output/OutputCard";
+import { getPersona } from "@/lib/personas";
 import type { OutputPanel } from "@/lib/types";
 import type { TabId } from "@/components/output/OutputTabs";
 
@@ -11,9 +12,11 @@ interface RightPanelProps {
   panels: OutputPanel[];
   activeTab: TabId;
   onTabChange: (tab: TabId) => void;
+  persona?: string;
 }
 
-export default function RightPanel({ panels, activeTab, onTabChange }: RightPanelProps) {
+export default function RightPanel({ panels, activeTab, onTabChange, persona = "assistant" }: RightPanelProps) {
+  const currentPersona = getPersona(persona);
   const hasContent = panels.length > 0;
 
   // All unique types in order of first appearance
@@ -59,21 +62,37 @@ export default function RightPanel({ panels, activeTab, onTabChange }: RightPane
         <div
           style={{
             width: "24px", height: "24px", borderRadius: "7px",
-            background: "rgba(124,58,237,0.15)",
+            background: `${currentPersona.color}20`,
             display: "flex", alignItems: "center", justifyContent: "center",
+            flexShrink: 0,
           }}
         >
-          <BarChart3 size={13} color="#a78bfa" strokeWidth={2} />
+          <BarChart3 size={13} color={currentPersona.color} strokeWidth={2} />
         </div>
-        <span style={{ color: "var(--text-primary)", fontSize: "13px", fontWeight: 700 }}>
-          Analysis Output
-        </span>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ color: "var(--text-primary)", fontSize: "13px", fontWeight: 700, lineHeight: 1.2 }}>
+            Analysis Output
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "4px", marginTop: "1px" }}>
+            <div style={{ width: "5px", height: "5px", borderRadius: "50%", background: currentPersona.color, flexShrink: 0 }} />
+            <span style={{
+              color: currentPersona.color,
+              fontSize: "9px",
+              fontFamily: "var(--font-jetbrains-mono), monospace",
+              fontWeight: 600,
+              letterSpacing: "0.2px",
+              overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+            }}>
+              {currentPersona.label}
+            </span>
+          </div>
+        </div>
         {hasContent && (
           <span
             style={{
-              marginLeft: "auto",
-              background: "rgba(124,58,237,0.12)",
-              color: "#a78bfa",
+              flexShrink: 0,
+              background: `${currentPersona.color}18`,
+              color: currentPersona.color,
               fontSize: "9px",
               fontFamily: "var(--font-jetbrains-mono), monospace",
               fontWeight: 700,
