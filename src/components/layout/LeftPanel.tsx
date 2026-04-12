@@ -72,8 +72,11 @@ function SessionItem({
   const [hovered, setHovered] = useState(false);
 
   return (
-    <button
+    <div
+      role="button"
+      tabIndex={0}
       onClick={onClick}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") onClick(); }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
@@ -127,7 +130,7 @@ function SessionItem({
           {relativeTime(session.updated_at)}
         </span>
       )}
-    </button>
+    </div>
   );
 }
 
