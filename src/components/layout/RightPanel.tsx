@@ -1,6 +1,6 @@
 "use client";
 
-import { BarChart3 } from "lucide-react";
+import { BarChart3, RotateCcw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import OutputTabs, { getTabStyle } from "@/components/output/OutputTabs";
 import OutputCard from "@/components/output/OutputCard";
@@ -10,14 +10,25 @@ import type { TabId } from "@/components/output/OutputTabs";
 
 interface RightPanelProps {
   panels: OutputPanel[];
+  archivedPanels?: OutputPanel[];
   activeTab: TabId;
   onTabChange: (tab: TabId) => void;
   onCloseTab?: (type: string) => void;
+  onRestoreTab?: (type: string) => void;
   persona?: string;
   panelsLoading?: boolean;
 }
 
-export default function RightPanel({ panels, activeTab, onTabChange, onCloseTab, persona = "assistant", panelsLoading = false }: RightPanelProps) {
+export default function RightPanel({
+  panels,
+  archivedPanels = [],
+  activeTab,
+  onTabChange,
+  onCloseTab,
+  onRestoreTab,
+  persona = "assistant",
+  panelsLoading = false,
+}: RightPanelProps) {
   const currentPersona = getPersona(persona);
   const hasContent = panels.length > 0;
 
@@ -120,6 +131,63 @@ export default function RightPanel({ panels, activeTab, onTabChange, onCloseTab,
           onCloseTab={onCloseTab}
           panels={panels}
         />
+      )}
+
+      {/* Archive strip — closed tabs that can be restored */}
+      {archivedPanels.length > 0 && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "4px",
+            padding: "4px 10px",
+            background: "rgba(255,255,255,0.02)",
+            borderBottom: "1px solid var(--glass-border)",
+            flexShrink: 0,
+            flexWrap: "wrap",
+          }}
+        >
+          <span style={{ color: "var(--text-dim)", fontSize: "9px", fontFamily: "var(--font-jetbrains-mono), monospace", fontWeight: 600, letterSpacing: "0.5px", marginRight: "2px", flexShrink: 0 }}>
+            CLOSED
+          </span>
+          {/* Unique archived types */}
+          {Array.from(new Set(archivedPanels.map(p => p.type))).map(type => {
+            const panel = archivedPanels.find(p => p.type === type)!;
+            const style = getTabStyle(type);
+            return (
+              <button
+                key={type}
+                onClick={() => onRestoreTab?.(type)}
+                title={`Restore "${panel.label}" tab`}
+                style={{
+                  display: "flex", alignItems: "center", gap: "4px",
+                  padding: "3px 8px",
+                  borderRadius: "6px",
+                  background: "rgba(255,255,255,0.04)",
+                  border: `1px solid rgba(255,255,255,0.08)`,
+                  cursor: "pointer",
+                  color: "var(--text-dim)",
+                  fontSize: "10px",
+                  fontWeight: 600,
+                  transition: "all 0.15s",
+                }}
+                onMouseEnter={e => {
+                  (e.currentTarget as HTMLButtonElement).style.background = `${style.color}18`;
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = `${style.color}40`;
+                  (e.currentTarget as HTMLButtonElement).style.color = style.color;
+                }}
+                onMouseLeave={e => {
+                  (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.04)";
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.08)";
+                  (e.currentTarget as HTMLButtonElement).style.color = "var(--text-dim)";
+                }}
+              >
+                <RotateCcw size={9} strokeWidth={2.5} />
+                {panel.label}
+              </button>
+            );
+          })}
+        </div>
       )}
 
       {/* Content area — flex column so cards can fill the height */}

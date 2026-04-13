@@ -70,6 +70,7 @@ export default function ChatPage() {
 
   // All output panels — dynamic, any type
   const [panels, setPanels] = useState<OutputPanel[]>([]);
+  const [archivedPanels, setArchivedPanels] = useState<OutputPanel[]>([]);
   const [activeTab, setActiveTab] = useState<TabId>("");
   const [panelsLoading, setPanelsLoading] = useState(false);
 
@@ -106,12 +107,14 @@ export default function ChatPage() {
   const handleSessionSelect = useCallback((session: ChatSession) => {
     setActiveSession(session);
     setPanels([]);
+    setArchivedPanels([]);
     setActiveTab("");
   }, []);
 
   const handleNewSession = useCallback((session: ChatSession) => {
     setActiveSession(session);
     setPanels([]);
+    setArchivedPanels([]);
     setActiveTab("");
   }, []);
 
@@ -119,6 +122,7 @@ export default function ChatPage() {
     if (activeSession?.id === deletedId) {
       setActiveSession(null);
       setPanels([]);
+      setArchivedPanels([]);
       setActiveTab("");
     }
   }, [activeSession?.id]);
@@ -147,26 +151,65 @@ export default function ChatPage() {
     if (response.panels && response.panels.length > 0) {
       const now = new Date();
       const newPanels = response.panels.map((p) => ({ ...p, timestamp: now }));
-      // REPLACE panels — don't accumulate across messages
-      setPanels(newPanels);
+      // Smart merge: same type → update in place; new type → append
+      setPanels(prev => {
+        const merged = [...prev];
+        for (const np of newPanels) {
+          const idx = merged.findIndex(p => p.type === np.type);
+          if (idx >= 0) {
+            merged[idx] = np; // refresh existing tab with latest data
+          } else {
+            merged.push(np); // add brand-new tab type
+          }
+        }
+        return merged;
+      });
+      // Also remove from archive if the type is coming back
+      setArchivedPanels(prev => prev.filter(p => !newPanels.some(np => np.type === p.type)));
       setActiveTab(newPanels[0].type);
       if (isMobile) setMobileRightOpen(true);
     }
   }, [isMobile]);
 
-  // Close a single panel tab by type
+  // Close a tab → moves it to archive (still accessible)
   const handleCloseTab = useCallback((typeToClose: string) => {
     setPanels(prev => {
-      const next = prev.filter(p => p.type !== typeToClose);
-      return next;
+      const toArchive = prev.filter(p => p.type === typeToClose);
+      if (toArchive.length > 0) {
+        setArchivedPanels(arch => {
+          // Replace any same-type entry in archive with latest
+          const filtered = arch.filter(a => a.type !== typeToClose);
+          return [...toArchive, ...filtered];
+        });
+      }
+      return prev.filter(p => p.type !== typeToClose);
     });
     setActiveTab(prev => {
       if (prev !== typeToClose) return prev;
-      // Switch to next available tab
       const remaining = panels.filter(p => p.type !== typeToClose);
       return remaining[0]?.type ?? "";
     });
   }, [panels]);
+
+  // Restore a tab from archive back to active tabs
+  const handleRestoreTab = useCallback((typeToRestore: string) => {
+    setArchivedPanels(prev => {
+      const toRestore = prev.filter(p => p.type === typeToRestore);
+      if (toRestore.length > 0) {
+        setPanels(current => {
+          const merged = [...current];
+          for (const p of toRestore) {
+            const idx = merged.findIndex(m => m.type === p.type);
+            if (idx >= 0) merged[idx] = p;
+            else merged.push(p);
+          }
+          return merged;
+        });
+        setActiveTab(typeToRestore);
+      }
+      return prev.filter(p => p.type !== typeToRestore);
+    });
+  }, []);
 
   const dragLeft = useCallback((dx: number) => {
     setLeftWidth((w) => Math.min(LEFT_MAX, Math.max(LEFT_MIN, w + dx)));
@@ -211,9 +254,11 @@ export default function ChatPage() {
               <div style={{ width: rightWidth, flexShrink: 0, display: "flex", overflow: "hidden" }}>
                 <RightPanel
                   panels={panels}
+                  archivedPanels={archivedPanels}
                   activeTab={activeTab}
                   onTabChange={setActiveTab}
                   onCloseTab={handleCloseTab}
+                  onRestoreTab={handleRestoreTab}
                   persona={activeSession?.persona}
                   panelsLoading={panelsLoading}
                 />
