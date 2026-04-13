@@ -393,3 +393,14 @@ header, aside, main, nav, section, div {
   padding: 0;
   color: #a78bfa;
 }
+
+/* ─── Loading animations ─────────────────────────────────────────────────── */
+@keyframes shimmer {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+@keyframes loadingBar {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

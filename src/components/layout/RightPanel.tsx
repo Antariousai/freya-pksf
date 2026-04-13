@@ -13,9 +13,10 @@ interface RightPanelProps {
   activeTab: TabId;
   onTabChange: (tab: TabId) => void;
   persona?: string;
+  panelsLoading?: boolean;
 }
 
-export default function RightPanel({ panels, activeTab, onTabChange, persona = "assistant" }: RightPanelProps) {
+export default function RightPanel({ panels, activeTab, onTabChange, persona = "assistant", panelsLoading = false }: RightPanelProps) {
   const currentPersona = getPersona(persona);
   const hasContent = panels.length > 0;
 
@@ -53,7 +54,7 @@ export default function RightPanel({ panels, activeTab, onTabChange, persona = "
           display: "flex",
           alignItems: "center",
           padding: "0 14px",
-          borderBottom: hasContent ? "none" : "1px solid var(--glass-border)",
+          borderBottom: (hasContent || panelsLoading) ? "none" : "1px solid var(--glass-border)",
           background: "rgba(255,255,255,0.015)",
           flexShrink: 0,
           gap: "8px",
@@ -105,6 +106,11 @@ export default function RightPanel({ panels, activeTab, onTabChange, persona = "
         )}
       </div>
 
+      {/* Thin animated loading bar — shown when panels loading with existing content */}
+      {panelsLoading && hasContent && (
+        <div style={{ height: "2px", background: "linear-gradient(90deg, transparent, #a78bfa, #06b6d4, transparent)", backgroundSize: "200% 100%", animation: "loadingBar 1.5s ease-in-out infinite", flexShrink: 0 }} />
+      )}
+
       {/* Dynamic tabs */}
       {hasContent && (
         <OutputTabs
@@ -115,9 +121,47 @@ export default function RightPanel({ panels, activeTab, onTabChange, persona = "
       )}
 
       {/* Content area — flex column so cards can fill the height */}
-      <div style={{ flex: 1, overflow: "hidden", padding: "14px", display: "flex", flexDirection: "column", minHeight: 0 }}>
+      <div style={{ flex: 1, overflow: "hidden", padding: panelsLoading && !hasContent ? "0" : "14px", display: "flex", flexDirection: "column", minHeight: 0 }}>
         <AnimatePresence mode="wait">
-          {!hasContent ? (
+          {panelsLoading && !hasContent ? (
+            /* ── Loading skeleton — panels generating ── */
+            <motion.div key="loading-panels" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}>
+              {/* Skeleton tab bar */}
+              <div style={{ display: "flex", borderBottom: "1px solid var(--glass-border)", background: "var(--bg-1)", padding: "6px 8px 0", gap: "4px" }}>
+                {["Brief", "Discrepancies", "Actions"].map((label) => (
+                  <div key={label} style={{ display: "flex", alignItems: "center", gap: "5px", padding: "7px 12px", borderRadius: "8px 8px 0 0", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                    <div style={{ width: "12px", height: "12px", borderRadius: "3px", background: "rgba(255,255,255,0.08)", animation: "shimmer 1.5s ease-in-out infinite" }} />
+                    <span style={{ fontSize: "11px", fontWeight: 600, color: "var(--text-dim)" }}>{label}</span>
+                    <div style={{ width: "16px", height: "14px", borderRadius: "8px", background: "rgba(255,255,255,0.08)" }} />
+                  </div>
+                ))}
+              </div>
+              {/* Skeleton card */}
+              <div style={{ padding: "14px" }}>
+                <div style={{ background: "var(--glass-bg)", border: "1px solid var(--glass-border)", borderRadius: "12px", overflow: "hidden" }}>
+                  {/* Skeleton header */}
+                  <div style={{ padding: "10px 12px", borderBottom: "1px solid var(--glass-border)", display: "flex", alignItems: "center", gap: "10px" }}>
+                    <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: "rgba(255,255,255,0.06)" }} />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ width: "60%", height: "10px", background: "rgba(255,255,255,0.08)", borderRadius: "4px", marginBottom: "6px" }} />
+                      <div style={{ width: "30%", height: "8px", background: "rgba(255,255,255,0.05)", borderRadius: "4px" }} />
+                    </div>
+                  </div>
+                  {/* Skeleton body */}
+                  <div style={{ padding: "16px 14px", display: "flex", flexDirection: "column", gap: "10px" }}>
+                    {[80, 60, 90, 50, 70].map((w, i) => (
+                      <div key={i} style={{ height: "10px", width: `${w}%`, background: "rgba(255,255,255,0.06)", borderRadius: "4px", animation: `shimmer 1.5s ease-in-out ${i * 0.1}s infinite` }} />
+                    ))}
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "8px", marginTop: "8px" }}>
+                      {[1, 2, 3].map(i => (
+                        <div key={i} style={{ height: "60px", background: "rgba(255,255,255,0.05)", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.06)" }} />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ) : !hasContent ? (
             /* ── Empty state ── */
             <motion.div
               key="empty"

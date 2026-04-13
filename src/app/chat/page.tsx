@@ -71,6 +71,7 @@ export default function ChatPage() {
   // All output panels — dynamic, any type
   const [panels, setPanels] = useState<OutputPanel[]>([]);
   const [activeTab, setActiveTab] = useState<TabId>("");
+  const [panelsLoading, setPanelsLoading] = useState(false);
 
   // Panel widths (desktop only)
   const [leftWidth, setLeftWidth] = useState(200);
@@ -190,6 +191,7 @@ export default function ChatPage() {
                 session={activeSession}
                 onFreyaResponse={handleFreyaResponse}
                 onPersonaChange={handlePersonaChange}
+                onPanelsLoading={setPanelsLoading}
               />
               <DragHandle onDrag={dragRight} />
               <div style={{ width: rightWidth, flexShrink: 0, display: "flex", overflow: "hidden" }}>
@@ -198,6 +200,7 @@ export default function ChatPage() {
                   activeTab={activeTab}
                   onTabChange={setActiveTab}
                   persona={activeSession?.persona}
+                  panelsLoading={panelsLoading}
                 />
               </div>
             </main>
@@ -222,6 +225,7 @@ export default function ChatPage() {
                 session={activeSession}
                 onFreyaResponse={handleFreyaResponse}
                 onPersonaChange={handlePersonaChange}
+                onPanelsLoading={setPanelsLoading}
               />
             </main>
 
@@ -239,6 +243,7 @@ export default function ChatPage() {
                     activeTab={activeTab}
                     onTabChange={setActiveTab}
                     persona={activeSession?.persona}
+                    panelsLoading={panelsLoading}
                   />
                 </div>
               </>

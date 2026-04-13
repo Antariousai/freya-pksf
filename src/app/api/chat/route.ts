@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { runFreyaAgent } from "@/lib/freya-agent";
+import { runFreyaAgentAnswer } from "@/lib/freya-agent";
 import type { FileAttachment } from "@/lib/freya-agent";
 import { supabaseAdmin } from "@/lib/supabase";
 import { requireAuth } from "@/lib/auth-server";
@@ -40,7 +40,8 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const freya = await runFreyaAgent(messages, attachments, fileNames, personaId);
+    const result = await runFreyaAgentAnswer(messages, attachments, fileNames, personaId);
+    const answer = result.answer;
 
     // Persist to Supabase if sessionId provided
     if (sessionId) {
@@ -54,16 +55,12 @@ export async function POST(req: NextRequest) {
         });
       }
 
-      // Save assistant message — panels stored as JSONB
-      const panelsToSave = (freya.panels ?? []).map(({ type, label, title, html }) => ({
-        type, label, title, html,
-      }));
-
+      // Save assistant message — no panels yet (panels come from /api/panels)
       await supabaseAdmin.from("chat_messages").insert({
         session_id: sessionId,
         role: "assistant",
-        content: freya.answer,
-        output_panels: panelsToSave.length > 0 ? panelsToSave : null,
+        content: answer,
+        output_panels: null,
       });
 
       // Auto-title session from first user message (uses already-fetched title)
@@ -76,11 +73,11 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    return NextResponse.json(freya);
+    return NextResponse.json({ answer });
   } catch (error) {
     console.error("Freya API error:", error);
     return NextResponse.json(
-      { answer: "I encountered an error. Please check the API configuration and try again.", panels: [] },
+      { answer: "I encountered an error. Please check the API configuration and try again." },
       { status: 500 }
     );
   }

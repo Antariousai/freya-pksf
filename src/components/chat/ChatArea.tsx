@@ -15,6 +15,7 @@ interface ChatAreaProps {
   session: ChatSession | null;
   onFreyaResponse: (response: FreyaResponse) => void;
   onPersonaChange?: (personaId: string) => void;
+  onPanelsLoading?: (loading: boolean) => void;
 }
 
 interface PendingFile {
@@ -73,7 +74,7 @@ function dbMsgToUiMsg(m: {
   };
 }
 
-export default function ChatArea({ session, onFreyaResponse, onPersonaChange }: ChatAreaProps) {
+export default function ChatArea({ session, onFreyaResponse, onPersonaChange, onPanelsLoading }: ChatAreaProps) {
   const [messages, setMessages] = useState<MessageType[]>(() => [makeWelcomeMessage("assistant")]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -209,6 +210,7 @@ export default function ChatArea({ session, onFreyaResponse, onPersonaChange }: 
         .concat(userMessage)
         .map((m) => ({ role: m.role, content: m.content }));
 
+      // Phase 1: Get answer fast
       const res = await apiFetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -222,20 +224,43 @@ export default function ChatArea({ session, onFreyaResponse, onPersonaChange }: 
 
       if (!res.ok) throw new Error("API error");
 
-      const freya: FreyaResponse = await res.json();
+      const { answer } = await res.json() as { answer: string };
 
+      // Show answer in chat immediately
       const now = new Date();
       const botMessage: MessageType = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: freya.answer,
+        content: answer,
         timestamp: now,
-        panels: freya.panels?.map((p) => ({ ...p, timestamp: now })),
       };
-
       setMessages((prev) => [...prev, botMessage]);
-      onFreyaResponse(freya);
+      setIsLoading(false); // chat loading done — FreyaThinking disappears
+
+      // Phase 2: Generate panels in background
+      const isSubstantive = text.trim().length > 10 &&
+        !["hi", "hello", "hey", "thanks", "thank you", "ok", "okay"].some(g =>
+          text.trim().toLowerCase() === g
+        );
+
+      if (isSubstantive) {
+        onPanelsLoading?.(true);
+        try {
+          const panelsRes = await apiFetch("/api/panels", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userQuery: text.trim(), answer }),
+          });
+          if (panelsRes.ok) {
+            const { panels } = await panelsRes.json() as { panels: Array<{ type: string; label: string; title: string; html: string }> };
+            onFreyaResponse({ answer, panels });
+          }
+        } finally {
+          onPanelsLoading?.(false);
+        }
+      }
     } catch {
+      setIsLoading(false);
       setMessages((prev) => [
         ...prev,
         {
@@ -245,8 +270,6 @@ export default function ChatArea({ session, onFreyaResponse, onPersonaChange }: 
           timestamp: new Date(),
         },
       ]);
-    } finally {
-      setIsLoading(false);
     }
   };
 

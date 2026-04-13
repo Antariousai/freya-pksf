@@ -669,7 +669,7 @@ import { getSystemPrompt } from "./system-prompt";
  * focused Claude call.  This separation keeps the main agentic loop
  * simple (just prose) and lets Claude focus exclusively on HTML formatting.
  */
-async function generatePanels(
+export async function generatePanels(
   userQuery: string,
   answer: string,
   toolData: string,
@@ -1003,5 +1003,156 @@ export async function runFreyaAgent(
   return {
     answer: "I reached the maximum analysis depth. Please try a more specific question.",
     panels: [],
+  };
+}
+
+// ── Two-Phase: Answer Only ───────────────────────────────────
+
+export interface FreyaAnswerResult {
+  answer: string;
+  userQuery: string;
+  toolData: string;
+}
+
+/**
+ * Phase 1 only: runs the agentic loop and returns the answer text plus
+ * raw tool data.  Does NOT call generatePanels — panels are generated
+ * separately by the /api/panels route.
+ */
+export async function runFreyaAgentAnswer(
+  conversationHistory: AgentMessage[],
+  attachments?: FileAttachment[],
+  fileNames?: string[],
+  personaId?: string
+): Promise<FreyaAnswerResult> {
+  // Build message list for the API
+  const messages: ClaudeMessage[] = conversationHistory.slice(0, -1).map((m) => ({
+    role: m.role,
+    content: m.content,
+  }));
+
+  // Handle last user message with possible attachments
+  const lastMsg = conversationHistory[conversationHistory.length - 1];
+  if (lastMsg.role === "user") {
+    const hasAttachments = attachments && attachments.length > 0;
+
+    if (hasAttachments) {
+      const contentBlocks: ClaudeContent[] = [];
+
+      for (const att of attachments!) {
+        if (att.mediaType === "application/pdf") {
+          contentBlocks.push({
+            type: "document",
+            source: { type: "base64", media_type: "application/pdf", data: att.base64 },
+          });
+        } else if (att.mediaType.startsWith("image/")) {
+          contentBlocks.push({
+            type: "image",
+            source: {
+              type: "base64",
+              media_type: att.mediaType as "image/jpeg" | "image/png" | "image/gif" | "image/webp",
+              data: att.base64,
+            },
+          });
+        }
+      }
+
+      let text = lastMsg.content || "";
+      if (fileNames && fileNames.length > 0) {
+        text += `\n\n[Additional files referenced (content not parsed): ${fileNames.join(", ")}]`;
+      }
+
+      const hasPDF = attachments!.some((a) => a.mediaType === "application/pdf");
+      if (hasPDF && !text.trim()) {
+        text = "Please analyze this document and produce a full audit brief, identify discrepancies against PKSF standards, and provide recommendations.";
+      }
+
+      contentBlocks.push({ type: "text", text: text || "(see attached documents)" });
+      messages.push({ role: "user", content: contentBlocks });
+    } else {
+      let text = lastMsg.content;
+      if (fileNames && fileNames.length > 0) {
+        text += `\n\n[Files referenced: ${fileNames.join(", ")}]`;
+      }
+      messages.push({ role: "user", content: text });
+    }
+  }
+
+  // ── Agentic tool-use loop ──
+  let iterations = 0;
+  const MAX_ITERATIONS = 5;
+  const collectedToolData: string[] = [];
+
+  while (iterations < MAX_ITERATIONS) {
+    iterations++;
+
+    const response = await anthropic.messages.create({
+      model: "claude-sonnet-4-6",
+      max_tokens: 4096,
+      system: getSystemPrompt(personaId ?? "assistant"),
+      tools: FREYA_TOOLS,
+      messages: messages as Anthropic.MessageParam[],
+    });
+
+    if (response.stop_reason === "tool_use") {
+      const toolUseBlocks = response.content.filter(
+        (block): block is Anthropic.ToolUseBlock => block.type === "tool_use"
+      );
+
+      const toolResults = await Promise.all(
+        toolUseBlocks.map(async (toolBlock) => {
+          const result = await executeTool(
+            toolBlock.name,
+            toolBlock.input as Record<string, unknown>
+          );
+          collectedToolData.push(`[${toolBlock.name}]: ${result}`);
+          return {
+            type: "tool_result" as const,
+            tool_use_id: toolBlock.id,
+            content: result,
+          };
+        })
+      );
+
+      messages.push({ role: "assistant", content: response.content as ClaudeContent[] });
+      messages.push({ role: "user", content: toolResults });
+      continue;
+    }
+
+    // Claude is done — extract final text response
+    const textBlock = response.content.find(
+      (b): b is Anthropic.TextBlock => b.type === "text"
+    );
+
+    if (!textBlock) {
+      throw new Error("No text response from Freya agent");
+    }
+
+    let answer = textBlock.text.trim();
+    const answerMatch = answer.match(/<<ANSWER>>([\s\S]*?)<<END_ANSWER>>/i);
+    if (answerMatch) answer = answerMatch[1].trim();
+    if (answer.startsWith("{") && answer.includes('"answer"')) {
+      try {
+        const parsed = JSON.parse(answer) as { answer?: string };
+        if (parsed.answer) answer = parsed.answer;
+      } catch { /* keep raw */ }
+    }
+
+    const lastUserMsg = conversationHistory[conversationHistory.length - 1];
+    const userQuery = typeof lastUserMsg?.content === "string" ? lastUserMsg.content : "";
+
+    console.log(`[Freya] Answer-only: length=${answer.length}, tool calls=${collectedToolData.length}`);
+
+    return {
+      answer,
+      userQuery,
+      toolData: collectedToolData.join("\n\n"),
+    };
+  }
+
+  return {
+    answer: "I reached the maximum analysis depth. Please try a more specific question.",
+    userQuery: "",
+    toolData: "",
   };
 }
