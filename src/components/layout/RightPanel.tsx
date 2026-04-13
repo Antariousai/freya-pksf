@@ -114,8 +114,8 @@ export default function RightPanel({ panels, activeTab, onTabChange, persona = "
         />
       )}
 
-      {/* Content area */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "14px" }}>
+      {/* Content area — flex column so cards can fill the height */}
+      <div style={{ flex: 1, overflow: "hidden", padding: "14px", display: "flex", flexDirection: "column", minHeight: 0 }}>
         <AnimatePresence mode="wait">
           {!hasContent ? (
             /* ── Empty state ── */
@@ -129,7 +129,7 @@ export default function RightPanel({ panels, activeTab, onTabChange, persona = "
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                height: "100%",
+                flex: 1,
                 paddingTop: "32px",
                 gap: "6px",
               }}
@@ -158,14 +158,14 @@ export default function RightPanel({ panels, activeTab, onTabChange, persona = "
               </p>
             </motion.div>
           ) : (
-            /* ── Content cards ── */
+            /* ── Content cards — fill height, scroll if overflow ── */
             <motion.div
               key={effectiveTab}
               initial={{ opacity: 0, x: 18 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -12 }}
               transition={{ duration: 0.22, ease: "easeOut" }}
-              style={{ display: "flex", flexDirection: "column", gap: "0px" }}
+              style={{ flex: 1, display: "flex", flexDirection: "column", gap: "12px", minHeight: 0, overflowY: "auto" }}
             >
               {activeItems.map((item, idx) => (
                 <motion.div
@@ -173,6 +173,7 @@ export default function RightPanel({ panels, activeTab, onTabChange, persona = "
                   initial={{ opacity: 0, y: 14 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.28, delay: idx * 0.06, ease: "easeOut" }}
+                  style={{ flex: activeItems.length === 1 ? 1 : "none", display: "flex", flexDirection: "column", minHeight: 0 }}
                 >
                   <OutputCard
                     item={item}

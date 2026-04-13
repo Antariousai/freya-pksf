@@ -82,7 +82,7 @@ function ExpandModal({
         {/* Modal body */}
         <div
           className="output-content"
-          style={{ flex: 1, overflowY: "auto", padding: "20px 24px" }}
+          style={{ flex: 1, overflowY: "auto", overflowX: "hidden", padding: "20px 24px" }}
           dangerouslySetInnerHTML={{ __html: item.html }}
         />
       </div>
@@ -131,7 +131,10 @@ export default function OutputCard({ item, iconColor, iconBg, tabIcon: Icon }: O
           border: "1px solid var(--glass-border)",
           borderRadius: "12px",
           overflow: "hidden",
-          marginBottom: "12px",
+          display: "flex",
+          flexDirection: "column",
+          flex: 1,
+          minHeight: 0,
         }}
       >
         {/* Card header */}
@@ -183,10 +186,10 @@ export default function OutputCard({ item, iconColor, iconBg, tabIcon: Icon }: O
           </button>
         </div>
 
-        {/* Card body — rendered HTML */}
+        {/* Card body — fills remaining height, scrolls if content overflows */}
         <div
           className="output-content"
-          style={{ padding: "12px 14px", overflowX: "auto", maxHeight: "480px", overflowY: "auto" }}
+          style={{ flex: 1, padding: "12px 14px", overflowY: "auto", overflowX: "hidden", minHeight: 0 }}
           dangerouslySetInnerHTML={{ __html: item.html }}
         />
 
