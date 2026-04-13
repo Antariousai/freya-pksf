@@ -662,65 +662,78 @@ function getPsychometricProfiles(poId?: string) {
 
 import { getSystemPrompt } from "./system-prompt";
 
-// ── JSON Repair ─────────────────────────────────────────────
+// ── Response Parser ──────────────────────────────────────────
 /**
- * Claude embeds large HTML strings inside JSON. If the HTML contains
- * literal newline / carriage-return characters the standard JSON.parse
- * will throw (JSON spec requires \n / \r escapes inside strings).
- * This function walks the text character-by-character and escapes any
- * bare control characters found inside a JSON string value, then retries
- * the parse.
+ * Parses Freya's delimiter-based response format:
+ *
+ *   <<ANSWER>>
+ *   2-4 sentence answer
+ *   <<END_ANSWER>>
+ *   <<PANEL type="summary" label="Summary" title="Executive Brief">>
+ *   <raw html — no escaping needed>
+ *   <<END_PANEL>>
+ *
+ * This format is completely immune to JSON parsing issues because HTML
+ * is raw text between markers, not embedded inside JSON strings.
+ *
+ * Also handles legacy JSON responses as a fallback.
  */
-function tryParseFreyaJSON(raw: string): FreyaResponse | null {
-  // Fast path
-  try {
-    return JSON.parse(raw) as FreyaResponse;
-  } catch {
-    /* fall through to repair */
+function parseFreyaResponse(raw: string): FreyaResponse {
+  // ── Primary: delimiter format ──
+  const answerMatch = raw.match(/<<ANSWER>>([\s\S]*?)<<END_ANSWER>>/i);
+  const panelPattern = /<<PANEL\s+type="([^"]+)"\s+label="([^"]+)"\s+title="([^"]+)"[^>]*>>([\s\S]*?)<<END_PANEL>>/gi;
+
+  if (answerMatch) {
+    const answer = answerMatch[1].trim();
+    const panels: Array<{ type: string; label: string; title: string; html: string }> = [];
+    let m: RegExpExecArray | null;
+    while ((m = panelPattern.exec(raw)) !== null) {
+      panels.push({
+        type: m[1].trim(),
+        label: m[2].trim(),
+        title: m[3].trim(),
+        html: m[4].trim(),
+      });
+    }
+    return { answer, panels };
   }
 
-  // Repair: escape literal newlines / tabs / carriage-returns inside strings
-  let result = "";
-  let inString = false;
-  let escaped = false;
-
-  for (let i = 0; i < raw.length; i++) {
-    const ch = raw[i];
-
-    if (escaped) {
-      result += ch;
-      escaped = false;
-      continue;
+  // ── Fallback: legacy JSON format ──
+  const jsonMatch = raw.match(/\{[\s\S]*\}/);
+  if (jsonMatch) {
+    try {
+      const parsed = JSON.parse(jsonMatch[0]) as FreyaResponse;
+      if (parsed.answer) return parsed;
+    } catch {
+      // try character-level repair
+      try {
+        let fixed = "";
+        let inStr = false;
+        let esc = false;
+        for (const ch of jsonMatch[0]) {
+          if (esc) { fixed += ch; esc = false; continue; }
+          if (ch === "\\" && inStr) { fixed += ch; esc = true; continue; }
+          if (ch === '"') { inStr = !inStr; fixed += ch; continue; }
+          if (inStr && ch === "\n") { fixed += "\\n"; continue; }
+          if (inStr && ch === "\r") { fixed += "\\r"; continue; }
+          if (inStr && ch === "\t") { fixed += "\\t"; continue; }
+          fixed += ch;
+        }
+        const parsed = JSON.parse(fixed) as FreyaResponse;
+        if (parsed.answer) return parsed;
+      } catch { /* ignore */ }
     }
-
-    if (ch === "\\" && inString) {
-      result += ch;
-      escaped = true;
-      continue;
-    }
-
-    if (ch === '"') {
-      inString = !inString;
-      result += ch;
-      continue;
-    }
-
-    if (inString) {
-      if (ch === "\n") { result += "\\n"; continue; }
-      if (ch === "\r") { result += "\\r"; continue; }
-      if (ch === "\t") { result += "\\t"; continue; }
-      // Strip other bare control characters
-      if (ch.charCodeAt(0) < 32) continue;
-    }
-
-    result += ch;
   }
 
-  try {
-    return JSON.parse(result) as FreyaResponse;
-  } catch {
-    return null;
-  }
+  // ── Last resort: pull answer text from before any JSON/HTML ──
+  const firstMeaningfulLine = raw
+    .split("\n")
+    .map(l => l.trim())
+    .find(l => l.length > 15 && !l.startsWith("{") && !l.startsWith("<") && !l.startsWith("<<"));
+  return {
+    answer: firstMeaningfulLine ?? "Analysis complete — see the output panels.",
+    panels: [],
+  };
 }
 
 // ── Agentic Loop ────────────────────────────────────────────
@@ -863,23 +876,9 @@ export async function runFreyaAgent(
       throw new Error("No text response from Freya agent");
     }
 
-    // Parse JSON from Claude's response
+    // Parse Freya's response (delimiter format or legacy JSON fallback)
     const raw = textBlock.text.trim();
-    const jsonMatch = raw.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      return { answer: raw, panels: [] };
-    }
-
-    // Try direct parse first, then fall back to repair
-    const parsed = tryParseFreyaJSON(jsonMatch[0]);
-    if (parsed) return parsed;
-
-    // Last resort: extract just the answer field so user gets something readable
-    const answerMatch = raw.match(/"answer"\s*:\s*"((?:[^"\\]|\\.)*)"/);
-    return {
-      answer: answerMatch ? JSON.parse(`"${answerMatch[1]}"`) : "Analysis complete — see output panels.",
-      panels: [],
-    };
+    return parseFreyaResponse(raw);
   }
 
   return {

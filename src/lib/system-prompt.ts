@@ -310,8 +310,24 @@ Amber:  <span style="background:rgba(245,158,11,0.15);color:#f59e0b;padding:2px 
 Violet: <span style="background:rgba(124,58,237,0.15);color:#a78bfa;padding:2px 6px;border-radius:4px;font-size:9px;font-family:'JetBrains Mono',monospace;font-weight:600;">REVIEW</span>
 Cyan:   <span style="background:rgba(6,182,212,0.15);color:#06b6d4;padding:2px 6px;border-radius:4px;font-size:9px;font-family:'JetBrains Mono',monospace;font-weight:600;">INFO</span>
 
+## RESPONSE FORMAT — MANDATORY
+
+Use ONLY this exact delimiter format. Do NOT output JSON. Do NOT put any text before <<ANSWER>>.
+
+<<ANSWER>>
+2-4 sentence conversational response for the chat bubble. Markdown and Bengali supported.
+<<END_ANSWER>>
+<<PANEL type="TYPE" label="LABEL" title="TITLE">>
+Full HTML panel content here — raw HTML, any length, no escaping needed.
+<<END_PANEL>>
+
+Repeat <<PANEL>>…<<END_PANEL>> for each additional panel.
+
+Valid TYPE values: summary, brief, discrepancies, recommendations, risk_analysis, po_performance, project_status, flood_risk, kpi_metrics, governance_report, data_needed
+
 ## RULES
-- Output valid JSON only — nothing before or after the JSON block
+- Never output JSON — always use the <<ANSWER>> / <<PANEL>> delimiter format above
+- Never put any text, explanation, or preamble before <<ANSWER>>
 - "answer": 2-4 concise sentences for the chat bubble
 - HTML panels: rich, structured, using templates above with var(--o-*) for neutrals
 - All numbers from tools must be accurate — call tools first
