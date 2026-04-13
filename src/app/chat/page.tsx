@@ -81,6 +81,7 @@ export default function ChatPage() {
   // Mobile drawer state
   const [mobileLeftOpen, setMobileLeftOpen] = useState(false);
   const [mobileRightOpen, setMobileRightOpen] = useState(false);
+  const [resultsFullscreen, setResultsFullscreen] = useState(false);
 
   // Open mobile right drawer when panel generation starts
   const handlePanelsLoading = useCallback((loading: boolean) => {
@@ -289,49 +290,177 @@ export default function ChatPage() {
               />
             </main>
 
-            {/* Mobile right drawer — slides in from the right */}
+            {/* ── "Results" vertical pill — right edge, always visible when panels exist ── */}
+            {(panels.length > 0 || panelsLoading) && !mobileRightOpen && (
+              <button
+                onClick={() => { setResultsFullscreen(true); setMobileRightOpen(true); }}
+                aria-label="Open Results"
+                style={{
+                  position: "fixed",
+                  right: 0,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  zIndex: 150,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "6px",
+                  padding: "14px 7px",
+                  background: "linear-gradient(180deg, #7c3aed 0%, #06b6d4 100%)",
+                  border: "none",
+                  borderRadius: "10px 0 0 10px",
+                  cursor: "pointer",
+                  boxShadow: "-4px 0 20px rgba(124,58,237,0.4)",
+                  animation: panelsLoading ? "pulse-red 1.2s ease-in-out infinite" : "none",
+                }}
+              >
+                <BarChart2 size={14} color="#fff" strokeWidth={2.5} />
+                {/* Vertical text */}
+                <span style={{
+                  color: "#fff",
+                  fontSize: "10px",
+                  fontWeight: 800,
+                  fontFamily: "var(--font-jetbrains-mono), monospace",
+                  letterSpacing: "1.5px",
+                  writingMode: "vertical-rl",
+                  textOrientation: "mixed",
+                  transform: "rotate(180deg)",
+                  userSelect: "none",
+                }}>
+                  {panelsLoading ? "LOADING" : "RESULTS"}
+                </span>
+                {/* Panel count badge */}
+                {!panelsLoading && panels.length > 0 && (
+                  <span style={{
+                    background: "rgba(255,255,255,0.3)",
+                    color: "#fff",
+                    fontSize: "9px",
+                    fontWeight: 800,
+                    fontFamily: "var(--font-jetbrains-mono), monospace",
+                    padding: "2px 5px",
+                    borderRadius: "8px",
+                    minWidth: "18px",
+                    textAlign: "center",
+                  }}>
+                    {panels.length}
+                  </span>
+                )}
+              </button>
+            )}
+
+            {/* ── Mobile output — full-screen when opened via Results pill, drawer when via FAB ── */}
             {mobileRightOpen && (
               <>
-                {/* Backdrop */}
+                {/* Backdrop — only shown in drawer mode */}
+                {!resultsFullscreen && (
+                  <div
+                    onClick={() => { setMobileRightOpen(false); setResultsFullscreen(false); }}
+                    style={{
+                      position: "fixed", inset: 0, top: "54px",
+                      background: "rgba(0,0,0,0.55)", zIndex: 199,
+                      backdropFilter: "blur(3px)",
+                    }}
+                  />
+                )}
+
+                {/* Panel container — full-screen or drawer based on how it was opened */}
                 <div
-                  onClick={() => setMobileRightOpen(false)}
                   style={{
-                    position: "fixed", inset: 0, top: "54px",
-                    background: "rgba(0,0,0,0.55)", zIndex: 199,
-                    backdropFilter: "blur(3px)",
-                  }}
-                />
-                {/* Drawer */}
-                <div
-                  style={{
-                    position: "fixed", top: "54px", right: 0,
-                    width: "92vw", maxWidth: "420px",
-                    height: "calc(100dvh - 54px)",
+                    position: "fixed",
+                    top: resultsFullscreen ? 0 : "54px",
+                    right: 0,
+                    width: resultsFullscreen ? "100vw" : "92vw",
+                    maxWidth: resultsFullscreen ? "100vw" : "420px",
+                    height: resultsFullscreen ? "100dvh" : "calc(100dvh - 54px)",
                     zIndex: 200,
-                    display: "flex", flexDirection: "column",
+                    display: "flex",
+                    flexDirection: "column",
                     overflow: "hidden",
-                    boxShadow: "-6px 0 32px rgba(0,0,0,0.35)",
-                    borderLeft: "1px solid var(--glass-border)",
+                    boxShadow: resultsFullscreen ? "none" : "-6px 0 32px rgba(0,0,0,0.35)",
+                    borderLeft: resultsFullscreen ? "none" : "1px solid var(--glass-border)",
+                    background: "var(--bg-0)",
+                    transition: "all 0.2s ease",
                   }}
                 >
-                  {/* Drawer close bar */}
+                  {/* Header bar */}
                   <div
                     style={{
                       display: "flex", alignItems: "center", justifyContent: "space-between",
-                      padding: "0 14px", height: "36px", flexShrink: 0,
-                      background: "var(--bg-1)", borderBottom: "1px solid var(--glass-border)",
+                      padding: "0 14px",
+                      height: resultsFullscreen ? "48px" : "36px",
+                      flexShrink: 0,
+                      background: resultsFullscreen
+                        ? "linear-gradient(135deg, rgba(124,58,237,0.12), rgba(6,182,212,0.08))"
+                        : "var(--bg-1)",
+                      borderBottom: "1px solid var(--glass-border)",
                     }}
                   >
-                    <span style={{ color: "var(--text-dim)", fontSize: "10px", fontFamily: "var(--font-jetbrains-mono), monospace", fontWeight: 600, letterSpacing: "0.5px" }}>
-                      ANALYSIS OUTPUT
-                    </span>
-                    <button
-                      onClick={() => setMobileRightOpen(false)}
-                      style={{ background: "rgba(255,255,255,0.06)", border: "1px solid var(--glass-border)", borderRadius: "6px", padding: "4px 8px", cursor: "pointer", color: "var(--text-muted)", fontSize: "10px", fontWeight: 600 }}
-                    >
-                      Close ×
-                    </button>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <BarChart2 size={14} color="#a78bfa" strokeWidth={2} />
+                      <span style={{
+                        color: resultsFullscreen ? "#d0c8ff" : "var(--text-dim)",
+                        fontSize: resultsFullscreen ? "13px" : "10px",
+                        fontFamily: "var(--font-jetbrains-mono), monospace",
+                        fontWeight: 700,
+                        letterSpacing: "0.5px",
+                      }}>
+                        {resultsFullscreen ? "Analysis Results" : "ANALYSIS OUTPUT"}
+                      </span>
+                      {panels.length > 0 && (
+                        <span style={{
+                          background: "rgba(167,139,250,0.2)",
+                          color: "#a78bfa",
+                          fontSize: "9px",
+                          fontWeight: 700,
+                          fontFamily: "var(--font-jetbrains-mono), monospace",
+                          padding: "2px 7px",
+                          borderRadius: "10px",
+                        }}>
+                          {panels.length} {panels.length === 1 ? "PANEL" : "PANELS"}
+                        </span>
+                      )}
+                    </div>
+                    <div style={{ display: "flex", gap: "6px" }}>
+                      {/* Toggle fullscreen / drawer */}
+                      <button
+                        onClick={() => setResultsFullscreen(f => !f)}
+                        title={resultsFullscreen ? "Collapse" : "Full screen"}
+                        style={{
+                          background: "rgba(255,255,255,0.06)",
+                          border: "1px solid var(--glass-border)",
+                          borderRadius: "6px",
+                          padding: "4px 8px",
+                          cursor: "pointer",
+                          color: "var(--text-muted)",
+                          fontSize: "10px",
+                          fontWeight: 600,
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "4px",
+                        }}
+                      >
+                        {resultsFullscreen ? "⊡" : "⊞"}
+                      </button>
+                      {/* Close */}
+                      <button
+                        onClick={() => { setMobileRightOpen(false); setResultsFullscreen(false); }}
+                        style={{
+                          background: "rgba(255,255,255,0.06)",
+                          border: "1px solid var(--glass-border)",
+                          borderRadius: "6px",
+                          padding: "4px 8px",
+                          cursor: "pointer",
+                          color: "var(--text-muted)",
+                          fontSize: "10px",
+                          fontWeight: 600,
+                        }}
+                      >
+                        Close ×
+                      </button>
+                    </div>
                   </div>
+
                   <RightPanel
                     panels={panels}
                     archivedPanels={archivedPanels}
@@ -346,31 +475,27 @@ export default function ChatPage() {
               </>
             )}
 
-            {/* FAB — visible whenever there's content or loading, drawer is closed */}
-            {(panels.length > 0 || panelsLoading) && !mobileRightOpen && (
+            {/* FAB — shown when drawer closed AND Results pill isn't enough (during loading) */}
+            {panelsLoading && !mobileRightOpen && (
               <button
-                onClick={() => setMobileRightOpen(true)}
-                aria-label="View analysis output"
+                onClick={() => { setResultsFullscreen(false); setMobileRightOpen(true); }}
+                aria-label="View generating panels"
                 style={{
-                  position: "fixed", bottom: "80px", right: "16px", zIndex: 150,
+                  position: "fixed", bottom: "80px", right: "60px", zIndex: 150,
                   display: "flex", alignItems: "center", gap: "6px",
-                  padding: "0 16px 0 12px", height: "44px",
-                  borderRadius: "22px",
-                  background: "linear-gradient(135deg, #7c3aed, #06b6d4)",
-                  border: "none", cursor: "pointer",
-                  boxShadow: "0 4px 20px rgba(124,58,237,0.45)",
-                  animation: panelsLoading ? "pulse-red 1.2s ease-in-out infinite" : "none",
+                  padding: "0 16px 0 12px", height: "40px",
+                  borderRadius: "20px",
+                  background: "rgba(124,58,237,0.15)",
+                  border: "1px solid rgba(124,58,237,0.35)",
+                  cursor: "pointer",
+                  boxShadow: "0 4px 20px rgba(124,58,237,0.25)",
+                  animation: "pulse-red 1.2s ease-in-out infinite",
                 }}
               >
-                <BarChart2 size={16} color="#fff" strokeWidth={2} />
-                <span style={{ color: "#fff", fontSize: "11px", fontWeight: 700, fontFamily: "var(--font-jetbrains-mono), monospace" }}>
-                  {panelsLoading ? "Generating…" : `${panels.length} Panel${panels.length !== 1 ? "s" : ""}`}
+                <BarChart2 size={14} color="#a78bfa" strokeWidth={2} />
+                <span style={{ color: "#a78bfa", fontSize: "11px", fontWeight: 700, fontFamily: "var(--font-jetbrains-mono), monospace" }}>
+                  Generating…
                 </span>
-                {!panelsLoading && panels.length > 0 && (
-                  <span style={{ background: "rgba(255,255,255,0.25)", color: "#fff", fontSize: "9px", fontWeight: 700, padding: "1px 6px", borderRadius: "10px" }}>
-                    {panels.length}
-                  </span>
-                )}
               </button>
             )}
           </>
