@@ -685,10 +685,18 @@ FORMAT:
   {
     "type": "brief",
     "label": "Brief",
-    "title": "Portfolio Overview",
+    "title": "JCF Partner Organization — Recovery Crisis",
     "html": "<div style='font-family:DM Sans,sans-serif;font-size:12px;color:var(--o-text);line-height:1.5;'>...rich HTML...</div>"
+  },
+  {
+    "type": "discrepancies",
+    "label": "Discrepancies",
+    "title": "JCF Audit Findings",
+    "html": "<div style='...'>...</div>"
   }
 ]
+
+The "title" field must be a SHORT, SPECIFIC description of the actual content — e.g. "JCF Recovery Crisis", "RAISE Project Burn Rate", "Sylhet Flood Impact Q3". Never use generic titles like "Portfolio Overview" or "Analysis".
 
 IMPORTANT: Use SINGLE QUOTES for all HTML attribute values so the JSON does not need escaping.
 
@@ -760,7 +768,11 @@ ${toolData ? `Data:\n${toolData.substring(0, 2000)}` : ""}
 
 Generate these panels: ${panelList}
 
-Output ONLY the JSON array. Use single quotes in all HTML attributes. Be rich, data-driven, and use real numbers from the analysis.`;
+Rules:
+- Output ONLY the JSON array, nothing else
+- Use SINGLE QUOTES in all HTML attributes
+- "title" must be specific to this query (e.g. "JCF Recovery Crisis", "RAISE Burn Rate Alert") — never generic like "Portfolio Overview"
+- Use real numbers and facts from the analysis above — never invent data`;
 
   try {
     const resp = await anthropic.messages.create({

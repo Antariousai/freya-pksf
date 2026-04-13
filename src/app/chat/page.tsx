@@ -157,14 +157,27 @@ export default function ChatPage() {
     if (response.panels && response.panels.length > 0) {
       const now = new Date();
       const ts = now.getTime();
-      // Assign unique IDs — each response creates NEW tabs, never replacing old ones
       const newPanels = response.panels.map((p, i) => ({
         ...p,
         id: p.id ?? `${p.type}_${ts}_${i}`,
-        timestamp: p.timestamp ?? now,  // preserve original timestamp if loading history
+        timestamp: p.timestamp ?? now,
       }));
-      // Always APPEND — new query = new tabs alongside existing ones
-      setPanels(prev => [...prev, ...newPanels]);
+      // Smart merge: same type → replace in place (fresh data); new type → append
+      // This means you never get "Brief 1 / Brief 2" — just one Brief that updates
+      setPanels(prev => {
+        const merged = [...prev];
+        for (const np of newPanels) {
+          const idx = merged.findIndex(p => p.type === np.type);
+          if (idx >= 0) {
+            merged[idx] = np;   // overwrite existing tab with latest panel
+          } else {
+            merged.push(np);    // new type — add a fresh tab
+          }
+        }
+        return merged;
+      });
+      // Remove from archive any types that just came back live
+      setArchivedPanels(prev => prev.filter(p => !newPanels.some(np => np.type === p.type)));
       setActiveTab(newPanels[0].id);
       if (isMobile) setMobileRightOpen(true);
     }
