@@ -662,6 +662,67 @@ function getPsychometricProfiles(poId?: string) {
 
 import { getSystemPrompt } from "./system-prompt";
 
+// ── JSON Repair ─────────────────────────────────────────────
+/**
+ * Claude embeds large HTML strings inside JSON. If the HTML contains
+ * literal newline / carriage-return characters the standard JSON.parse
+ * will throw (JSON spec requires \n / \r escapes inside strings).
+ * This function walks the text character-by-character and escapes any
+ * bare control characters found inside a JSON string value, then retries
+ * the parse.
+ */
+function tryParseFreyaJSON(raw: string): FreyaResponse | null {
+  // Fast path
+  try {
+    return JSON.parse(raw) as FreyaResponse;
+  } catch {
+    /* fall through to repair */
+  }
+
+  // Repair: escape literal newlines / tabs / carriage-returns inside strings
+  let result = "";
+  let inString = false;
+  let escaped = false;
+
+  for (let i = 0; i < raw.length; i++) {
+    const ch = raw[i];
+
+    if (escaped) {
+      result += ch;
+      escaped = false;
+      continue;
+    }
+
+    if (ch === "\\" && inString) {
+      result += ch;
+      escaped = true;
+      continue;
+    }
+
+    if (ch === '"') {
+      inString = !inString;
+      result += ch;
+      continue;
+    }
+
+    if (inString) {
+      if (ch === "\n") { result += "\\n"; continue; }
+      if (ch === "\r") { result += "\\r"; continue; }
+      if (ch === "\t") { result += "\\t"; continue; }
+      // Strip other bare control characters
+      if (ch.charCodeAt(0) < 32) continue;
+    }
+
+    result += ch;
+  }
+
+  try {
+    return JSON.parse(result) as FreyaResponse;
+  } catch {
+    return null;
+  }
+}
+
 // ── Agentic Loop ────────────────────────────────────────────
 
 export interface AgentMessage {
@@ -809,11 +870,16 @@ export async function runFreyaAgent(
       return { answer: raw, panels: [] };
     }
 
-    try {
-      return JSON.parse(jsonMatch[0]) as FreyaResponse;
-    } catch {
-      return { answer: textBlock.text, panels: [] };
-    }
+    // Try direct parse first, then fall back to repair
+    const parsed = tryParseFreyaJSON(jsonMatch[0]);
+    if (parsed) return parsed;
+
+    // Last resort: extract just the answer field so user gets something readable
+    const answerMatch = raw.match(/"answer"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+    return {
+      answer: answerMatch ? JSON.parse(`"${answerMatch[1]}"`) : "Analysis complete — see output panels.",
+      panels: [],
+    };
   }
 
   return {

@@ -168,7 +168,11 @@ export default function Message({ message }: MessageProps) {
               }}
               className="freya-markdown"
             >
-              <ReactMarkdown>{message.content}</ReactMarkdown>
+              {/* Guard: if content is a raw JSON blob (parse error fallback), show a friendly message */}
+              {message.content.trimStart().startsWith("{") && message.content.includes('"answer"')
+                ? "Analysis complete — see the output panels on the right."
+                : <ReactMarkdown>{message.content}</ReactMarkdown>
+              }
             </div>
           )
         )}
