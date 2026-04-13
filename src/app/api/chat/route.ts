@@ -4,6 +4,9 @@ import type { FileAttachment } from "@/lib/freya-agent";
 import { supabaseAdmin } from "@/lib/supabase";
 import { requireAuth } from "@/lib/auth-server";
 
+// Allow up to 5 minutes — needed for multi-step agentic tool-use loops
+export const maxDuration = 300;
+
 export async function POST(req: NextRequest) {
   const auth = await requireAuth(req);
   if (!auth.ok) return auth.response;

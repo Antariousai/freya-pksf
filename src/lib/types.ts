@@ -10,7 +10,7 @@ export interface OutputPanel {
   label: string;   // display name shown in the tab
   title: string;   // card heading
   html: string;
-  timestamp: Date;
+  timestamp?: Date; // added client-side after API response; optional so FreyaResponse panels typecheck
 }
 
 export interface Message {
