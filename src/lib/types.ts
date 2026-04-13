@@ -78,3 +78,50 @@ export interface Project {
   status: "on-track" | "at-risk" | "closing" | "critical";
   dueIn?: string;
 }
+
+export interface DashboardMetric {
+  id: string;
+  label: string;
+  value: string;
+  change: string;
+  trend: "up" | "down" | "stable";
+}
+
+export interface DashboardDistributionItem {
+  name: string;
+  value: number;
+  count: number;
+  color: string;
+}
+
+export interface DashboardLatestItem {
+  id: string;
+  severity: "critical" | "warning" | "info";
+  title: string;
+  detail: string;
+  time: string;
+  sourceUrl: string;
+  docType: string;
+  createdAt: string;
+}
+
+export interface DashboardFeaturedItem {
+  id: string;
+  title: string;
+  source: string;
+  badgeLabel: string;
+  status: "live" | "watch" | "stable";
+  progressPct: number;
+  progressLabel: string;
+  snippet: string;
+  sourceUrl: string;
+}
+
+export interface DashboardSnapshot {
+  asOf: string;
+  subtitle: string;
+  kpis: DashboardMetric[];
+  distribution: DashboardDistributionItem[];
+  latestItems: DashboardLatestItem[];
+  featuredItems: DashboardFeaturedItem[];
+}

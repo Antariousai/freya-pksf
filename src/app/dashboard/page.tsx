@@ -1,13 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRequireAuth } from "@/lib/use-auth";
-import { TrendingUp, TrendingDown, Users, Building2, DollarSign, Activity, AlertTriangle, Info, AlertCircle } from "lucide-react";
+import { apiFetch } from "@/lib/api-client";
+import {
+  Database,
+  Files,
+  Globe,
+  FileText,
+  AlertTriangle,
+  Info,
+  AlertCircle,
+  RefreshCcw,
+} from "lucide-react";
 import TopBar from "@/components/layout/TopBar";
 import LeftPanel from "@/components/layout/LeftPanel";
 import GlassCard from "@/components/shared/GlassCard";
 import StatusBadge from "@/components/shared/StatusBadge";
-import { KPI_DATA, PROGRAM_DATA, PROJECTS, ACTIVE_ALERTS } from "@/lib/pksf-data";
+import type { DashboardMetric, DashboardSnapshot } from "@/lib/types";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
 function KPICard({
@@ -18,11 +28,7 @@ function KPICard({
   icon: Icon,
   iconColor,
   iconBg,
-}: {
-  label: string;
-  value: string;
-  change: string;
-  trend: "up" | "down" | "stable";
+}: DashboardMetric & {
   icon: React.ElementType;
   iconColor: string;
   iconBg: string;
@@ -44,23 +50,16 @@ function KPICard({
           >
             <Icon size={18} color={iconColor} strokeWidth={2} />
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-            {trend === "up" ? (
-              <TrendingUp size={12} color="#10b981" strokeWidth={2} />
-            ) : trend === "down" ? (
-              <TrendingDown size={12} color="#ef4444" strokeWidth={2} />
-            ) : null}
-            <span
-              style={{
-                color: trend === "up" ? "#10b981" : trend === "down" ? "#ef4444" : "#6a6a90",
-                fontSize: "12px",
-                fontFamily: "var(--font-jetbrains-mono), monospace",
-                fontWeight: 600,
-              }}
-            >
-              {change}
-            </span>
-          </div>
+          <span
+            style={{
+              color: trend === "up" ? "#10b981" : trend === "down" ? "#ef4444" : "#6a6a90",
+              fontSize: "12px",
+              fontFamily: "var(--font-jetbrains-mono), monospace",
+              fontWeight: 600,
+            }}
+          >
+            {change}
+          </span>
         </div>
         <div
           style={{
@@ -78,7 +77,44 @@ function KPICard({
   );
 }
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+const KPI_ICON_CONFIG: Record<
+  string,
+  { icon: React.ElementType; iconColor: string; iconBg: string }
+> = {
+  "knowledge-chunks": {
+    icon: Database,
+    iconColor: "#a78bfa",
+    iconBg: "rgba(124,58,237,0.12)",
+  },
+  "unique-titles": {
+    icon: Files,
+    iconColor: "#10b981",
+    iconBg: "rgba(16,185,129,0.12)",
+  },
+  "web-items": {
+    icon: Globe,
+    iconColor: "#06b6d4",
+    iconBg: "rgba(6,182,212,0.12)",
+  },
+  "pdf-items": {
+    icon: FileText,
+    iconColor: "#f59e0b",
+    iconBg: "rgba(245,158,11,0.12)",
+  },
+};
+
+const PLACEHOLDER_KPIS: DashboardMetric[] = [
+  { id: "knowledge-chunks", label: "Total Knowledge Chunks", value: "--", change: "Loading", trend: "stable" },
+  { id: "unique-titles", label: "Unique Document/Page Titles", value: "--", change: "Loading", trend: "stable" },
+  { id: "web-items", label: "Webpage Items", value: "--", change: "Loading", trend: "stable" },
+  { id: "pdf-items", label: "PDF Items", value: "--", change: "Loading", trend: "stable" },
+];
+
+const CustomTooltip = ({ active, payload, label }: {
+  active?: boolean;
+  payload?: Array<{ value: number; payload: { count: number } }>;
+  label?: string;
+}) => {
   if (active && payload && payload.length) {
     return (
       <div
@@ -91,17 +127,127 @@ const CustomTooltip = ({ active, payload, label }: any) => {
         }}
       >
         <p style={{ color: "#a0a0c0", marginBottom: "4px" }}>{label}</p>
-        <p style={{ color: "#a78bfa", fontWeight: 600 }}>{payload[0].value}%</p>
+        <p style={{ color: "#a78bfa", fontWeight: 600, marginBottom: "2px" }}>{payload[0].value}%</p>
+        <p style={{ color: "var(--text-dim)", fontSize: "11px" }}>{payload[0].payload.count} documents</p>
       </div>
     );
   }
   return null;
 };
 
+function DashboardLoader({ message }: { message: string }) {
+  return (
+    <div
+      style={{
+        minHeight: "100dvh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "var(--bg-0)",
+        padding: "24px",
+      }}
+    >
+      <GlassCard>
+        <div
+          style={{
+            width: "min(560px, calc(100vw - 48px))",
+            padding: "24px",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
+            <div
+              style={{
+                width: "12px",
+                height: "12px",
+                borderRadius: "999px",
+                background: "#06b6d4",
+                boxShadow: "0 0 14px rgba(6,182,212,0.45)",
+                animation: "pulse-green 1.2s ease-in-out infinite",
+              }}
+            />
+            <span
+              style={{
+                color: "var(--text-primary)",
+                fontSize: "13px",
+                fontWeight: 700,
+              }}
+            >
+              Loading Dashboard
+            </span>
+          </div>
+
+          <p style={{ color: "var(--text-muted)", fontSize: "13px", marginBottom: "16px" }}>{message}</p>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+              gap: "10px",
+              marginBottom: "12px",
+            }}
+          >
+            {[0, 1, 2, 3].map((item) => (
+              <div
+                key={item}
+                style={{
+                  height: "74px",
+                  borderRadius: "12px",
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                }}
+              />
+            ))}
+          </div>
+
+          <div
+            style={{
+              height: "120px",
+              borderRadius: "12px",
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(255,255,255,0.05)",
+            }}
+          />
+        </div>
+      </GlassCard>
+    </div>
+  );
+}
+
 export default function DashboardPage() {
   const { checked, authed } = useRequireAuth();
   const [mobileLeftOpen, setMobileLeftOpen] = useState(false);
-  if (!checked || !authed) return null;
+  const [dashboard, setDashboard] = useState<DashboardSnapshot | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const loadDashboard = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await apiFetch("/api/dashboard");
+      if (!res.ok) throw new Error("Failed to fetch dashboard data");
+      const data = await res.json() as DashboardSnapshot;
+      setDashboard(data);
+    } catch (err) {
+      console.error("Dashboard load failed", err);
+      setError("Dashboard data could not be loaded from pksf_knowledge.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!checked || !authed) return;
+    void loadDashboard();
+  }, [checked, authed, loadDashboard]);
+
+  if (!checked) {
+    return <DashboardLoader message="Checking your session before loading the live PKSF knowledge index." />;
+  }
+
+  if (!authed) return null;
+
   const alertIcons: Record<string, React.ElementType> = {
     critical: AlertCircle,
     warning: AlertTriangle,
@@ -113,6 +259,11 @@ export default function DashboardPage() {
     warning: "#f59e0b",
     info: "#3b82f6",
   };
+
+  const kpis = dashboard?.kpis ?? PLACEHOLDER_KPIS;
+  const distribution = dashboard?.distribution ?? [];
+  const latestItems = dashboard?.latestItems ?? [];
+  const featuredItems = dashboard?.featuredItems ?? [];
 
   return (
     <div
@@ -128,7 +279,34 @@ export default function DashboardPage() {
       <div style={{ flex: 1, display: "flex", overflow: "hidden" }}>
         <LeftPanel mobileOpen={mobileLeftOpen} onMobileClose={() => setMobileLeftOpen(false)} />
         <main style={{ flex: 1, overflowY: "auto", padding: "16px" }}>
-          {/* Header */}
+          {loading && !dashboard && !error && (
+            <GlassCard className="mb-4">
+              <div
+                style={{
+                  padding: "12px 14px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                }}
+              >
+                <div
+                  style={{
+                    width: "8px",
+                    height: "8px",
+                    borderRadius: "999px",
+                    background: "#06b6d4",
+                    boxShadow: "0 0 12px rgba(6,182,212,0.35)",
+                    animation: "pulse-green 1.2s ease-in-out infinite",
+                    flexShrink: 0,
+                  }}
+                />
+                <p style={{ color: "var(--text-muted)", fontSize: "12px" }}>
+                  Fetching live dashboard content from `pksf_knowledge`...
+                </p>
+              </div>
+            </GlassCard>
+          )}
+
           <div style={{ marginBottom: "20px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "4px" }}>
               <span
@@ -148,11 +326,49 @@ export default function DashboardPage() {
               PKSF Intelligence Dashboard
             </h1>
             <p style={{ color: "var(--text-muted)", fontSize: "14px", marginTop: "2px" }}>
-              FY 2024-25 — Real-time portfolio intelligence | Updated June 2025
+              {dashboard?.subtitle ?? "Loading real knowledge content from pksf_knowledge..."}
             </p>
           </div>
 
-          {/* KPI row */}
+          {error && (
+            <GlassCard className="mb-4">
+              <div
+                style={{
+                  padding: "12px 14px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: "12px",
+                }}
+              >
+                <div>
+                  <p style={{ color: "#ef4444", fontSize: "13px", fontWeight: 700, marginBottom: "2px" }}>
+                    Dashboard Load Error
+                  </p>
+                  <p style={{ color: "var(--text-muted)", fontSize: "12px" }}>{error}</p>
+                </div>
+                <button
+                  onClick={() => void loadDashboard()}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    borderRadius: "8px",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    background: "rgba(255,255,255,0.03)",
+                    color: "var(--text-secondary)",
+                    padding: "8px 10px",
+                    cursor: "pointer",
+                    flexShrink: 0,
+                  }}
+                >
+                  <RefreshCcw size={13} />
+                  Retry
+                </button>
+              </div>
+            </GlassCard>
+          )}
+
           <div
             style={{
               display: "grid",
@@ -161,33 +377,20 @@ export default function DashboardPage() {
               marginBottom: "20px",
             }}
           >
-            <KPICard
-              {...KPI_DATA.disbursement}
-              icon={DollarSign}
-              iconColor="#a78bfa"
-              iconBg="rgba(124,58,237,0.12)"
-            />
-            <KPICard
-              {...KPI_DATA.recovery}
-              icon={Activity}
-              iconColor="#10b981"
-              iconBg="rgba(16,185,129,0.12)"
-            />
-            <KPICard
-              {...KPI_DATA.pos}
-              icon={Building2}
-              iconColor="#06b6d4"
-              iconBg="rgba(6,182,212,0.12)"
-            />
-            <KPICard
-              {...KPI_DATA.members}
-              icon={Users}
-              iconColor="#f59e0b"
-              iconBg="rgba(245,158,11,0.12)"
-            />
+            {kpis.map((metric) => {
+              const iconConfig = KPI_ICON_CONFIG[metric.id] ?? KPI_ICON_CONFIG["knowledge-chunks"];
+              return (
+                <KPICard
+                  key={metric.id}
+                  {...metric}
+                  icon={iconConfig.icon}
+                  iconColor={iconConfig.iconColor}
+                  iconBg={iconConfig.iconBg}
+                />
+              );
+            })}
           </div>
 
-          {/* Two column layout */}
           <div
             style={{
               display: "grid",
@@ -196,19 +399,18 @@ export default function DashboardPage() {
               marginBottom: "20px",
             }}
           >
-            {/* Bar chart */}
             <GlassCard>
               <div style={{ padding: "16px 16px 8px" }}>
                 <div style={{ marginBottom: "14px" }}>
                   <h3 style={{ color: "var(--text-primary)", fontSize: "13px", fontWeight: 600, marginBottom: "2px" }}>
-                    Portfolio by Program
+                    Knowledge Base Distribution
                   </h3>
                   <p style={{ color: "var(--text-muted)", fontSize: "13px" }}>
-                    Disbursement share by program area
+                    Unique document share by PKSF source group
                   </p>
                 </div>
                 <ResponsiveContainer width="100%" height={200}>
-                  <BarChart data={PROGRAM_DATA} barCategoryGap="35%">
+                  <BarChart data={distribution} barCategoryGap="35%">
                     <XAxis
                       dataKey="name"
                       tick={{ fill: "#6a6a90", fontSize: 10, fontFamily: "JetBrains Mono" }}
@@ -219,20 +421,24 @@ export default function DashboardPage() {
                       tick={{ fill: "#6a6a90", fontSize: 10 }}
                       axisLine={false}
                       tickLine={false}
-                      tickFormatter={(v) => `${v}%`}
+                      tickFormatter={(value) => `${value}%`}
                     />
                     <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(255,255,255,0.03)" }} />
                     <Bar dataKey="value" radius={[4, 4, 0, 0]}>
-                      {PROGRAM_DATA.map((entry, i) => (
-                        <Cell key={i} fill={entry.color} fillOpacity={0.85} />
+                      {distribution.map((entry, index) => (
+                        <Cell key={`${entry.name}-${index}`} fill={entry.color} fillOpacity={0.85} />
                       ))}
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
+                {!loading && distribution.length === 0 && (
+                  <p style={{ color: "var(--text-dim)", fontSize: "12px", marginTop: "10px" }}>
+                    No distribution data available.
+                  </p>
+                )}
               </div>
             </GlassCard>
 
-            {/* Alerts */}
             <GlassCard>
               <div style={{ padding: "14px" }}>
                 <h3
@@ -243,58 +449,86 @@ export default function DashboardPage() {
                     marginBottom: "12px",
                   }}
                 >
-                  Active Alerts
+                  Latest Ingested Items
                 </h3>
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                  {ACTIVE_ALERTS.map((alert) => {
-                    const IconComp = alertIcons[alert.severity];
-                    const color = alertColors[alert.severity];
-                    return (
-                      <div
-                        key={alert.id}
-                        style={{
-                          display: "flex",
-                          gap: "8px",
-                          padding: "8px",
-                          borderRadius: "8px",
-                          background: `${color}08`,
-                          border: `1px solid ${color}18`,
-                        }}
-                      >
-                        <IconComp size={13} color={color} strokeWidth={2} style={{ marginTop: "1px", flexShrink: 0 }} />
-                        <div style={{ minWidth: 0 }}>
-                          <p
-                            style={{
-                              color: "var(--text-secondary)",
-                              fontSize: "13px",
-                              fontWeight: 600,
-                              marginBottom: "2px",
-                            }}
-                          >
-                            {alert.title}
-                          </p>
-                          <p style={{ color: "var(--text-muted)", fontSize: "12px", lineHeight: 1.4 }}>
-                            {alert.detail}
-                          </p>
-                          <span
-                            style={{
-                              color: "var(--text-dim)",
-                              fontSize: "9px",
-                              fontFamily: "var(--font-jetbrains-mono), monospace",
-                            }}
-                          >
-                            {alert.time}
-                          </span>
+                  {loading && latestItems.length === 0 ? (
+                    <div
+                      style={{
+                        padding: "10px",
+                        borderRadius: "8px",
+                        background: "rgba(255,255,255,0.03)",
+                        border: "1px solid rgba(255,255,255,0.05)",
+                        color: "var(--text-dim)",
+                        fontSize: "12px",
+                      }}
+                    >
+                      Loading latest items from the knowledge table...
+                    </div>
+                  ) : latestItems.length === 0 ? (
+                    <div
+                      style={{
+                        padding: "10px",
+                        borderRadius: "8px",
+                        background: "rgba(255,255,255,0.03)",
+                        border: "1px solid rgba(255,255,255,0.05)",
+                        color: "var(--text-dim)",
+                        fontSize: "12px",
+                      }}
+                    >
+                      No items available yet.
+                    </div>
+                  ) : (
+                    latestItems.map((item) => {
+                      const IconComp = alertIcons[item.severity];
+                      const color = alertColors[item.severity];
+
+                      return (
+                        <div
+                          key={item.id}
+                          style={{
+                            display: "flex",
+                            gap: "8px",
+                            padding: "8px",
+                            borderRadius: "8px",
+                            background: `${color}08`,
+                            border: `1px solid ${color}18`,
+                          }}
+                        >
+                          <IconComp size={13} color={color} strokeWidth={2} style={{ marginTop: "1px", flexShrink: 0 }} />
+                          <div style={{ minWidth: 0 }}>
+                            <p
+                              style={{
+                                color: "var(--text-secondary)",
+                                fontSize: "13px",
+                                fontWeight: 600,
+                                marginBottom: "2px",
+                              }}
+                            >
+                              {item.title}
+                            </p>
+                            <p style={{ color: "var(--text-muted)", fontSize: "12px", lineHeight: 1.4 }}>
+                              {item.detail}
+                            </p>
+                            <span
+                              style={{
+                                color: "var(--text-dim)",
+                                fontSize: "9px",
+                                fontFamily: "var(--font-jetbrains-mono), monospace",
+                              }}
+                            >
+                              {item.time}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })
+                  )}
                 </div>
               </div>
             </GlassCard>
           </div>
 
-          {/* Project health */}
           <GlassCard>
             <div style={{ padding: "16px" }}>
               <h3
@@ -305,7 +539,7 @@ export default function DashboardPage() {
                   marginBottom: "14px",
                 }}
               >
-                Development Project Health
+                Featured Knowledge Items
               </h3>
               <div
                 style={{
@@ -314,83 +548,100 @@ export default function DashboardPage() {
                   gap: "10px",
                 }}
               >
-                {PROJECTS.map((proj) => (
+                {loading && featuredItems.length === 0 ? (
                   <div
-                    key={proj.id}
                     style={{
+                      gridColumn: "1 / -1",
                       padding: "12px",
                       borderRadius: "10px",
                       background: "rgba(255,255,255,0.02)",
                       border: "1px solid rgba(255,255,255,0.05)",
+                      color: "var(--text-dim)",
+                      fontSize: "12px",
                     }}
                   >
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px" }}>
-                      <div>
-                        <p style={{ color: "var(--text-primary)", fontSize: "14px", fontWeight: 700 }}>
-                          {proj.name}
-                        </p>
-                        <p style={{ color: "var(--text-dim)", fontSize: "9px", fontFamily: "var(--font-jetbrains-mono), monospace" }}>
-                          {proj.funder}
-                        </p>
+                    Loading featured items from `pksf_knowledge`...
+                  </div>
+                ) : featuredItems.length === 0 ? (
+                  <div
+                    style={{
+                      gridColumn: "1 / -1",
+                      padding: "12px",
+                      borderRadius: "10px",
+                      background: "rgba(255,255,255,0.02)",
+                      border: "1px solid rgba(255,255,255,0.05)",
+                      color: "var(--text-dim)",
+                      fontSize: "12px",
+                    }}
+                  >
+                    No featured documents found in the current knowledge index.
+                  </div>
+                ) : (
+                  featuredItems.map((item) => (
+                    <div
+                      key={item.id}
+                      style={{
+                        padding: "12px",
+                        borderRadius: "10px",
+                        background: "rgba(255,255,255,0.02)",
+                        border: "1px solid rgba(255,255,255,0.05)",
+                      }}
+                    >
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px", gap: "8px" }}>
+                        <div style={{ minWidth: 0 }}>
+                          <p style={{ color: "var(--text-primary)", fontSize: "14px", fontWeight: 700, lineHeight: 1.35 }}>
+                            {item.title}
+                          </p>
+                          <p style={{ color: "var(--text-dim)", fontSize: "9px", fontFamily: "var(--font-jetbrains-mono), monospace" }}>
+                            {item.source}
+                          </p>
+                        </div>
+                        <StatusBadge status={item.status} label={item.badgeLabel} />
                       </div>
-                      <StatusBadge status={proj.status} />
-                    </div>
-                    <p style={{ color: "#a78bfa", fontSize: "14px", fontWeight: 700, marginBottom: "6px" }}>
-                      {proj.amount}
-                    </p>
-                    {/* Burn rate bar */}
-                    <div style={{ marginBottom: "4px" }}>
-                      <div
-                        style={{
-                          height: "4px",
-                          borderRadius: "2px",
-                          background: "rgba(255,255,255,0.06)",
-                          overflow: "hidden",
-                        }}
-                      >
+
+                      <p style={{ color: "#a78bfa", fontSize: "13px", fontWeight: 700, marginBottom: "6px" }}>
+                        {item.progressLabel}
+                      </p>
+
+                      <div style={{ marginBottom: "4px" }}>
                         <div
                           style={{
-                            height: "100%",
-                            width: `${proj.burnRate}%`,
+                            height: "4px",
                             borderRadius: "2px",
-                            background:
-                              proj.burnRate > 85
-                                ? "#10b981"
-                                : proj.burnRate > 60
-                                ? "#06b6d4"
-                                : proj.burnRate > 40
-                                ? "#f59e0b"
-                                : "#ef4444",
+                            background: "rgba(255,255,255,0.06)",
+                            overflow: "hidden",
                           }}
-                        />
+                        >
+                          <div
+                            style={{
+                              height: "100%",
+                              width: `${item.progressPct}%`,
+                              borderRadius: "2px",
+                              background: item.progressPct >= 100 ? "#10b981" : item.progressPct >= 70 ? "#06b6d4" : "#f59e0b",
+                            }}
+                          />
+                        </div>
                       </div>
-                    </div>
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
-                      <span style={{ color: "var(--text-dim)", fontSize: "9px" }}>Burn rate</span>
-                      <span
-                        style={{
-                          color: "var(--text-muted)",
-                          fontSize: "9px",
-                          fontFamily: "var(--font-jetbrains-mono), monospace",
-                        }}
-                      >
-                        {proj.burnRate}%
-                      </span>
-                    </div>
-                    {proj.dueIn && (
-                      <p
-                        style={{
-                          color: "#f59e0b",
-                          fontSize: "9px",
-                          fontFamily: "var(--font-jetbrains-mono), monospace",
-                          marginTop: "4px",
-                        }}
-                      >
-                        {proj.dueIn}
+
+                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
+                        <span style={{ color: "var(--text-dim)", fontSize: "9px" }}>Index coverage</span>
+                        <span
+                          style={{
+                            color: "var(--text-muted)",
+                            fontSize: "9px",
+                            fontFamily: "var(--font-jetbrains-mono), monospace",
+                          }}
+                        >
+                          {item.progressPct}%
+                        </span>
+                      </div>
+
+                      <p style={{ color: "var(--text-muted)", fontSize: "12px", lineHeight: 1.5 }}>
+                        {item.snippet}
                       </p>
-                    )}
-                  </div>
-                ))}
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </GlassCard>
