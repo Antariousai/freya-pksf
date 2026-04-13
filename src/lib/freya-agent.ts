@@ -674,97 +674,68 @@ export async function generatePanels(
   answer: string,
   toolData: string,
 ): Promise<Array<{ type: string; label: string; title: string; html: string }>> {
+
+  // Use single quotes inside HTML so no JSON escaping is needed in the html field
   const PANEL_SYSTEM = `You are an HTML panel generator for the Freya PKSF financial intelligence dashboard.
 
-Output ONLY <<PANEL>> blocks — absolutely no text, explanation, or prose before or after them.
+Output ONLY a valid JSON array — no markdown fences, no explanation, no text before or after.
 
-FORMAT (use exactly):
-<<PANEL type="TYPE" label="LABEL" title="TITLE">>
-<div style="font-family:'DM Sans','Segoe UI',sans-serif;font-size:12px;color:var(--o-text);line-height:1.5;">
-  [rich HTML content]
-</div>
-<<END_PANEL>>
+FORMAT:
+[
+  {
+    "type": "brief",
+    "label": "Brief",
+    "title": "Portfolio Overview",
+    "html": "<div style='font-family:DM Sans,sans-serif;font-size:12px;color:var(--o-text);line-height:1.5;'>...rich HTML...</div>"
+  }
+]
 
-CSS VARIABLES for neutral colors (mandatory — do NOT use hardcoded greys):
-  var(--o-text)          body text
-  var(--o-label)         dim labels, column headers
-  var(--o-title)         card/row titles
-  var(--o-mono)          monospace numbers
-  var(--o-surface)       card background
-  var(--o-border)        card border
-  var(--o-border-subtle) row dividers
-  var(--o-progress-track) progress bar track
+IMPORTANT: Use SINGLE QUOTES for all HTML attribute values so the JSON does not need escaping.
 
-Accent colours (hardcode these — they work in both themes):
-  #10b981  green / positive
-  #ef4444  red / critical
-  #f59e0b  amber / warning
-  #a78bfa  violet / accent
-  #06b6d4  cyan / info
+Panel types and labels:
+  brief          → "Brief"          executive KPI overview
+  discrepancies  → "Discrepancies"  problems / audit findings
+  recommendations→ "Actions"        recommended next steps
+  risk_analysis  → "Risk Analysis"  risk assessment
+  po_analysis    → "PO Analysis"    partner org deep-dive
+  project_status → "Project Status" project health
+  flood_impact   → "Flood Impact"   disaster risk
+  data_needed    → "Data Needed"    missing data list
 
-PANEL TYPES:
-  brief            → label "Brief"           executive KPI overview
-  discrepancies    → label "Discrepancies"   problems / audit findings
-  recommendations  → label "Actions"         recommended next steps
-  risk_analysis    → label "Risk Analysis"   risk assessment
-  po_analysis      → label "PO Analysis"     partner org deep-dive
-  project_status   → label "Project Status"  project health
-  flood_impact     → label "Flood Impact"    disaster risk
-  data_needed      → label "Data Needed"     lists what is missing
+CSS variables (mandatory — no hardcoded greys):
+  var(--o-text)           body text
+  var(--o-label)          dim labels / column headers
+  var(--o-title)          card / row titles
+  var(--o-mono)           monospace numbers
+  var(--o-surface)        card background
+  var(--o-border)         card border
+  var(--o-border-subtle)  row dividers
+  var(--o-progress-track) progress track
 
-RICH COMPONENTS (use these in your HTML):
+Accent colors (hardcode — work in both themes):
+  #10b981=green  #ef4444=red  #f59e0b=amber  #a78bfa=violet  #06b6d4=cyan
 
-KPI Grid (2-4 cols):
-<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;">
-  <div style="background:var(--o-surface);border:1px solid var(--o-border);border-radius:8px;padding:10px;">
-    <p style="color:var(--o-label);font-size:9px;text-transform:uppercase;letter-spacing:0.5px;margin:0 0 4px;">METRIC</p>
-    <p style="color:#10b981;font-size:18px;font-weight:700;font-family:'JetBrains Mono',monospace;margin:0 0 2px;">VALUE</p>
-    <p style="color:var(--o-label);font-size:9px;margin:0;">CONTEXT</p>
-  </div>
-</div>
+HTML COMPONENTS (use single quotes for attributes):
+
+KPI Grid:
+<div style='display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;'><div style='background:var(--o-surface);border:1px solid var(--o-border);border-radius:8px;padding:10px;'><p style='color:var(--o-label);font-size:9px;text-transform:uppercase;letter-spacing:0.5px;margin:0 0 4px;'>METRIC</p><p style='color:#10b981;font-size:18px;font-weight:700;font-family:monospace;margin:0 0 2px;'>VALUE</p><p style='color:var(--o-label);font-size:9px;margin:0;'>CONTEXT</p></div></div>
 
 Section heading:
-<p style="color:#a78bfa;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin:14px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--o-border);">SECTION</p>
+<p style='color:#a78bfa;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin:14px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--o-border);'>SECTION</p>
 
 Finding card (critical):
-<div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:8px;padding:10px 12px;margin-bottom:10px;">
-  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
-    <p style="color:#f87171;font-size:12px;font-weight:600;margin:0;">TITLE</p>
-    <span style="background:rgba(239,68,68,0.15);color:#ef4444;padding:2px 7px;border-radius:4px;font-size:9px;font-weight:700;">CRITICAL</span>
-  </div>
-  <p style="color:var(--o-text);font-size:11px;margin:0;line-height:1.6;">Detail...</p>
-</div>
+<div style='background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:8px;padding:10px 12px;margin-bottom:8px;'><div style='display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;'><p style='color:#f87171;font-size:12px;font-weight:600;margin:0;'>TITLE</p><span style='background:rgba(239,68,68,0.15);color:#ef4444;padding:2px 7px;border-radius:4px;font-size:9px;font-weight:700;'>CRITICAL</span></div><p style='color:var(--o-text);font-size:11px;margin:0;line-height:1.6;'>DETAIL</p></div>
 
-Action card (immediate):
-<div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:8px;padding:10px 12px;margin-bottom:10px;">
-  <p style="color:#34d399;font-size:12px;font-weight:600;margin:0 0 4px;">ACTION</p>
-  <p style="color:var(--o-text);font-size:11px;margin:0;line-height:1.6;">Detail...</p>
-</div>
+Action card:
+<div style='background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:8px;padding:10px 12px;margin-bottom:8px;'><p style='color:#34d399;font-size:12px;font-weight:600;margin:0 0 4px;'>ACTION</p><p style='color:var(--o-text);font-size:11px;margin:0;line-height:1.6;'>DETAIL</p></div>
 
-Data table:
-<table style="width:100%;border-collapse:collapse;margin-bottom:14px;">
-  <thead><tr>
-    <th style="padding:7px 10px;text-align:left;color:var(--o-label);border-bottom:1px solid var(--o-border);font-size:9px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;">COL</th>
-  </tr></thead>
-  <tbody><tr>
-    <td style="padding:7px 10px;color:var(--o-text);border-bottom:1px solid var(--o-border-subtle);font-size:11px;">VALUE</td>
-  </tr></tbody>
-</table>
+Table:
+<table style='width:100%;border-collapse:collapse;margin-bottom:12px;'><thead><tr><th style='padding:6px 8px;text-align:left;color:var(--o-label);border-bottom:1px solid var(--o-border);font-size:9px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;'>COL</th></tr></thead><tbody><tr><td style='padding:6px 8px;color:var(--o-text);border-bottom:1px solid var(--o-border-subtle);font-size:11px;'>VALUE</td></tr></tbody></table>
 
 Progress bar:
-<div style="margin-bottom:8px;">
-  <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
-    <span style="color:var(--o-text);font-size:11px;">LABEL</span>
-    <span style="color:#10b981;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;">VALUE%</span>
-  </div>
-  <div style="height:5px;background:var(--o-progress-track);border-radius:3px;">
-    <div style="height:100%;width:VALUE%;background:#10b981;border-radius:3px;"></div>
-  </div>
-</div>`;
+<div style='margin-bottom:8px;'><div style='display:flex;justify-content:space-between;margin-bottom:3px;'><span style='color:var(--o-text);font-size:11px;'>LABEL</span><span style='color:#10b981;font-family:monospace;font-size:11px;font-weight:600;'>VALUE%</span></div><div style='height:5px;background:var(--o-progress-track);border-radius:3px;'><div style='height:100%;width:VALUE%;background:#10b981;border-radius:3px;'></div></div></div>`;
 
   const q = userQuery.toLowerCase();
-  // Determine which panels to generate
-  const wantsBrief = true; // always include a brief
   const wantsDiscrepancies = q.includes("discrepanc") || q.includes("audit") || q.includes("risk") || q.includes("problem") || q.includes("issue") || q.includes("finding");
   const wantsRecommendations = q.includes("recommend") || q.includes("solution") || q.includes("action") || q.includes("what should") || q.includes("discrepanc") || q.includes("audit");
   const wantsRisk = q.includes("risk") && !wantsDiscrepancies;
@@ -772,40 +743,63 @@ Progress bar:
   const wantsProject = q.includes("project") || q.includes("raise") || q.includes("smart") || q.includes("rmtp");
 
   const panelList = [
-    wantsBrief && "brief (executive summary / KPI overview)",
+    "brief (executive summary with key metrics)",
     wantsDiscrepancies && "discrepancies (problems, audit findings, anomalies)",
-    wantsRecommendations && "recommendations (actions to resolve each finding)",
+    wantsRecommendations && "recommendations (action steps to resolve findings)",
     wantsRisk && "risk_analysis (risk assessment)",
     wantsPO && "po_analysis (partner org details)",
     wantsProject && "project_status (project health)",
-  ].filter(Boolean).join("\n- ");
+  ].filter(Boolean).join(", ");
 
-  const userPrompt =
-    `User query: "${userQuery}"
+  const userPrompt = `User query: "${userQuery}"
 
 Freya's analysis:
-${answer}
+${answer.substring(0, 3000)}
 
-${toolData ? `Raw data from tools:\n${toolData.substring(0, 4000)}` : ""}
+${toolData ? `Data:\n${toolData.substring(0, 2000)}` : ""}
 
-Generate these panels (one <<PANEL>> block each):
-- ${panelList}
+Generate these panels: ${panelList}
 
-Make each panel rich, detailed, and visually structured using the component templates. Use ALL actual figures from the analysis above — do not invent numbers.`;
+Output ONLY the JSON array. Use single quotes in all HTML attributes. Be rich, data-driven, and use real numbers from the analysis.`;
 
   try {
     const resp = await anthropic.messages.create({
       model: "claude-sonnet-4-6",
-      max_tokens: 8000,
+      max_tokens: 4096,
       system: PANEL_SYSTEM,
       messages: [{ role: "user", content: userPrompt }],
     });
 
     const raw = resp.content.find((b): b is Anthropic.TextBlock => b.type === "text")?.text ?? "";
-    console.log("[Freya panels] raw prefix:", raw.substring(0, 200));
+    console.log("[Freya panels] raw length:", raw.length, "prefix:", raw.substring(0, 150));
 
-    const panels: Array<{ type: string; label: string; title: string; html: string }> = [];
-    const pat = /<<PANEL([^>]*)>>([\s\S]*?)<<END_PANEL>>/gi;
+    // Strategy 1: Parse as JSON array (primary)
+    try {
+      // Strip code fences if present, then extract the JSON array
+      const stripped = raw
+        .replace(/^```(?:json)?\s*/i, "")
+        .replace(/\s*```\s*$/i, "")
+        .trim();
+      const jsonStr = stripped.startsWith("[")
+        ? stripped
+        : (stripped.match(/\[[\s\S]*\]/)?.[0] ?? "");
+      if (jsonStr) {
+        const parsed = JSON.parse(jsonStr) as Array<{ type: string; label: string; title: string; html: string }>;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const valid = parsed.filter(p => p.type && p.html);
+          if (valid.length > 0) {
+            console.log(`[Freya panels] JSON: ${valid.length} panels`);
+            return valid;
+          }
+        }
+      }
+    } catch (jsonErr) {
+      console.log("[Freya panels] JSON parse failed:", (jsonErr as Error).message);
+    }
+
+    // Strategy 2: Delimiter format fallback <<PANEL...>>...<<END_PANEL>>
+    const delimPanels: Array<{ type: string; label: string; title: string; html: string }> = [];
+    const pat = /<<PANEL([\s\S]*?)>>([\s\S]*?)<<END_PANEL>>/gi;
     let m: RegExpExecArray | null;
     while ((m = pat.exec(raw)) !== null) {
       const attrs = m[1];
@@ -813,10 +807,15 @@ Make each panel rich, detailed, and visually structured using the component temp
       const type  = (attrs.match(/type=["']([^"']+)["']/i)  || [])[1] ?? "summary";
       const label = (attrs.match(/label=["']([^"']+)["']/i) || [])[1] ?? "Output";
       const title = (attrs.match(/title=["']([^"']+)["']/i) || [])[1] ?? "Analysis";
-      panels.push({ type, label, title, html });
+      if (html) delimPanels.push({ type, label, title, html });
     }
-    console.log(`[Freya panels] generated ${panels.length} panels`);
-    return panels;
+    if (delimPanels.length > 0) {
+      console.log(`[Freya panels] delimiter fallback: ${delimPanels.length} panels`);
+      return delimPanels;
+    }
+
+    console.log("[Freya panels] no panels parsed. Raw snippet:", raw.substring(0, 400));
+    return [];
   } catch (err) {
     console.error("[Freya panels] generation failed:", err);
     return [];

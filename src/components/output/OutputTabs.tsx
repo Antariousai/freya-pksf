@@ -35,25 +35,23 @@ export function getTabStyle(type: string) {
 }
 
 interface OutputTabsProps {
-  activeTab: TabId;
-  onTabChange: (tab: TabId) => void;
-  onCloseTab?: (type: string) => void;
+  activeTab: TabId;          // now an `id`, not a type
+  onTabChange: (id: TabId) => void;
+  onCloseTab?: (id: string) => void;
   panels: OutputPanel[];
 }
 
 export default function OutputTabs({ activeTab, onTabChange, onCloseTab, panels }: OutputTabsProps) {
-  // Derive unique tabs from panels, preserving order of first appearance
-  const tabs = panels.reduce<{ type: string; label: string; count: number }[]>((acc, p) => {
-    const existing = acc.find((t) => t.type === p.type);
-    if (existing) {
-      existing.count++;
-    } else {
-      acc.push({ type: p.type, label: p.label, count: 1 });
-    }
-    return acc;
-  }, []);
+  if (panels.length === 0) return null;
 
-  if (tabs.length === 0) return null;
+  // Count how many of each type appear so we can suffix duplicate labels
+  const typeSeenCount: Record<string, number> = {};
+  const typeRunningCount: Record<string, number> = {};
+
+  // First pass: total count per type
+  for (const p of panels) {
+    typeSeenCount[p.type] = (typeSeenCount[p.type] ?? 0) + 1;
+  }
 
   return (
     <div
@@ -68,14 +66,23 @@ export default function OutputTabs({ activeTab, onTabChange, onCloseTab, panels 
         scrollbarWidth: "none",
       }}
     >
-      {tabs.map((tab) => {
-        const style = getTabStyle(tab.type);
+      {panels.map((panel) => {
+        // id is guaranteed to be set for all panels in state (assigned by handleFreyaResponse)
+        const tabId = panel.id ?? `${panel.type}_${panel.title}`;
+        const style = getTabStyle(panel.type);
         const Icon = style.icon;
-        const isActive = activeTab === tab.type;
+        const isActive = activeTab === tabId;
+
+        // Build display label: add suffix if multiple of same type
+        typeRunningCount[panel.type] = (typeRunningCount[panel.type] ?? 0) + 1;
+        const idx = typeRunningCount[panel.type];
+        const displayLabel = typeSeenCount[panel.type] > 1
+          ? `${panel.label} ${idx}`
+          : panel.label;
 
         return (
           <div
-            key={tab.type}
+            key={tabId}
             style={{
               display: "flex",
               alignItems: "center",
@@ -92,7 +99,7 @@ export default function OutputTabs({ activeTab, onTabChange, onCloseTab, panels 
           >
             {/* Tab click area */}
             <button
-              onClick={() => onTabChange(tab.type)}
+              onClick={() => onTabChange(tabId)}
               style={{
                 display: "flex", alignItems: "center", gap: "5px",
                 padding: "7px 8px 7px 12px",
@@ -102,28 +109,13 @@ export default function OutputTabs({ activeTab, onTabChange, onCloseTab, panels 
             >
               <Icon size={12} color={isActive ? style.color : "#6a6a90"} strokeWidth={2} />
               <span style={{ fontSize: "11px", fontWeight: 600, color: isActive ? style.color : "#6a6a90", whiteSpace: "nowrap" }}>
-                {tab.label}
-              </span>
-              <span
-                style={{
-                  background: isActive ? style.countBg : "rgba(255,255,255,0.06)",
-                  color: isActive ? style.color : "#6a6a90",
-                  fontSize: "9px",
-                  fontFamily: "var(--font-jetbrains-mono), monospace",
-                  fontWeight: 700,
-                  padding: "1px 5px",
-                  borderRadius: "10px",
-                  minWidth: "16px",
-                  textAlign: "center",
-                }}
-              >
-                {tab.count}
+                {displayLabel}
               </span>
             </button>
             {/* Close button */}
             {onCloseTab && (
               <button
-                onClick={(e) => { e.stopPropagation(); onCloseTab(tab.type); }}
+                onClick={(e) => { e.stopPropagation(); onCloseTab(tabId); }}
                 title="Close tab"
                 style={{
                   display: "flex", alignItems: "center", justifyContent: "center",

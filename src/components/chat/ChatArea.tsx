@@ -63,13 +63,18 @@ function dbMsgToUiMsg(m: {
   output_panels?: { type: string; label: string; title: string; html: string }[] | null;
   created_at: string;
 }): MessageType {
+  const ts = new Date(m.created_at).getTime();
   return {
     id: m.id,
     role: m.role,
     content: m.content,
     timestamp: new Date(m.created_at),
     panels: m.output_panels
-      ? m.output_panels.map((p) => ({ ...p, timestamp: new Date(m.created_at) }))
+      ? m.output_panels.map((p, i) => ({
+          ...p,
+          id: `${p.type}_${ts}_${i}`,     // stable id derived from message timestamp
+          timestamp: new Date(m.created_at),
+        }))
       : undefined,
   };
 }

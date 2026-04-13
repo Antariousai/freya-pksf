@@ -6,6 +6,7 @@ export interface Attachment {
 
 /** A single structured output panel produced by Freya */
 export interface OutputPanel {
+  id?: string;     // unique tab identifier — assigned client-side; undefined on raw server response
   type: string;    // e.g. "brief" | "summary" | "discrepancies" | "recommendations" | "risk_analysis" | ...
   label: string;   // display name shown in the tab
   title: string;   // card heading

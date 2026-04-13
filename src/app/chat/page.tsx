@@ -156,64 +156,45 @@ export default function ChatPage() {
   const handleFreyaResponse = useCallback((response: FreyaResponse) => {
     if (response.panels && response.panels.length > 0) {
       const now = new Date();
-      const newPanels = response.panels.map((p) => ({ ...p, timestamp: now }));
-      // Smart merge: same type → update in place; new type → append
-      setPanels(prev => {
-        const merged = [...prev];
-        for (const np of newPanels) {
-          const idx = merged.findIndex(p => p.type === np.type);
-          if (idx >= 0) {
-            merged[idx] = np; // refresh existing tab with latest data
-          } else {
-            merged.push(np); // add brand-new tab type
-          }
-        }
-        return merged;
-      });
-      // Also remove from archive if the type is coming back
-      setArchivedPanels(prev => prev.filter(p => !newPanels.some(np => np.type === p.type)));
-      setActiveTab(newPanels[0].type);
+      const ts = now.getTime();
+      // Assign unique IDs — each response creates NEW tabs, never replacing old ones
+      const newPanels = response.panels.map((p, i) => ({
+        ...p,
+        id: p.id ?? `${p.type}_${ts}_${i}`,
+        timestamp: p.timestamp ?? now,  // preserve original timestamp if loading history
+      }));
+      // Always APPEND — new query = new tabs alongside existing ones
+      setPanels(prev => [...prev, ...newPanels]);
+      setActiveTab(newPanels[0].id);
       if (isMobile) setMobileRightOpen(true);
     }
   }, [isMobile]);
 
   // Close a tab → moves it to archive (still accessible)
-  const handleCloseTab = useCallback((typeToClose: string) => {
+  const handleCloseTab = useCallback((idToClose: string) => {
     setPanels(prev => {
-      const toArchive = prev.filter(p => p.type === typeToClose);
+      const toArchive = prev.filter(p => p.id === idToClose);
       if (toArchive.length > 0) {
-        setArchivedPanels(arch => {
-          // Replace any same-type entry in archive with latest
-          const filtered = arch.filter(a => a.type !== typeToClose);
-          return [...toArchive, ...filtered];
-        });
+        setArchivedPanels(arch => [...toArchive, ...arch.filter(a => a.id !== idToClose)]);
       }
-      return prev.filter(p => p.type !== typeToClose);
+      return prev.filter(p => p.id !== idToClose);
     });
     setActiveTab(prev => {
-      if (prev !== typeToClose) return prev;
-      const remaining = panels.filter(p => p.type !== typeToClose);
-      return remaining[0]?.type ?? "";
+      if (prev !== idToClose) return prev;
+      const remaining = panels.filter(p => p.id !== idToClose);
+      return remaining[0]?.id ?? "";
     });
   }, [panels]);
 
   // Restore a tab from archive back to active tabs
-  const handleRestoreTab = useCallback((typeToRestore: string) => {
+  const handleRestoreTab = useCallback((idToRestore: string) => {
     setArchivedPanels(prev => {
-      const toRestore = prev.filter(p => p.type === typeToRestore);
-      if (toRestore.length > 0) {
-        setPanels(current => {
-          const merged = [...current];
-          for (const p of toRestore) {
-            const idx = merged.findIndex(m => m.type === p.type);
-            if (idx >= 0) merged[idx] = p;
-            else merged.push(p);
-          }
-          return merged;
-        });
-        setActiveTab(typeToRestore);
+      const panel = prev.find(p => p.id === idToRestore);
+      if (panel) {
+        setPanels(current => [...current, panel]);
+        setActiveTab(idToRestore);
       }
-      return prev.filter(p => p.type !== typeToRestore);
+      return prev.filter(p => p.id !== idToRestore);
     });
   }, []);
 

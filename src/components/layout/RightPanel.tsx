@@ -32,21 +32,15 @@ export default function RightPanel({
   const currentPersona = getPersona(persona);
   const hasContent = panels.length > 0;
 
-  // All unique types in order of first appearance
-  const tabTypes = panels.reduce<string[]>((acc, p) => {
-    if (!acc.includes(p.type)) acc.push(p.type);
-    return acc;
-  }, []);
-
-  // Auto-switch: if activeTab has no panels, pick the first available type
+  // Auto-switch: if activeTab (an id) has no matching panel, pick the first panel
   const effectiveTab =
-    panels.some((p) => p.type === activeTab)
+    panels.some((p) => (p.id ?? "") === activeTab && activeTab !== "")
       ? activeTab
-      : tabTypes[0] ?? activeTab;
+      : (panels[0]?.id ?? "");
 
-  // Items for the active tab
-  const activeItems = panels.filter((p) => p.type === effectiveTab);
-  const activeStyle = getTabStyle(effectiveTab);
+  // Single active panel (tabs are now per-panel, not per-type)
+  const activePanel = panels.find((p) => (p.id ?? "") === effectiveTab) ?? panels[0] ?? null;
+  const activeStyle = getTabStyle(activePanel?.type ?? "");
 
   return (
     <aside
@@ -133,7 +127,7 @@ export default function RightPanel({
         />
       )}
 
-      {/* Archive strip — closed tabs that can be restored */}
+      {/* Archive strip — closed tabs that can be restored (one pill per archived panel) */}
       {archivedPanels.length > 0 && (
         <div
           style={{
@@ -150,14 +144,13 @@ export default function RightPanel({
           <span style={{ color: "var(--text-dim)", fontSize: "9px", fontFamily: "var(--font-jetbrains-mono), monospace", fontWeight: 600, letterSpacing: "0.5px", marginRight: "2px", flexShrink: 0 }}>
             CLOSED
           </span>
-          {/* Unique archived types */}
-          {Array.from(new Set(archivedPanels.map(p => p.type))).map(type => {
-            const panel = archivedPanels.find(p => p.type === type)!;
-            const style = getTabStyle(type);
+          {archivedPanels.map(panel => {
+            const archivedId = panel.id ?? `${panel.type}_${panel.title}`;
+            const style = getTabStyle(panel.type);
             return (
               <button
-                key={type}
-                onClick={() => onRestoreTab?.(type)}
+                key={archivedId}
+                onClick={() => onRestoreTab?.(archivedId)}
                 title={`Restore "${panel.label}" tab`}
                 style={{
                   display: "flex", alignItems: "center", gap: "4px",
@@ -272,31 +265,23 @@ export default function RightPanel({
               </p>
             </motion.div>
           ) : (
-            /* ── Content cards — fill height, scroll if overflow ── */
+            /* ── Active panel card — fill height, scroll if content overflows ── */
             <motion.div
               key={effectiveTab}
               initial={{ opacity: 0, x: 18 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -12 }}
               transition={{ duration: 0.22, ease: "easeOut" }}
-              style={{ flex: 1, display: "flex", flexDirection: "column", gap: "12px", minHeight: 0, overflowY: "auto" }}
+              style={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}
             >
-              {activeItems.map((item, idx) => (
-                <motion.div
-                  key={`${effectiveTab}-${idx}`}
-                  initial={{ opacity: 0, y: 14 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.28, delay: idx * 0.06, ease: "easeOut" }}
-                  style={{ flex: activeItems.length === 1 ? 1 : "none", display: "flex", flexDirection: "column", minHeight: 0 }}
-                >
-                  <OutputCard
-                    item={item}
-                    iconColor={activeStyle.color}
-                    iconBg={`${activeStyle.color}1a`}
-                    tabIcon={activeStyle.icon}
-                  />
-                </motion.div>
-              ))}
+              {activePanel && (
+                <OutputCard
+                  item={activePanel}
+                  iconColor={activeStyle.color}
+                  iconBg={`${activeStyle.color}1a`}
+                  tabIcon={activeStyle.icon}
+                />
+              )}
             </motion.div>
           )}
         </AnimatePresence>
