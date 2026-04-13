@@ -662,86 +662,165 @@ function getPsychometricProfiles(poId?: string) {
 
 import { getSystemPrompt } from "./system-prompt";
 
-// ── Response Parser ──────────────────────────────────────────
+// ── Panel Generator (Step 2) ─────────────────────────────────
 /**
- * Parses Freya's delimiter-based response format:
- *
- *   <<ANSWER>>
- *   2-4 sentence answer
- *   <<END_ANSWER>>
- *   <<PANEL type="summary" label="Summary" title="Executive Brief">>
- *   <raw html — no escaping needed>
- *   <<END_PANEL>>
- *
- * This format is completely immune to JSON parsing issues because HTML
- * is raw text between markers, not embedded inside JSON strings.
- *
- * Also handles legacy JSON responses as a fallback.
+ * Given the user's query, Claude's conversational answer, and any tool
+ * data collected, generate structured HTML output panels via a second
+ * focused Claude call.  This separation keeps the main agentic loop
+ * simple (just prose) and lets Claude focus exclusively on HTML formatting.
  */
-function parseFreyaResponse(raw: string): FreyaResponse {
-  // Log first 300 chars so we can see the format in Vercel logs
-  console.log("[Freya] raw response prefix:", raw.substring(0, 300));
+async function generatePanels(
+  userQuery: string,
+  answer: string,
+  toolData: string,
+): Promise<Array<{ type: string; label: string; title: string; html: string }>> {
+  const PANEL_SYSTEM = `You are an HTML panel generator for the Freya PKSF financial intelligence dashboard.
 
-  // ── Primary: delimiter format ──
-  const answerMatch = raw.match(/<<ANSWER>>([\s\S]*?)<<END_ANSWER>>/i);
+Output ONLY <<PANEL>> blocks — absolutely no text, explanation, or prose before or after them.
 
-  // Panel regex: flexible — matches <<PANEL ...attrs...>> regardless of attribute order
-  // Step 1: grab the whole tag + content
-  const panelBlockPattern = /<<PANEL([^>]*)>>([\s\S]*?)<<END_PANEL>>/gi;
+FORMAT (use exactly):
+<<PANEL type="TYPE" label="LABEL" title="TITLE">>
+<div style="font-family:'DM Sans','Segoe UI',sans-serif;font-size:12px;color:var(--o-text);line-height:1.5;">
+  [rich HTML content]
+</div>
+<<END_PANEL>>
 
-  if (answerMatch) {
-    const answer = answerMatch[1].trim();
+CSS VARIABLES for neutral colors (mandatory — do NOT use hardcoded greys):
+  var(--o-text)          body text
+  var(--o-label)         dim labels, column headers
+  var(--o-title)         card/row titles
+  var(--o-mono)          monospace numbers
+  var(--o-surface)       card background
+  var(--o-border)        card border
+  var(--o-border-subtle) row dividers
+  var(--o-progress-track) progress bar track
+
+Accent colours (hardcode these — they work in both themes):
+  #10b981  green / positive
+  #ef4444  red / critical
+  #f59e0b  amber / warning
+  #a78bfa  violet / accent
+  #06b6d4  cyan / info
+
+PANEL TYPES:
+  brief            → label "Brief"           executive KPI overview
+  discrepancies    → label "Discrepancies"   problems / audit findings
+  recommendations  → label "Actions"         recommended next steps
+  risk_analysis    → label "Risk Analysis"   risk assessment
+  po_analysis      → label "PO Analysis"     partner org deep-dive
+  project_status   → label "Project Status"  project health
+  flood_impact     → label "Flood Impact"    disaster risk
+  data_needed      → label "Data Needed"     lists what is missing
+
+RICH COMPONENTS (use these in your HTML):
+
+KPI Grid (2-4 cols):
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;">
+  <div style="background:var(--o-surface);border:1px solid var(--o-border);border-radius:8px;padding:10px;">
+    <p style="color:var(--o-label);font-size:9px;text-transform:uppercase;letter-spacing:0.5px;margin:0 0 4px;">METRIC</p>
+    <p style="color:#10b981;font-size:18px;font-weight:700;font-family:'JetBrains Mono',monospace;margin:0 0 2px;">VALUE</p>
+    <p style="color:var(--o-label);font-size:9px;margin:0;">CONTEXT</p>
+  </div>
+</div>
+
+Section heading:
+<p style="color:#a78bfa;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin:14px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--o-border);">SECTION</p>
+
+Finding card (critical):
+<div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:8px;padding:10px 12px;margin-bottom:10px;">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+    <p style="color:#f87171;font-size:12px;font-weight:600;margin:0;">TITLE</p>
+    <span style="background:rgba(239,68,68,0.15);color:#ef4444;padding:2px 7px;border-radius:4px;font-size:9px;font-weight:700;">CRITICAL</span>
+  </div>
+  <p style="color:var(--o-text);font-size:11px;margin:0;line-height:1.6;">Detail...</p>
+</div>
+
+Action card (immediate):
+<div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:8px;padding:10px 12px;margin-bottom:10px;">
+  <p style="color:#34d399;font-size:12px;font-weight:600;margin:0 0 4px;">ACTION</p>
+  <p style="color:var(--o-text);font-size:11px;margin:0;line-height:1.6;">Detail...</p>
+</div>
+
+Data table:
+<table style="width:100%;border-collapse:collapse;margin-bottom:14px;">
+  <thead><tr>
+    <th style="padding:7px 10px;text-align:left;color:var(--o-label);border-bottom:1px solid var(--o-border);font-size:9px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;">COL</th>
+  </tr></thead>
+  <tbody><tr>
+    <td style="padding:7px 10px;color:var(--o-text);border-bottom:1px solid var(--o-border-subtle);font-size:11px;">VALUE</td>
+  </tr></tbody>
+</table>
+
+Progress bar:
+<div style="margin-bottom:8px;">
+  <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
+    <span style="color:var(--o-text);font-size:11px;">LABEL</span>
+    <span style="color:#10b981;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;">VALUE%</span>
+  </div>
+  <div style="height:5px;background:var(--o-progress-track);border-radius:3px;">
+    <div style="height:100%;width:VALUE%;background:#10b981;border-radius:3px;"></div>
+  </div>
+</div>`;
+
+  const q = userQuery.toLowerCase();
+  // Determine which panels to generate
+  const wantsBrief = true; // always include a brief
+  const wantsDiscrepancies = q.includes("discrepanc") || q.includes("audit") || q.includes("risk") || q.includes("problem") || q.includes("issue") || q.includes("finding");
+  const wantsRecommendations = q.includes("recommend") || q.includes("solution") || q.includes("action") || q.includes("what should") || q.includes("discrepanc") || q.includes("audit");
+  const wantsRisk = q.includes("risk") && !wantsDiscrepancies;
+  const wantsPO = q.includes("po ") || q.includes("partner org") || q.includes("jcf") || q.includes("brac") || q.includes("asa");
+  const wantsProject = q.includes("project") || q.includes("raise") || q.includes("smart") || q.includes("rmtp");
+
+  const panelList = [
+    wantsBrief && "brief (executive summary / KPI overview)",
+    wantsDiscrepancies && "discrepancies (problems, audit findings, anomalies)",
+    wantsRecommendations && "recommendations (actions to resolve each finding)",
+    wantsRisk && "risk_analysis (risk assessment)",
+    wantsPO && "po_analysis (partner org details)",
+    wantsProject && "project_status (project health)",
+  ].filter(Boolean).join("\n- ");
+
+  const userPrompt =
+    `User query: "${userQuery}"
+
+Freya's analysis:
+${answer}
+
+${toolData ? `Raw data from tools:\n${toolData.substring(0, 4000)}` : ""}
+
+Generate these panels (one <<PANEL>> block each):
+- ${panelList}
+
+Make each panel rich, detailed, and visually structured using the component templates. Use ALL actual figures from the analysis above — do not invent numbers.`;
+
+  try {
+    const resp = await anthropic.messages.create({
+      model: "claude-sonnet-4-6",
+      max_tokens: 8000,
+      system: PANEL_SYSTEM,
+      messages: [{ role: "user", content: userPrompt }],
+    });
+
+    const raw = resp.content.find((b): b is Anthropic.TextBlock => b.type === "text")?.text ?? "";
+    console.log("[Freya panels] raw prefix:", raw.substring(0, 200));
+
     const panels: Array<{ type: string; label: string; title: string; html: string }> = [];
+    const pat = /<<PANEL([^>]*)>>([\s\S]*?)<<END_PANEL>>/gi;
     let m: RegExpExecArray | null;
-    while ((m = panelBlockPattern.exec(raw)) !== null) {
+    while ((m = pat.exec(raw)) !== null) {
       const attrs = m[1];
       const html = m[2].trim();
-      // Extract each attribute independently (order-insensitive)
-      const typeVal  = (attrs.match(/type=["']([^"']+)["']/i)  || [])[1] ?? "summary";
-      const labelVal = (attrs.match(/label=["']([^"']+)["']/i) || [])[1] ?? "Output";
-      const titleVal = (attrs.match(/title=["']([^"']+)["']/i) || [])[1] ?? "Analysis";
-      panels.push({ type: typeVal, label: labelVal, title: titleVal, html });
+      const type  = (attrs.match(/type=["']([^"']+)["']/i)  || [])[1] ?? "summary";
+      const label = (attrs.match(/label=["']([^"']+)["']/i) || [])[1] ?? "Output";
+      const title = (attrs.match(/title=["']([^"']+)["']/i) || [])[1] ?? "Analysis";
+      panels.push({ type, label, title, html });
     }
-    console.log(`[Freya] parsed: answer length=${answer.length}, panels=${panels.length}`);
-    return { answer, panels };
+    console.log(`[Freya panels] generated ${panels.length} panels`);
+    return panels;
+  } catch (err) {
+    console.error("[Freya panels] generation failed:", err);
+    return [];
   }
-
-  // ── Fallback: legacy JSON format ──
-  const jsonMatch = raw.match(/\{[\s\S]*\}/);
-  if (jsonMatch) {
-    try {
-      const parsed = JSON.parse(jsonMatch[0]) as FreyaResponse;
-      if (parsed.answer) return parsed;
-    } catch {
-      // try character-level repair
-      try {
-        let fixed = "";
-        let inStr = false;
-        let esc = false;
-        for (const ch of jsonMatch[0]) {
-          if (esc) { fixed += ch; esc = false; continue; }
-          if (ch === "\\" && inStr) { fixed += ch; esc = true; continue; }
-          if (ch === '"') { inStr = !inStr; fixed += ch; continue; }
-          if (inStr && ch === "\n") { fixed += "\\n"; continue; }
-          if (inStr && ch === "\r") { fixed += "\\r"; continue; }
-          if (inStr && ch === "\t") { fixed += "\\t"; continue; }
-          fixed += ch;
-        }
-        const parsed = JSON.parse(fixed) as FreyaResponse;
-        if (parsed.answer) return parsed;
-      } catch { /* ignore */ }
-    }
-  }
-
-  // ── Last resort: pull answer text from before any JSON/HTML ──
-  const firstMeaningfulLine = raw
-    .split("\n")
-    .map(l => l.trim())
-    .find(l => l.length > 15 && !l.startsWith("{") && !l.startsWith("<") && !l.startsWith("<<"));
-  return {
-    answer: firstMeaningfulLine ?? "Analysis complete — see the output panels.",
-    panels: [],
-  };
 }
 
 // ── Agentic Loop ────────────────────────────────────────────
@@ -833,9 +912,12 @@ export async function runFreyaAgent(
     }
   }
 
-  // Agentic tool-use loop (max 5 iterations to prevent infinite loops)
+  // ── Step 1: Agentic tool-use loop — get conversational answer ──
+  // Claude uses tools freely and returns a plain prose answer.
+  // No panel formatting is required here — that happens in Step 2.
   let iterations = 0;
   const MAX_ITERATIONS = 5;
+  const collectedToolData: string[] = []; // accumulate tool results for Step 2
 
   while (iterations < MAX_ITERATIONS) {
     iterations++;
@@ -861,6 +943,8 @@ export async function runFreyaAgent(
             toolBlock.name,
             toolBlock.input as Record<string, unknown>
           );
+          // Collect tool data for panel generation
+          collectedToolData.push(`[${toolBlock.name}]: ${result}`);
           return {
             type: "tool_result" as const,
             tool_use_id: toolBlock.id,
@@ -884,9 +968,36 @@ export async function runFreyaAgent(
       throw new Error("No text response from Freya agent");
     }
 
-    // Parse Freya's response (delimiter format or legacy JSON fallback)
-    const raw = textBlock.text.trim();
-    return parseFreyaResponse(raw);
+    // Clean up the answer — strip any leftover delimiter markers if present
+    let answer = textBlock.text.trim();
+    const answerMatch = answer.match(/<<ANSWER>>([\s\S]*?)<<END_ANSWER>>/i);
+    if (answerMatch) answer = answerMatch[1].trim();
+    // Strip JSON wrapper if present
+    if (answer.startsWith("{") && answer.includes('"answer"')) {
+      try {
+        const parsed = JSON.parse(answer) as { answer?: string };
+        if (parsed.answer) answer = parsed.answer;
+      } catch { /* keep raw */ }
+    }
+
+    console.log(`[Freya] Step 1 answer length=${answer.length}, tool calls=${collectedToolData.length}`);
+
+    // ── Step 2: Generate HTML panels from the answer ──
+    // Determine user query from last user message
+    const lastUserMsg = conversationHistory[conversationHistory.length - 1];
+    const userQuery = typeof lastUserMsg?.content === "string" ? lastUserMsg.content : "";
+
+    // Only generate panels for substantive queries (not greetings/navigation)
+    const isSubstantive = userQuery.length > 10 &&
+      !["hi", "hello", "hey", "thanks", "thank you", "ok", "okay"].some(g =>
+        userQuery.toLowerCase().trim() === g
+      );
+
+    const panels = isSubstantive
+      ? await generatePanels(userQuery, answer, collectedToolData.join("\n\n"))
+      : [];
+
+    return { answer, panels };
   }
 
   return {
