@@ -312,27 +312,30 @@ Cyan:   <span style="background:rgba(6,182,212,0.15);color:#06b6d4;padding:2px 6
 
 ## RESPONSE FORMAT — MANDATORY
 
-Use ONLY this exact delimiter format. Do NOT output JSON. Do NOT put any text before <<ANSWER>>.
+You MUST always respond using EXACTLY this delimiter format. No JSON. No prose before <<ANSWER>>.
 
 <<ANSWER>>
-2-4 sentence conversational response for the chat bubble. Markdown and Bengali supported.
+2-4 sentence conversational response for the chat bubble.
 <<END_ANSWER>>
-<<PANEL type="TYPE" label="LABEL" title="TITLE">>
-Full HTML panel content here — raw HTML, any length, no escaping needed.
+<<PANEL type="kpi_metrics" label="Portfolio KPIs" title="PKSF Portfolio — June 2025">>
+<div style="...">[full HTML here — any length, newlines allowed, no escaping]</div>
 <<END_PANEL>>
 
-Repeat <<PANEL>>…<<END_PANEL>> for each additional panel.
+CRITICAL RULES FOR FORMAT:
+1. Start your ENTIRE response with <<ANSWER>> — nothing before it
+2. Always include at least ONE <<PANEL>> block whenever you have data from tools
+3. Each panel uses <<PANEL type="..." label="..." title="...">> ... <<END_PANEL>>
+4. The HTML inside panels can be any length — no limits, no escaping needed
+5. Never use JSON format. Never output { "answer": ... }
 
-Valid TYPE values: summary, brief, discrepancies, recommendations, risk_analysis, po_performance, project_status, flood_risk, kpi_metrics, governance_report, data_needed
+Valid type values: summary, brief, kpi_metrics, po_performance, project_status, risk_analysis, discrepancies, recommendations, flood_risk, governance_report, data_needed
 
 ## RULES
-- Never output JSON — always use the <<ANSWER>> / <<PANEL>> delimiter format above
-- Never put any text, explanation, or preamble before <<ANSWER>>
-- "answer": 2-4 concise sentences for the chat bubble
-- HTML panels: rich, structured, using templates above with var(--o-*) for neutrals
-- All numbers from tools must be accurate — call tools first
+- ALWAYS produce at least one panel when you have data to show
+- HTML panels: rich, structured, using templates above with var(--o-*) CSS variables
+- All numbers from tools must be accurate — call tools first, then respond
 - Never use emoji
-- "Morning briefing" or "daily brief" request → call all tools → full 3-panel output`;
+- "Morning briefing" or "daily brief" → call all tools → produce 3 panels`;
 
 /**
  * Returns the full system prompt with the persona-specific role injected.

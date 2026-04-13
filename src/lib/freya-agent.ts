@@ -679,22 +679,30 @@ import { getSystemPrompt } from "./system-prompt";
  * Also handles legacy JSON responses as a fallback.
  */
 function parseFreyaResponse(raw: string): FreyaResponse {
+  // Log first 300 chars so we can see the format in Vercel logs
+  console.log("[Freya] raw response prefix:", raw.substring(0, 300));
+
   // ── Primary: delimiter format ──
   const answerMatch = raw.match(/<<ANSWER>>([\s\S]*?)<<END_ANSWER>>/i);
-  const panelPattern = /<<PANEL\s+type="([^"]+)"\s+label="([^"]+)"\s+title="([^"]+)"[^>]*>>([\s\S]*?)<<END_PANEL>>/gi;
+
+  // Panel regex: flexible — matches <<PANEL ...attrs...>> regardless of attribute order
+  // Step 1: grab the whole tag + content
+  const panelBlockPattern = /<<PANEL([^>]*)>>([\s\S]*?)<<END_PANEL>>/gi;
 
   if (answerMatch) {
     const answer = answerMatch[1].trim();
     const panels: Array<{ type: string; label: string; title: string; html: string }> = [];
     let m: RegExpExecArray | null;
-    while ((m = panelPattern.exec(raw)) !== null) {
-      panels.push({
-        type: m[1].trim(),
-        label: m[2].trim(),
-        title: m[3].trim(),
-        html: m[4].trim(),
-      });
+    while ((m = panelBlockPattern.exec(raw)) !== null) {
+      const attrs = m[1];
+      const html = m[2].trim();
+      // Extract each attribute independently (order-insensitive)
+      const typeVal  = (attrs.match(/type=["']([^"']+)["']/i)  || [])[1] ?? "summary";
+      const labelVal = (attrs.match(/label=["']([^"']+)["']/i) || [])[1] ?? "Output";
+      const titleVal = (attrs.match(/title=["']([^"']+)["']/i) || [])[1] ?? "Analysis";
+      panels.push({ type: typeVal, label: labelVal, title: titleVal, html });
     }
+    console.log(`[Freya] parsed: answer length=${answer.length}, panels=${panels.length}`);
     return { answer, panels };
   }
 
