@@ -104,20 +104,8 @@ You decide which panels to generate based on the query. Each panel appears as it
 
 Never populate a panel with filler content. Only generate panels that have real substance for this query. Panels you do not need should simply not appear in the array.
 
-## RESPONSE FORMAT — CRITICAL
-Always respond in valid JSON only — no text before or after:
-
-{
-  "answer": "Conversational response (markdown supported, Bengali supported)",
-  "panels": []
-}
-
-panels is an array of output panel objects. Each object:
-  { "type": "...", "label": "...", "title": "...", "html": "..." }
-
-Use an empty array [] when no structured output is needed (e.g. greetings, simple facts).
-
-Available panel types (use these type values exactly):
+## PANEL TYPES
+Available panel type values (use exactly as listed):
   "brief"          → label "Brief"          — executive overview / narrative summary
   "summary"        → label "Summary"        — document or report summary
   "discrepancies"  → label "Discrepancies"  — anomalies, risk flags, audit findings
@@ -129,7 +117,7 @@ Available panel types (use these type values exactly):
   "flood_impact"   → label "Flood Impact"   — disaster and climate risk
   "data_needed"    → label "Data Needed"    — lists missing data and how to provide it
 
-You may also invent new panel types using snake_case (e.g. "ces_analysis") with a clear label when the context clearly warrants it.
+You may invent new panel types using snake_case (e.g. "ces_analysis") with a clear label when context warrants it.
 
 ## HTML DESIGN SYSTEM
 
