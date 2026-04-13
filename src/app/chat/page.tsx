@@ -82,6 +82,12 @@ export default function ChatPage() {
   const [mobileLeftOpen, setMobileLeftOpen] = useState(false);
   const [mobileRightOpen, setMobileRightOpen] = useState(false);
 
+  // Open mobile right drawer when panel generation starts
+  const handlePanelsLoading = useCallback((loading: boolean) => {
+    setPanelsLoading(loading);
+    if (loading && isMobile) setMobileRightOpen(true);
+  }, [isMobile]);
+
   // Auto-create a session on first load if none exists
   const initialized = useRef(false);
   useEffect(() => {
@@ -285,24 +291,60 @@ export default function ChatPage() {
                 session={activeSession}
                 onFreyaResponse={handleFreyaResponse}
                 onPersonaChange={handlePersonaChange}
-                onPanelsLoading={setPanelsLoading}
+                onPanelsLoading={handlePanelsLoading}
               />
             </main>
 
+            {/* Mobile right drawer — slides in from the right */}
             {mobileRightOpen && (
               <>
+                {/* Backdrop */}
                 <div
                   onClick={() => setMobileRightOpen(false)}
-                  style={{ position: "fixed", inset: 0, top: "54px", background: "rgba(0,0,0,0.45)", zIndex: 199, backdropFilter: "blur(2px)" }}
+                  style={{
+                    position: "fixed", inset: 0, top: "54px",
+                    background: "rgba(0,0,0,0.55)", zIndex: 199,
+                    backdropFilter: "blur(3px)",
+                  }}
                 />
+                {/* Drawer */}
                 <div
-                  style={{ position: "fixed", top: "54px", right: 0, width: "92vw", maxWidth: "380px", height: "calc(100dvh - 54px)", zIndex: 200, display: "flex", overflow: "hidden", boxShadow: "-4px 0 24px rgba(0,0,0,0.25)" }}
+                  style={{
+                    position: "fixed", top: "54px", right: 0,
+                    width: "92vw", maxWidth: "420px",
+                    height: "calc(100dvh - 54px)",
+                    zIndex: 200,
+                    display: "flex", flexDirection: "column",
+                    overflow: "hidden",
+                    boxShadow: "-6px 0 32px rgba(0,0,0,0.35)",
+                    borderLeft: "1px solid var(--glass-border)",
+                  }}
                 >
+                  {/* Drawer close bar */}
+                  <div
+                    style={{
+                      display: "flex", alignItems: "center", justifyContent: "space-between",
+                      padding: "0 14px", height: "36px", flexShrink: 0,
+                      background: "var(--bg-1)", borderBottom: "1px solid var(--glass-border)",
+                    }}
+                  >
+                    <span style={{ color: "var(--text-dim)", fontSize: "10px", fontFamily: "var(--font-jetbrains-mono), monospace", fontWeight: 600, letterSpacing: "0.5px" }}>
+                      ANALYSIS OUTPUT
+                    </span>
+                    <button
+                      onClick={() => setMobileRightOpen(false)}
+                      style={{ background: "rgba(255,255,255,0.06)", border: "1px solid var(--glass-border)", borderRadius: "6px", padding: "4px 8px", cursor: "pointer", color: "var(--text-muted)", fontSize: "10px", fontWeight: 600 }}
+                    >
+                      Close ×
+                    </button>
+                  </div>
                   <RightPanel
                     panels={panels}
+                    archivedPanels={archivedPanels}
                     activeTab={activeTab}
                     onTabChange={setActiveTab}
                     onCloseTab={handleCloseTab}
+                    onRestoreTab={handleRestoreTab}
                     persona={activeSession?.persona}
                     panelsLoading={panelsLoading}
                   />
@@ -310,14 +352,31 @@ export default function ChatPage() {
               </>
             )}
 
-            {/* Output FAB */}
-            {panels.length > 0 && !mobileRightOpen && (
+            {/* FAB — visible whenever there's content or loading, drawer is closed */}
+            {(panels.length > 0 || panelsLoading) && !mobileRightOpen && (
               <button
                 onClick={() => setMobileRightOpen(true)}
-                style={{ position: "fixed", bottom: "80px", right: "16px", zIndex: 150, width: "48px", height: "48px", borderRadius: "50%", background: "linear-gradient(135deg, #7c3aed, #06b6d4)", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 20px rgba(124,58,237,0.45)" }}
-                aria-label="View output"
+                aria-label="View analysis output"
+                style={{
+                  position: "fixed", bottom: "80px", right: "16px", zIndex: 150,
+                  display: "flex", alignItems: "center", gap: "6px",
+                  padding: "0 16px 0 12px", height: "44px",
+                  borderRadius: "22px",
+                  background: "linear-gradient(135deg, #7c3aed, #06b6d4)",
+                  border: "none", cursor: "pointer",
+                  boxShadow: "0 4px 20px rgba(124,58,237,0.45)",
+                  animation: panelsLoading ? "pulse-red 1.2s ease-in-out infinite" : "none",
+                }}
               >
-                <BarChart2 size={20} color="#fff" strokeWidth={2} />
+                <BarChart2 size={16} color="#fff" strokeWidth={2} />
+                <span style={{ color: "#fff", fontSize: "11px", fontWeight: 700, fontFamily: "var(--font-jetbrains-mono), monospace" }}>
+                  {panelsLoading ? "Generating…" : `${panels.length} Panel${panels.length !== 1 ? "s" : ""}`}
+                </span>
+                {!panelsLoading && panels.length > 0 && (
+                  <span style={{ background: "rgba(255,255,255,0.25)", color: "#fff", fontSize: "9px", fontWeight: 700, padding: "1px 6px", borderRadius: "10px" }}>
+                    {panels.length}
+                  </span>
+                )}
               </button>
             )}
           </>
