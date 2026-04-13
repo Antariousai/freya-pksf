@@ -87,6 +87,14 @@ export default function ChatArea({ session, onFreyaResponse, onPersonaChange, on
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const prevSessionId = useRef<string | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  const stopGeneration = () => {
+    abortControllerRef.current?.abort();
+    abortControllerRef.current = null;
+    setIsLoading(false);
+    onPanelsLoading?.(false);
+  };
 
   // Voice recorder — appends final transcript to the input field
   const { isRecording, isSupported: voiceSupported, toggle: toggleVoice } = useVoiceRecorder({
@@ -203,6 +211,10 @@ export default function ChatArea({ session, onFreyaResponse, onPersonaChange, on
     setPendingFiles([]);
     setIsLoading(true);
 
+    // Create a fresh AbortController for this request pair
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
     try {
       // Build conversation history (exclude welcome message)
       const history = messages
@@ -220,6 +232,7 @@ export default function ChatArea({ session, onFreyaResponse, onPersonaChange, on
           attachments: base64Attachments.length > 0 ? base64Attachments : undefined,
           fileNames: nonImageNames.length > 0 ? nonImageNames : undefined,
         }),
+        signal: controller.signal,
       });
 
       if (!res.ok) throw new Error("API error");
@@ -237,7 +250,9 @@ export default function ChatArea({ session, onFreyaResponse, onPersonaChange, on
       setMessages((prev) => [...prev, botMessage]);
       setIsLoading(false); // chat loading done — FreyaThinking disappears
 
-      // Phase 2: Generate panels in background
+      // Phase 2: Generate panels in background (only if not aborted)
+      if (controller.signal.aborted) return;
+
       const isSubstantive = text.trim().length > 10 &&
         !["hi", "hello", "hey", "thanks", "thank you", "ok", "okay"].some(g =>
           text.trim().toLowerCase() === g
@@ -250,8 +265,9 @@ export default function ChatArea({ session, onFreyaResponse, onPersonaChange, on
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ userQuery: text.trim(), answer }),
+            signal: controller.signal,
           });
-          if (panelsRes.ok) {
+          if (panelsRes.ok && !controller.signal.aborted) {
             const { panels } = await panelsRes.json() as { panels: Array<{ type: string; label: string; title: string; html: string }> };
             onFreyaResponse({ answer, panels });
           }
@@ -259,7 +275,11 @@ export default function ChatArea({ session, onFreyaResponse, onPersonaChange, on
           onPanelsLoading?.(false);
         }
       }
-    } catch {
+    } catch (err: unknown) {
+      // If aborted by user, just clean up silently
+      if (err instanceof Error && err.name === "AbortError") {
+        return;
+      }
       setIsLoading(false);
       setMessages((prev) => [
         ...prev,
@@ -510,13 +530,33 @@ export default function ChatArea({ session, onFreyaResponse, onPersonaChange, on
             </button>
           )}
 
-          <button
-            onClick={() => sendMessage(input)}
-            disabled={!canSend}
-            style={{ width: "36px", height: "36px", borderRadius: "50%", background: canSend ? "linear-gradient(135deg, #06b6d4, #0891b2)" : "rgba(255,255,255,0.05)", border: "none", display: "flex", alignItems: "center", justifyContent: "center", cursor: canSend ? "pointer" : "not-allowed", transition: "all 0.15s", flexShrink: 0, boxShadow: canSend ? "0 0 12px rgba(6,182,212,0.35)" : "none" }}
-          >
-            <ArrowRight size={16} color={canSend ? "#fff" : "#4a4a68"} strokeWidth={2.5} />
-          </button>
+          {isLoading ? (
+            /* ── Stop button — aborts the in-flight request ── */
+            <button
+              onClick={stopGeneration}
+              title="Stop generating"
+              style={{
+                width: "36px", height: "36px", borderRadius: "50%",
+                background: "rgba(239,68,68,0.15)",
+                border: "1px solid rgba(239,68,68,0.35)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                cursor: "pointer", flexShrink: 0,
+                transition: "all 0.15s",
+                animation: "pulse-red 1.2s ease-in-out infinite",
+              }}
+            >
+              <Square size={13} color="#ef4444" strokeWidth={2.5} />
+            </button>
+          ) : (
+            /* ── Send button ── */
+            <button
+              onClick={() => sendMessage(input)}
+              disabled={!canSend}
+              style={{ width: "36px", height: "36px", borderRadius: "50%", background: canSend ? "linear-gradient(135deg, #06b6d4, #0891b2)" : "rgba(255,255,255,0.05)", border: "none", display: "flex", alignItems: "center", justifyContent: "center", cursor: canSend ? "pointer" : "not-allowed", transition: "all 0.15s", flexShrink: 0, boxShadow: canSend ? "0 0 12px rgba(6,182,212,0.35)" : "none" }}
+            >
+              <ArrowRight size={16} color={canSend ? "#fff" : "#4a4a68"} strokeWidth={2.5} />
+            </button>
+          )}
         </div>
 
         <p style={{ textAlign: "center", color: "var(--text-dim)", fontSize: "9px", fontFamily: "var(--font-jetbrains-mono), monospace", marginTop: "6px", marginBottom: "8px", lineHeight: 1.5 }}>
