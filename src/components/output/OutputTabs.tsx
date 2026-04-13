@@ -2,7 +2,7 @@
 
 import {
   FileText, Search, Lightbulb, AlertTriangle,
-  Users, Activity, Shield, BarChart2, Info,
+  Users, Activity, Shield, BarChart2, Info, X,
 } from "lucide-react";
 import type { OutputPanel } from "@/lib/types";
 
@@ -37,10 +37,11 @@ export function getTabStyle(type: string) {
 interface OutputTabsProps {
   activeTab: TabId;
   onTabChange: (tab: TabId) => void;
+  onCloseTab?: (type: string) => void;
   panels: OutputPanel[];
 }
 
-export default function OutputTabs({ activeTab, onTabChange, panels }: OutputTabsProps) {
+export default function OutputTabs({ activeTab, onTabChange, onCloseTab, panels }: OutputTabsProps) {
   // Derive unique tabs from panels, preserving order of first appearance
   const tabs = panels.reduce<{ type: string; label: string; count: number }[]>((acc, p) => {
     const existing = acc.find((t) => t.type === p.type);
@@ -73,15 +74,12 @@ export default function OutputTabs({ activeTab, onTabChange, panels }: OutputTab
         const isActive = activeTab === tab.type;
 
         return (
-          <button
+          <div
             key={tab.type}
-            onClick={() => onTabChange(tab.type)}
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "5px",
-              padding: "7px 12px",
-              cursor: "pointer",
+              gap: "0",
               borderRadius: "8px 8px 0 0",
               background: isActive ? style.bg : "transparent",
               border: isActive ? `1px solid ${style.border}` : "1px solid transparent",
@@ -92,33 +90,59 @@ export default function OutputTabs({ activeTab, onTabChange, panels }: OutputTab
               flexShrink: 0,
             }}
           >
-            <Icon size={12} color={isActive ? style.color : "#6a6a90"} strokeWidth={2} />
-            <span
+            {/* Tab click area */}
+            <button
+              onClick={() => onTabChange(tab.type)}
               style={{
-                fontSize: "11px",
-                fontWeight: 600,
-                color: isActive ? style.color : "#6a6a90",
-                whiteSpace: "nowrap",
+                display: "flex", alignItems: "center", gap: "5px",
+                padding: "7px 8px 7px 12px",
+                cursor: "pointer",
+                background: "transparent", border: "none",
               }}
             >
-              {tab.label}
-            </span>
-            <span
-              style={{
-                background: isActive ? style.countBg : "rgba(255,255,255,0.06)",
-                color: isActive ? style.color : "#6a6a90",
-                fontSize: "9px",
-                fontFamily: "var(--font-jetbrains-mono), monospace",
-                fontWeight: 700,
-                padding: "1px 5px",
-                borderRadius: "10px",
-                minWidth: "16px",
-                textAlign: "center",
-              }}
-            >
-              {tab.count}
-            </span>
-          </button>
+              <Icon size={12} color={isActive ? style.color : "#6a6a90"} strokeWidth={2} />
+              <span style={{ fontSize: "11px", fontWeight: 600, color: isActive ? style.color : "#6a6a90", whiteSpace: "nowrap" }}>
+                {tab.label}
+              </span>
+              <span
+                style={{
+                  background: isActive ? style.countBg : "rgba(255,255,255,0.06)",
+                  color: isActive ? style.color : "#6a6a90",
+                  fontSize: "9px",
+                  fontFamily: "var(--font-jetbrains-mono), monospace",
+                  fontWeight: 700,
+                  padding: "1px 5px",
+                  borderRadius: "10px",
+                  minWidth: "16px",
+                  textAlign: "center",
+                }}
+              >
+                {tab.count}
+              </span>
+            </button>
+            {/* Close button */}
+            {onCloseTab && (
+              <button
+                onClick={(e) => { e.stopPropagation(); onCloseTab(tab.type); }}
+                title="Close tab"
+                style={{
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  width: "18px", height: "18px", borderRadius: "4px",
+                  marginRight: "6px",
+                  background: "transparent", border: "none",
+                  cursor: "pointer",
+                  color: isActive ? style.color : "#6a6a90",
+                  opacity: 0.6,
+                  flexShrink: 0,
+                  transition: "opacity 0.15s, background 0.15s",
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.opacity = "1"; (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.1)"; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.opacity = "0.6"; (e.currentTarget as HTMLButtonElement).style.background = "transparent"; }}
+              >
+                <X size={10} strokeWidth={2.5} />
+              </button>
+            )}
+          </div>
         );
       })}
     </div>

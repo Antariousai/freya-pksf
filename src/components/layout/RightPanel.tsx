@@ -12,11 +12,12 @@ interface RightPanelProps {
   panels: OutputPanel[];
   activeTab: TabId;
   onTabChange: (tab: TabId) => void;
+  onCloseTab?: (type: string) => void;
   persona?: string;
   panelsLoading?: boolean;
 }
 
-export default function RightPanel({ panels, activeTab, onTabChange, persona = "assistant", panelsLoading = false }: RightPanelProps) {
+export default function RightPanel({ panels, activeTab, onTabChange, onCloseTab, persona = "assistant", panelsLoading = false }: RightPanelProps) {
   const currentPersona = getPersona(persona);
   const hasContent = panels.length > 0;
 
@@ -116,6 +117,7 @@ export default function RightPanel({ panels, activeTab, onTabChange, persona = "
         <OutputTabs
           activeTab={effectiveTab}
           onTabChange={onTabChange}
+          onCloseTab={onCloseTab}
           panels={panels}
         />
       )}

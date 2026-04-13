@@ -147,12 +147,26 @@ export default function ChatPage() {
     if (response.panels && response.panels.length > 0) {
       const now = new Date();
       const newPanels = response.panels.map((p) => ({ ...p, timestamp: now }));
-      setPanels((prev) => [...newPanels, ...prev]);
-      // Auto-switch to the first new panel type
+      // REPLACE panels — don't accumulate across messages
+      setPanels(newPanels);
       setActiveTab(newPanels[0].type);
       if (isMobile) setMobileRightOpen(true);
     }
   }, [isMobile]);
+
+  // Close a single panel tab by type
+  const handleCloseTab = useCallback((typeToClose: string) => {
+    setPanels(prev => {
+      const next = prev.filter(p => p.type !== typeToClose);
+      return next;
+    });
+    setActiveTab(prev => {
+      if (prev !== typeToClose) return prev;
+      // Switch to next available tab
+      const remaining = panels.filter(p => p.type !== typeToClose);
+      return remaining[0]?.type ?? "";
+    });
+  }, [panels]);
 
   const dragLeft = useCallback((dx: number) => {
     setLeftWidth((w) => Math.min(LEFT_MAX, Math.max(LEFT_MIN, w + dx)));
@@ -199,6 +213,7 @@ export default function ChatPage() {
                   panels={panels}
                   activeTab={activeTab}
                   onTabChange={setActiveTab}
+                  onCloseTab={handleCloseTab}
                   persona={activeSession?.persona}
                   panelsLoading={panelsLoading}
                 />
@@ -242,6 +257,7 @@ export default function ChatPage() {
                     panels={panels}
                     activeTab={activeTab}
                     onTabChange={setActiveTab}
+                    onCloseTab={handleCloseTab}
                     persona={activeSession?.persona}
                     panelsLoading={panelsLoading}
                   />

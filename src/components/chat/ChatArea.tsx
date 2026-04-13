@@ -126,13 +126,13 @@ export default function ChatArea({ session, onFreyaResponse, onPersonaChange, on
         const dbMessages: MessageType[] = (data.messages ?? []).map(dbMsgToUiMsg);
         if (dbMessages.length > 0) {
           setMessages([welcome, ...dbMessages]);
-          // Re-emit structured responses to repopulate right panel
-          dbMessages
-            .filter((m) => m.role === "assistant" && m.panels && m.panels.length > 0)
-            .slice(-3)
-            .forEach((m) => {
-              onFreyaResponse({ answer: m.content, panels: m.panels! });
-            });
+          // Re-emit only the most recent panel set to repopulate right panel
+          const lastWithPanels = [...dbMessages]
+            .reverse()
+            .find((m) => m.role === "assistant" && m.panels && m.panels.length > 0);
+          if (lastWithPanels) {
+            onFreyaResponse({ answer: lastWithPanels.content, panels: lastWithPanels.panels! });
+          }
         }
       })
       .catch(console.error)
