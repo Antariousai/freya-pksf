@@ -8,6 +8,20 @@ import type { OutputPanel } from "@/lib/types";
 
 export type TabId = string;
 
+// Canonical label for each known panel type — shown in the tab regardless of what the API returns
+const TYPE_LABEL_MAP: Record<string, string> = {
+  brief:           "Brief",
+  summary:         "Summary",
+  discrepancies:   "Discrepancies",
+  compliance:      "Compliance",
+  recommendations: "Actions",
+  risk_analysis:   "Risk Analysis",
+  po_analysis:     "PO Analysis",
+  project_status:  "Project Status",
+  flood_impact:    "Flood Impact",
+  data_needed:     "Data Needed",
+};
+
 // Style lookup for known panel types
 const TAB_STYLE_MAP: Record<string, {
   color: string; bg: string; border: string; countBg: string;
@@ -32,6 +46,11 @@ const DEFAULT_STYLE = {
 
 export function getTabStyle(type: string) {
   return TAB_STYLE_MAP[type] ?? DEFAULT_STYLE;
+}
+
+/** Returns the canonical display label for a panel type, with API label as fallback */
+export function getTabLabel(type: string, apiLabel?: string): string {
+  return TYPE_LABEL_MAP[type] ?? apiLabel ?? type;
 }
 
 interface OutputTabsProps {
@@ -73,12 +92,13 @@ export default function OutputTabs({ activeTab, onTabChange, onCloseTab, panels 
         const Icon = style.icon;
         const isActive = activeTab === tabId;
 
-        // Build display label: add suffix if multiple of same type
+        // Build display label using canonical name, with numeric suffix for duplicates
         typeRunningCount[panel.type] = (typeRunningCount[panel.type] ?? 0) + 1;
         const idx = typeRunningCount[panel.type];
+        const baseLabel = getTabLabel(panel.type, panel.label);
         const displayLabel = typeSeenCount[panel.type] > 1
-          ? `${panel.label} ${idx}`
-          : panel.label;
+          ? `${baseLabel} ${idx}`
+          : baseLabel;
 
         return (
           <div

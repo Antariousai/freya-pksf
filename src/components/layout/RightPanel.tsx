@@ -2,7 +2,7 @@
 
 import { BarChart3, RotateCcw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import OutputTabs, { getTabStyle } from "@/components/output/OutputTabs";
+import OutputTabs, { getTabStyle, getTabLabel } from "@/components/output/OutputTabs";
 import OutputCard from "@/components/output/OutputCard";
 import { getPersona } from "@/lib/personas";
 import type { OutputPanel } from "@/lib/types";
@@ -151,7 +151,7 @@ export default function RightPanel({
               <button
                 key={archivedId}
                 onClick={() => onRestoreTab?.(archivedId)}
-                title={`Restore "${panel.label}" tab`}
+                title={`Restore "${getTabLabel(panel.type, panel.label)}" tab`}
                 style={{
                   display: "flex", alignItems: "center", gap: "4px",
                   padding: "3px 8px",
@@ -176,7 +176,7 @@ export default function RightPanel({
                 }}
               >
                 <RotateCcw size={9} strokeWidth={2.5} />
-                {panel.label}
+                {getTabLabel(panel.type, panel.label)}
               </button>
             );
           })}

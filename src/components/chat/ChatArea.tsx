@@ -265,6 +265,8 @@ export default function ChatArea({ session, onFreyaResponse, onPersonaChange, on
 
       if (isSubstantive) {
         onPanelsLoading?.(true);
+        // Panel generation runs independently — errors here must NOT affect the chat UI
+        // (the chat answer was already shown successfully)
         try {
           const panelsRes = await apiFetch("/api/panels", {
             method: "POST",
@@ -273,15 +275,24 @@ export default function ChatArea({ session, onFreyaResponse, onPersonaChange, on
             signal: controller.signal,
           });
           if (panelsRes.ok && !controller.signal.aborted) {
-            const { panels } = await panelsRes.json() as { panels: Array<{ type: string; label: string; title: string; html: string }> };
-            onFreyaResponse({ answer, panels });
+            const data = await panelsRes.json() as { panels?: Array<{ type: string; label: string; title: string; html: string }> };
+            if (data.panels && data.panels.length > 0) {
+              onFreyaResponse({ answer, panels: data.panels });
+            }
+          }
+        } catch (panelErr) {
+          // Panel errors are non-fatal — user already got the chat answer
+          if (panelErr instanceof Error && panelErr.name === "AbortError") {
+            // user stopped — expected, no action needed
+          } else {
+            console.error("[Freya panels] client-side error:", panelErr);
           }
         } finally {
           onPanelsLoading?.(false);
         }
       }
     } catch (err: unknown) {
-      // If aborted by user, just clean up silently
+      // This catch block only handles Phase 1 (chat answer) errors
       if (err instanceof Error && err.name === "AbortError") {
         return;
       }
