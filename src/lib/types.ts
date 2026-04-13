@@ -34,7 +34,7 @@ export interface ChatSession {
 
 export interface FreyaResponse {
   answer: string;
-  panels: OutputPanel[];
+  panels?: OutputPanel[];
 }
 
 export interface POProfile {

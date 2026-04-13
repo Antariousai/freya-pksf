@@ -108,7 +108,8 @@ export default function OutputCard({ item, iconColor, iconBg, tabIcon: Icon }: O
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${item.title.replace(/[^a-z0-9]/gi, "_").toLowerCase()}.html`;
+    const safeName = item.title.replace(/[^a-z0-9]/gi, "_").toLowerCase().replace(/^_+|_+$/g, "") || "freya_output";
+    a.download = `${safeName}.html`;
     a.click();
     URL.revokeObjectURL(url);
   };

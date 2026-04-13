@@ -337,7 +337,7 @@ export default function ChatArea({ session, onFreyaResponse, onPersonaChange }: 
               </div>
               <div style={{ padding: "6px" }}>
                 {PERSONAS.map((p) => {
-                  const isCurrent = p.id === (session?.persona ?? "analyst");
+                  const isCurrent = p.id === (session?.persona ?? "assistant");
                   return (
                     <button
                       key={p.id}
