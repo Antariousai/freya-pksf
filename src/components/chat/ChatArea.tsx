@@ -93,6 +93,8 @@ export default function ChatArea({ session, onFreyaResponse, onPersonaChange, on
   const fileInputRef = useRef<HTMLInputElement>(null);
   const prevSessionId = useRef<string | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+  // Once the user sends a message, history fetches must not overwrite local state
+  const localMessagesStarted = useRef(false);
 
   const stopGeneration = () => {
     abortControllerRef.current?.abort();
@@ -124,10 +126,12 @@ export default function ChatArea({ session, onFreyaResponse, onPersonaChange, on
     if (!session) {
       setMessages([makeWelcomeMessage("assistant")]);
       prevSessionId.current = null;
+      localMessagesStarted.current = false;
       return;
     }
     if (session.id === prevSessionId.current) return;
     prevSessionId.current = session.id;
+    localMessagesStarted.current = false; // reset for new session
 
     const welcome = makeWelcomeMessage(session.persona ?? "assistant");
     setLoadingHistory(true);
@@ -136,15 +140,26 @@ export default function ChatArea({ session, onFreyaResponse, onPersonaChange, on
     apiFetch(`/api/sessions/${session.id}`)
       .then((r) => r.json())
       .then((data) => {
+        // If the user already sent a message while history was loading,
+        // do NOT overwrite their local state with the stale DB snapshot
+        if (localMessagesStarted.current) return;
+
         const dbMessages: MessageType[] = (data.messages ?? []).map(dbMsgToUiMsg);
         if (dbMessages.length > 0) {
           setMessages([welcome, ...dbMessages]);
-          // Re-emit only the most recent panel set to repopulate right panel
-          const lastWithPanels = [...dbMessages]
-            .reverse()
-            .find((m) => m.role === "assistant" && m.panels && m.panels.length > 0);
-          if (lastWithPanels) {
-            onFreyaResponse({ answer: lastWithPanels.content, panels: lastWithPanels.panels! });
+
+          // Collect ALL assistant messages that have saved panels, oldest first
+          const withPanels = dbMessages.filter(
+            (m) => m.role === "assistant" && m.panels && m.panels.length > 0
+          );
+
+          // Older sets → archive (isHistory=true); most recent set → active tabs
+          withPanels.slice(0, -1).forEach((m) => {
+            onFreyaResponse({ answer: m.content, panels: m.panels!, isHistory: true });
+          });
+          if (withPanels.length > 0) {
+            const last = withPanels[withPanels.length - 1];
+            onFreyaResponse({ answer: last.content, panels: last.panels! });
           }
         }
       })
@@ -199,6 +214,8 @@ export default function ChatArea({ session, onFreyaResponse, onPersonaChange, on
       attachments: attachments.length > 0 ? attachments : undefined,
     };
 
+    // Mark that local messages have started — prevents stale history fetch from overwriting
+    localMessagesStarted.current = true;
     setMessages((prev) => [...prev, userMessage]);
     setLastUserMessage(text.trim());
     setInput("");
@@ -242,7 +259,7 @@ export default function ChatArea({ session, onFreyaResponse, onPersonaChange, on
 
       if (!res.ok) throw new Error("API error");
 
-      const { answer } = await res.json() as { answer: string };
+      const { answer, messageId } = await res.json() as { answer: string; messageId?: string | null };
 
       // Show answer in chat immediately
       const now = new Date();
@@ -271,7 +288,7 @@ export default function ChatArea({ session, onFreyaResponse, onPersonaChange, on
           const panelsRes = await apiFetch("/api/panels", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userQuery: text.trim(), answer }),
+            body: JSON.stringify({ userQuery: text.trim(), answer, messageId: messageId ?? null }),
             signal: controller.signal,
           });
           if (panelsRes.ok && !controller.signal.aborted) {

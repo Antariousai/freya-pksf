@@ -142,7 +142,7 @@ export default function RightPanel({
           }}
         >
           <span style={{ color: "var(--text-dim)", fontSize: "9px", fontFamily: "var(--font-jetbrains-mono), monospace", fontWeight: 600, letterSpacing: "0.5px", marginRight: "2px", flexShrink: 0 }}>
-            CLOSED
+            SESSION ARCHIVE
           </span>
           {archivedPanels.map(panel => {
             const archivedId = panel.id ?? `${panel.type}_${panel.title}`;
@@ -176,7 +176,9 @@ export default function RightPanel({
                 }}
               >
                 <RotateCcw size={9} strokeWidth={2.5} />
-                {getTabLabel(panel.type, panel.label)}
+                <span style={{ maxWidth: "120px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  {panel.title || getTabLabel(panel.type, panel.label)}
+                </span>
               </button>
             );
           })}

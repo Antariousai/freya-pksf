@@ -155,31 +155,45 @@ export default function ChatPage() {
   }, []);
 
   const handleFreyaResponse = useCallback((response: FreyaResponse) => {
-    if (response.panels && response.panels.length > 0) {
-      const now = new Date();
-      const ts = now.getTime();
-      const newPanels = response.panels.map((p, i) => ({
-        ...p,
-        id: p.id ?? `${p.type}_${ts}_${i}`,
-        timestamp: p.timestamp ?? now,
-      }));
-      // Smart merge: same type → replace in place (fresh data); new type → append
-      // This means you never get "Brief 1 / Brief 2" — just one Brief that updates
+    if (!response.panels || response.panels.length === 0) return;
+
+    const now = new Date();
+    const ts = now.getTime();
+    const newPanels = response.panels.map((p, i) => ({
+      ...p,
+      id: p.id ?? `${p.type}_${ts}_${i}`,
+      timestamp: p.timestamp ?? now,
+    }));
+
+    if (response.isHistory) {
+      // History panels go straight into the archive — accessible but not cluttering active tabs
+      setArchivedPanels(prev => {
+        const merged = [...prev];
+        for (const np of newPanels) {
+          // Don't duplicate if the same id is already archived
+          if (!merged.some(a => a.id === np.id)) {
+            merged.push(np);
+          }
+        }
+        return merged;
+      });
+    } else {
+      // Live panels: smart merge — same type replaces, new type appends
       setPanels(prev => {
         const merged = [...prev];
         for (const np of newPanels) {
           const idx = merged.findIndex(p => p.type === np.type);
           if (idx >= 0) {
-            merged[idx] = np;   // overwrite existing tab with latest panel
+            merged[idx] = np;
           } else {
-            merged.push(np);    // new type — add a fresh tab
+            merged.push(np);
           }
         }
         return merged;
       });
       // Remove from archive any types that just came back live
       setArchivedPanels(prev => prev.filter(p => !newPanels.some(np => np.type === p.type)));
-      setActiveTab(newPanels[0].id);
+      setActiveTab(newPanels[0].id!);
       if (isMobile) setMobileRightOpen(true);
     }
   }, [isMobile]);

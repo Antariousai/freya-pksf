@@ -36,6 +36,8 @@ export interface ChatSession {
 export interface FreyaResponse {
   answer: string;
   panels?: OutputPanel[];
+  /** When true the panels come from history — they go to archive, not active tabs */
+  isHistory?: boolean;
 }
 
 export interface POProfile {
