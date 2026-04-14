@@ -78,3 +78,226 @@ export interface Project {
   status: "on-track" | "at-risk" | "closing" | "critical";
   dueIn?: string;
 }
+
+export interface DashboardMetric {
+  id: string;
+  label: string;
+  value: string;
+  change: string;
+  trend: "up" | "down" | "stable";
+}
+
+export interface DashboardDistributionItem {
+  name: string;
+  value: number;
+  count: number;
+  color: string;
+}
+
+export interface DashboardLatestItem {
+  id: string;
+  severity: "critical" | "warning" | "info";
+  title: string;
+  detail: string;
+  time: string;
+  sourceUrl: string;
+  docType: string;
+  createdAt: string;
+}
+
+export interface DashboardFeaturedItem {
+  id: string;
+  title: string;
+  source: string;
+  badgeLabel: string;
+  status: "live" | "watch" | "stable";
+  progressPct: number;
+  progressLabel: string;
+  snippet: string;
+  sourceUrl: string;
+}
+
+export interface DashboardBriefing {
+  headline: string;
+  summary: string;
+}
+
+export interface DashboardExecutiveCard {
+  id: string;
+  title: string;
+  value: string;
+  detail: string;
+  status: "live" | "watch" | "stable";
+}
+
+export interface DashboardActionItem {
+  id: string;
+  title: string;
+  detail: string;
+  priority: "high" | "medium" | "low";
+}
+
+export interface DataReadinessItem {
+  id: string;
+  title: string;
+  status: "live" | "watch" | "stable";
+  detail: string;
+}
+
+export interface DashboardSnapshot {
+  asOf: string;
+  subtitle: string;
+  briefing: DashboardBriefing;
+  kpis: DashboardMetric[];
+  executiveCards: DashboardExecutiveCard[];
+  actionItems: DashboardActionItem[];
+  readiness: DataReadinessItem[];
+  distribution: DashboardDistributionItem[];
+  latestItems: DashboardLatestItem[];
+  featuredItems: DashboardFeaturedItem[];
+}
+
+export interface OperationsPORow {
+  id: string;
+  name: string;
+  location: string;
+  evidenceCount: number;
+  evidence: string;
+  coverage: string;
+  note: string;
+  source: string;
+  sourceUrl: string;
+  signal: "up" | "down" | "stable";
+  status: "live" | "watch" | "stable";
+  statusLabel?: string;
+}
+
+export interface OperationsBankingItem {
+  id: string;
+  name: string;
+  detail: string;
+  evidenceCount: number;
+  progressPct: number;
+  status: "live" | "watch" | "stable";
+  sourceUrl: string;
+}
+
+export interface OperationsRiskItem {
+  id: string;
+  title: string;
+  location: string;
+  detail: string;
+  progressPct: number;
+  signalLabel: string;
+  status: "normal" | "warning" | "danger" | "critical";
+  sourceUrl: string;
+}
+
+export interface OperationsCoverageCard {
+  id: string;
+  name: string;
+  percentage: number;
+  detail: string;
+  caption: string;
+}
+
+export interface OperationsSummaryCard {
+  id: string;
+  title: string;
+  value: string;
+  detail: string;
+  status: "live" | "watch" | "stable";
+}
+
+export interface OperationsDepartmentItem {
+  id: string;
+  name: string;
+  focus: string;
+  status: "live" | "watch" | "stable";
+  detail: string;
+}
+
+export interface OperationsAlertItem {
+  id: string;
+  title: string;
+  detail: string;
+  severity: "critical" | "warning" | "info";
+}
+
+export interface OperationsSnapshot {
+  asOf: string;
+  subtitle: string;
+  readiness: DataReadinessItem[];
+  summaryCards: OperationsSummaryCard[];
+  departmentItems: OperationsDepartmentItem[];
+  alertItems: OperationsAlertItem[];
+  poRows: OperationsPORow[];
+  bankingItems: OperationsBankingItem[];
+  riskItems: OperationsRiskItem[];
+  coverageCards: OperationsCoverageCard[];
+}
+
+export interface InferredProfileDimension {
+  name: string;
+  score: number;
+  max: number;
+  evidence: string;
+}
+
+export interface InferredProfileCard {
+  id: string;
+  title: string;
+  subtitle: string;
+  confidence: "high" | "medium" | "low";
+  overallScore: number;
+  summary: string;
+  recommendation: string;
+  evidenceCount: number;
+  primarySource: string;
+  primarySourceUrl: string;
+  dimensions: InferredProfileDimension[];
+}
+
+export interface ProfilingSummaryCard {
+  id: string;
+  title: string;
+  value: string;
+  detail: string;
+  status: "live" | "watch" | "stable";
+}
+
+export interface ProfilingScoreBandItem {
+  id: string;
+  label: string;
+  value: number;
+  detail: string;
+  color: string;
+}
+
+export interface ProfilingQueueItem {
+  id: string;
+  title: string;
+  detail: string;
+  priority: "high" | "medium" | "low";
+}
+
+export interface ProfilingPOItem {
+  id: string;
+  name: string;
+  progress: number;
+  detail: string;
+  confidence: "high" | "medium" | "low";
+}
+
+export interface ProfilingSnapshot {
+  asOf: string;
+  subtitle: string;
+  isInferred: true;
+  readiness: DataReadinessItem[];
+  summaryCards: ProfilingSummaryCard[];
+  scoreBands: ProfilingScoreBandItem[];
+  queueItems: ProfilingQueueItem[];
+  poItems: ProfilingPOItem[];
+  methodology: Array<{ label: string; desc: string }>;
+  profiles: InferredProfileCard[];
+}

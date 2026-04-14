@@ -45,7 +45,7 @@ export default function RootLayout({
       data-theme="light"
       className={`${dmSans.variable} ${notoSansBengali.variable} ${jetbrainsMono.variable} h-full`}
     >
-      <body className="h-full overflow-hidden" style={{ background: "var(--bg-0)" }}>
+      <body suppressHydrationWarning className="h-full overflow-hidden" style={{ background: "var(--bg-0)" }}>
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>

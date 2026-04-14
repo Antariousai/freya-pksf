@@ -16,8 +16,11 @@ export async function apiFetch(
   options: RequestInit = {}
 ): Promise<Response> {
   const authHeaders = await getAuthHeaders();
+  const method = (options.method ?? "GET").toUpperCase();
+
   return fetch(url, {
     ...options,
+    cache: options.cache ?? (method === "GET" ? "no-store" : undefined),
     headers: {
       ...authHeaders,
       ...(options.headers ?? {}),
