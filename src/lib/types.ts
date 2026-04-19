@@ -10,7 +10,7 @@ export interface OutputPanel {
   type: string;    // e.g. "brief" | "summary" | "discrepancies" | "recommendations" | "risk_analysis" | ...
   label: string;   // display name shown in the tab
   title: string;   // card heading
-  html: string;
+  content: string;  // Markdown text — rendered in the UI and used to generate .docx
   timestamp?: Date; // added client-side after API response; optional so FreyaResponse panels typecheck
 }
 

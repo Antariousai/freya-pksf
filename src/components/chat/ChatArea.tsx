@@ -60,7 +60,7 @@ function dbMsgToUiMsg(m: {
   id: string;
   role: "user" | "assistant";
   content: string;
-  output_panels?: { type: string; label: string; title: string; html: string }[] | null;
+  output_panels?: { type: string; label: string; title: string; html?: string; content?: string }[] | null;
   created_at: string;
 }): MessageType {
   const ts = new Date(m.created_at).getTime();
@@ -71,8 +71,12 @@ function dbMsgToUiMsg(m: {
     timestamp: new Date(m.created_at),
     panels: m.output_panels
       ? m.output_panels.map((p, i) => ({
-          ...p,
-          id: `${p.type}_${ts}_${i}`,     // stable id derived from message timestamp
+          type: p.type,
+          label: p.label,
+          title: p.title,
+          // Normalise: DB may have old `html` field — treat it as content
+          content: p.content ?? p.html ?? "",
+          id: `${p.type}_${ts}_${i}`,
           timestamp: new Date(m.created_at),
         }))
       : undefined,
@@ -292,7 +296,7 @@ export default function ChatArea({ session, onFreyaResponse, onPersonaChange, on
             signal: controller.signal,
           });
           if (panelsRes.ok && !controller.signal.aborted) {
-            const data = await panelsRes.json() as { panels?: Array<{ type: string; label: string; title: string; html: string }> };
+            const data = await panelsRes.json() as { panels?: Array<{ type: string; label: string; title: string; content: string }> };
             if (data.panels && data.panels.length > 0) {
               onFreyaResponse({ answer, panels: data.panels });
             }

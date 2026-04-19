@@ -673,10 +673,9 @@ export async function generatePanels(
   userQuery: string,
   answer: string,
   toolData: string,
-): Promise<Array<{ type: string; label: string; title: string; html: string }>> {
+): Promise<Array<{ type: string; label: string; title: string; content: string }>> {
 
-  // Use single quotes inside HTML so no JSON escaping is needed in the html field
-  const PANEL_SYSTEM = `You are an HTML panel generator for the Freya PKSF financial intelligence dashboard.
+  const PANEL_SYSTEM = `You are a structured document generator for the Freya PKSF financial intelligence dashboard.
 
 Output ONLY a valid JSON array — no markdown fences, no explanation, no text before or after.
 
@@ -686,62 +685,34 @@ FORMAT:
     "type": "brief",
     "label": "Brief",
     "title": "JCF Partner Organization — Recovery Crisis",
-    "html": "<div style='font-family:DM Sans,sans-serif;font-size:12px;color:var(--o-text);line-height:1.5;'>...rich HTML...</div>"
-  },
-  {
-    "type": "discrepancies",
-    "label": "Discrepancies",
-    "title": "JCF Audit Findings",
-    "html": "<div style='...'>...</div>"
+    "content": "## Executive Summary\\n\\nJCF is currently on **PROBATIONARY** status...\\n\\n### Key Metrics\\n\\n| Metric | Value |\\n|--------|-------|\\n| Recovery Rate | 96.8% |\\n| PAR30 | 4.2% |"
   }
 ]
 
-The "title" field must be a SHORT, SPECIFIC description of the actual content — e.g. "JCF Recovery Crisis", "RAISE Project Burn Rate", "Sylhet Flood Impact Q3". Never use generic titles like "Portfolio Overview" or "Analysis".
+The "title" field must be SHORT and SPECIFIC — e.g. "JCF Recovery Crisis", "RAISE Burn Rate Alert", "Sylhet Flood Q3". Never use generic titles like "Portfolio Overview".
 
-IMPORTANT: Use SINGLE QUOTES for all HTML attribute values so the JSON does not need escaping.
+The "content" field must be well-structured **Markdown** using:
+- ## for section headings, ### for sub-headings
+- **bold** for key terms and values
+- Markdown tables for data: | Col | Col |\\n|-----|-----|\\n| val | val |
+- Bullet lists with - for findings, actions, items
+- > blockquote for critical alerts or warnings
+- Numbered lists 1. 2. 3. for ordered steps
 
-Panel types and labels:
-  brief          → "Brief"          executive KPI overview
-  discrepancies  → "Discrepancies"  problems / audit findings
-  recommendations→ "Actions"        recommended next steps
-  risk_analysis  → "Risk Analysis"  risk assessment
-  po_analysis    → "PO Analysis"    partner org deep-dive
-  project_status → "Project Status" project health
-  flood_impact   → "Flood Impact"   disaster risk
-  data_needed    → "Data Needed"    missing data list
+Panel types:
+  brief          → "Brief"          executive KPI summary with metrics table
+  discrepancies  → "Discrepancies"  audit findings, problems, anomalies as a list
+  recommendations→ "Actions"        numbered action steps to resolve findings
+  risk_analysis  → "Risk Analysis"  risk assessment with severity ratings
+  po_analysis    → "PO Analysis"    partner org deep-dive with table of metrics
+  project_status → "Project Status" project health with burn rates and deadlines
+  flood_impact   → "Flood Impact"   disaster risk table and response actions
+  data_needed    → "Data Needed"    list of missing data required for analysis
 
-CSS variables (mandatory — no hardcoded greys):
-  var(--o-text)           body text
-  var(--o-label)          dim labels / column headers
-  var(--o-title)          card / row titles
-  var(--o-mono)           monospace numbers
-  var(--o-surface)        card background
-  var(--o-border)         card border
-  var(--o-border-subtle)  row dividers
-  var(--o-progress-track) progress track
-
-Accent colors (hardcode — work in both themes):
-  #10b981=green  #ef4444=red  #f59e0b=amber  #a78bfa=violet  #06b6d4=cyan
-
-HTML COMPONENTS (use single quotes for attributes):
-
-KPI Grid:
-<div style='display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;'><div style='background:var(--o-surface);border:1px solid var(--o-border);border-radius:8px;padding:10px;'><p style='color:var(--o-label);font-size:9px;text-transform:uppercase;letter-spacing:0.5px;margin:0 0 4px;'>METRIC</p><p style='color:#10b981;font-size:18px;font-weight:700;font-family:monospace;margin:0 0 2px;'>VALUE</p><p style='color:var(--o-label);font-size:9px;margin:0;'>CONTEXT</p></div></div>
-
-Section heading:
-<p style='color:#a78bfa;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin:14px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--o-border);'>SECTION</p>
-
-Finding card (critical):
-<div style='background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:8px;padding:10px 12px;margin-bottom:8px;'><div style='display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;'><p style='color:#f87171;font-size:12px;font-weight:600;margin:0;'>TITLE</p><span style='background:rgba(239,68,68,0.15);color:#ef4444;padding:2px 7px;border-radius:4px;font-size:9px;font-weight:700;'>CRITICAL</span></div><p style='color:var(--o-text);font-size:11px;margin:0;line-height:1.6;'>DETAIL</p></div>
-
-Action card:
-<div style='background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:8px;padding:10px 12px;margin-bottom:8px;'><p style='color:#34d399;font-size:12px;font-weight:600;margin:0 0 4px;'>ACTION</p><p style='color:var(--o-text);font-size:11px;margin:0;line-height:1.6;'>DETAIL</p></div>
-
-Table:
-<table style='width:100%;border-collapse:collapse;margin-bottom:12px;'><thead><tr><th style='padding:6px 8px;text-align:left;color:var(--o-label);border-bottom:1px solid var(--o-border);font-size:9px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;'>COL</th></tr></thead><tbody><tr><td style='padding:6px 8px;color:var(--o-text);border-bottom:1px solid var(--o-border-subtle);font-size:11px;'>VALUE</td></tr></tbody></table>
-
-Progress bar:
-<div style='margin-bottom:8px;'><div style='display:flex;justify-content:space-between;margin-bottom:3px;'><span style='color:var(--o-text);font-size:11px;'>LABEL</span><span style='color:#10b981;font-family:monospace;font-size:11px;font-weight:600;'>VALUE%</span></div><div style='height:5px;background:var(--o-progress-track);border-radius:3px;'><div style='height:100%;width:VALUE%;background:#10b981;border-radius:3px;'></div></div></div>`;
+Rules:
+- Use real numbers and facts from the analysis — never invent data
+- Keep content dense and professional — suitable for a Word document
+- Each panel content should be 150-400 words, well structured`;
 
   const q = userQuery.toLowerCase();
   const wantsDiscrepancies = q.includes("discrepanc") || q.includes("audit") || q.includes("risk") || q.includes("problem") || q.includes("issue") || q.includes("finding");
@@ -796,9 +767,9 @@ Rules:
         ? stripped
         : (stripped.match(/\[[\s\S]*\]/)?.[0] ?? "");
       if (jsonStr) {
-        const parsed = JSON.parse(jsonStr) as Array<{ type: string; label: string; title: string; html: string }>;
+        const parsed = JSON.parse(jsonStr) as Array<{ type: string; label: string; title: string; content: string }>;
         if (Array.isArray(parsed) && parsed.length > 0) {
-          const valid = parsed.filter(p => p.type && p.html);
+          const valid = parsed.filter(p => p.type && p.content);
           if (valid.length > 0) {
             console.log(`[Freya panels] JSON: ${valid.length} panels`);
             return valid;
@@ -810,16 +781,16 @@ Rules:
     }
 
     // Strategy 2: Delimiter format fallback <<PANEL...>>...<<END_PANEL>>
-    const delimPanels: Array<{ type: string; label: string; title: string; html: string }> = [];
+    const delimPanels: Array<{ type: string; label: string; title: string; content: string }> = [];
     const pat = /<<PANEL([\s\S]*?)>>([\s\S]*?)<<END_PANEL>>/gi;
     let m: RegExpExecArray | null;
     while ((m = pat.exec(raw)) !== null) {
       const attrs = m[1];
-      const html = m[2].trim();
+      const content = m[2].trim();
       const type  = (attrs.match(/type=["']([^"']+)["']/i)  || [])[1] ?? "summary";
       const label = (attrs.match(/label=["']([^"']+)["']/i) || [])[1] ?? "Output";
       const title = (attrs.match(/title=["']([^"']+)["']/i) || [])[1] ?? "Analysis";
-      if (html) delimPanels.push({ type, label, title, html });
+      if (content) delimPanels.push({ type, label, title, content });
     }
     if (delimPanels.length > 0) {
       console.log(`[Freya panels] delimiter fallback: ${delimPanels.length} panels`);
