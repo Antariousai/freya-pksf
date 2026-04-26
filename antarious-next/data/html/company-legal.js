@@ -1,0 +1,1564 @@
+const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Legal &amp; Policy | Antarious</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#F8FBFF;--card:#FFFFFF;--ink:#0F172A;--ink2:#334155;--ink3:#64748B;--line:rgba(15,23,42,.08);--teal:#0EA5E9;--teal2:#0284C7;--glow:rgba(14,165,233,.12)}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:"DM Sans",sans-serif;background:linear-gradient(180deg,#FFFFFF 0%,#F8FBFF 100%);color:var(--ink);line-height:1.75}
+    a{text-decoration:none;color:var(--teal2)}
+    .shell{min-height:100vh}
+    .topbar{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:rgba(255,255,255,.9);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+    .brand{display:flex;align-items:center;gap:12px;font-family:"Outfit",sans-serif;font-weight:800;color:var(--ink)}
+    .brand img{height:28px;width:auto;display:block}
+    .top-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .top-link,.top-cta{font-family:"Outfit",sans-serif;font-size:13px;border-radius:12px;padding:9px 16px;transition:all .2s}
+    .top-link{color:var(--ink2);border:1px solid rgba(14,165,233,.14);background:linear-gradient(135deg,rgba(14,165,233,.08),rgba(255,255,255,.02))}
+    .top-cta{color:#fff;background:linear-gradient(135deg,var(--teal),var(--teal2));border:1px solid transparent;box-shadow:0 8px 22px rgba(14,165,233,.18)}
+    .wrap{max-width:1120px;margin:0 auto;padding:40px 24px 72px}
+    .hero{padding:28px 0 26px}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:"DM Mono",monospace;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--teal2);margin-bottom:16px}
+    .eyebrow::before{content:"";width:16px;height:1.5px;background:var(--teal2)}
+    h1{font-family:"Outfit",sans-serif;font-size:clamp(34px,5vw,62px);line-height:.98;letter-spacing:-2px;margin:0 0 16px}
+    .tagline{font-family:"Outfit",sans-serif;font-size:clamp(18px,2.1vw,28px);font-weight:700;line-height:1.28;color:var(--ink2);max-width:860px;margin:0 0 14px}
+    .support{max-width:840px;color:var(--ink3);font-size:16px}
+    .doc{display:grid;gap:18px}
+    .doc-section{background:var(--card);border:1px solid var(--line);border-radius:28px;padding:28px;box-shadow:0 18px 46px rgba(15,23,42,.05)}
+    .doc-section h2{font-family:"Outfit",sans-serif;font-size:22px;line-height:1.1;letter-spacing:-.6px;margin:0 0 18px}
+    .doc-section h3{font-family:"Outfit",sans-serif;font-size:17px;line-height:1.25;letter-spacing:-.4px;margin:20px 0 10px;color:var(--ink)}
+    .doc-section p{margin:0 0 14px;color:var(--ink2);font-size:15px}
+    .doc-section ul{margin:0 0 10px;padding-left:20px;color:var(--ink2)}
+    .doc-section li{margin:0 0 9px}
+    .doc-section strong{color:var(--ink)}
+    .callout-line{font-family:"Outfit",sans-serif;font-weight:700;color:var(--teal2)!important}
+    .search-mock{margin:0 0 16px;padding:14px 16px;border-radius:16px;border:1px solid rgba(14,165,233,.18);background:linear-gradient(135deg,rgba(14,165,233,.08),rgba(255,255,255,.92));color:var(--ink3)}
+    .disabled-link{color:var(--teal2);font-weight:600}
+    .footer-nav{margin-top:34px;display:flex;gap:12px;flex-wrap:wrap}
+    .footer-nav a{font-family:"Outfit",sans-serif;font-size:13px;font-weight:700;border-radius:999px;padding:9px 14px;border:1px solid var(--line);background:#fff;color:var(--ink2)}
+    @media(max-width:720px){
+      .topbar{padding:16px 18px;align-items:flex-start;flex-direction:column;gap:12px}
+      .wrap{padding:28px 18px 54px}
+      .doc-section{padding:22px}
+      .top-actions{width:100%}
+    }
+  </style>
+<style id="antarious-design-system-overrides">
+/* antarious-design-system-overrides */
+:root,
+[data-theme="light"] {
+  --brand-primary: #0EA5E9;
+  --brand-primary-strong: #0284C7;
+  --brand-primary-soft: #38BDF8;
+  --brand-success: #059669;
+  --brand-danger: #DC2626;
+  --brand-warning: #D97706;
+  --surface-base: #FFFFFF;
+  --surface-muted: #F8FAFC;
+  --text-strong: #0F172A;
+  --text-body: #334155;
+  --text-muted: #64748B;
+  --border-subtle: rgba(15,23,42,.09);
+  --motion-fast: 180ms;
+  --motion-base: 260ms;
+  --motion-slow: 420ms;
+  --ease-standard: cubic-bezier(.22,1,.36,1);
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+}
+
+html[data-theme="dark"] {
+  --surface-base: #07131E;
+  --surface-muted: #0B1722;
+  --text-strong: #E5EEF7;
+  --text-body: #D6E0EA;
+  --text-muted: #9AB0C4;
+  --border-subtle: rgba(255,255,255,.10);
+  --brand-primary: #38BDF8;
+  --brand-primary-strong: #0EA5E9;
+  --brand-primary-soft: #7DD3FC;
+  --brand-success: #34D399;
+  --brand-danger: #F87171;
+  --brand-warning: #FBBF24;
+}
+
+:root {
+  --td: var(--brand-primary);
+  --tdd: var(--brand-primary-strong);
+  --tl: var(--brand-primary-soft);
+  --teal: var(--brand-primary);
+  --teal2: var(--brand-primary-strong);
+  --teal3: var(--brand-primary-soft);
+  --green: var(--brand-success);
+  --red: var(--brand-danger);
+  --amber: var(--brand-warning);
+}
+
+html { font-size: 16px; }
+body {
+  background: var(--surface-base);
+  color: var(--text-strong);
+  line-height: 1.66;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+
+.antarious-wordmark {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-strong, var(--ink, #0F172A));
+  line-height: 1;
+}
+.antarious-wordmark svg {
+  width: clamp(140px, 18vw, 182px);
+  height: auto;
+  display: block;
+}
+html[data-theme="dark"] .antarious-wordmark {
+  color: #F3F8FF;
+}
+
+
+.theme-logo-main {
+  height: 28px;
+  width: auto;
+  display: block;
+}
+.nav-logo .theme-logo-main {
+  height: 28px;
+}
+.footer-brand-img.theme-logo-main,
+.name .theme-logo-main {
+  height: 28px;
+}
+@media (max-width: 768px) {
+  .theme-logo-main { height: 24px; }
+}
+
+
+/* Global nav-footer consistency */
+.nav,
+.topbar,
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 950;
+  min-height: 62px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--border-subtle, var(--bdr, rgba(15,23,42,.09)));
+  background: color-mix(in srgb, var(--surface-base, var(--bg, #fff)) 92%, transparent);
+  backdrop-filter: blur(20px);
+}
+
+.nav-logo,
+.brand {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.theme-logo-main {
+  height: 28px;
+  width: auto;
+  display: block;
+}
+
+.nav-links,
+.nav-r,
+.nav-right,
+.top-actions,
+.header-actions,
+.primary-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-r,
+.nav-right,
+.top-actions,
+.header-actions { margin-left: auto; }
+
+.nl,
+.nav-link,
+.top-link,
+.primary-nav a,
+.nav-sector-btn,
+.nav-freya-btn,
+.nav-ghost,
+.btn-back {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-body, var(--ink2, #334155));
+  background: color-mix(in srgb, var(--surface-base, #fff) 90%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand-primary, #0EA5E9) 18%, var(--border-subtle, rgba(15,23,42,.09)));
+  border-radius: 10px;
+  padding: 8px 14px;
+  white-space: nowrap;
+}
+
+.nav-cta,
+.btn-nav-cta,
+.top-cta {
+  font-size: 13px;
+  font-weight: 800;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 9px 18px;
+  background: linear-gradient(135deg, var(--brand-primary, #0EA5E9), var(--brand-primary-strong, #0284C7));
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--brand-primary, #0EA5E9) 35%, transparent);
+}
+
+footer,
+.site-footer,
+.footer,
+.footer-inner,
+.footer-top,
+.footer-grid,
+.footer-nav,
+.footer-bottom {
+  color: var(--text-body, var(--ink2, #334155));
+}
+
+footer,
+.site-footer,
+.footer {
+  background: color-mix(in srgb, var(--surface-muted, var(--bg2, #f8fafc)) 90%, var(--surface-base, #fff));
+  border-top: 1px solid var(--border-subtle, var(--bdr, rgba(15,23,42,.09)));
+  margin-top: 56px;
+}
+
+.footer-inner,
+.shell > .wrap + .footer-nav,
+.footer-nav {
+  width: min(1200px, calc(100% - 40px));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.footer-top,
+.footer-grid,
+.footer-nav {
+  padding-top: 24px;
+  padding-bottom: 20px;
+}
+
+.footer-links,
+.footer-list {
+  display: grid;
+  gap: 8px;
+}
+
+.footer-col-h,
+.footer-title,
+.footer-head {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-muted, var(--ink4, #94A3B8));
+  margin-bottom: 10px;
+}
+
+.footer-lnk,
+.footer-list a,
+.footer-nav a {
+  color: var(--text-body, var(--ink2, #334155));
+}
+
+.footer-link-desc,
+.footer-brand-copy,
+.footer-copy {
+  color: var(--text-muted, var(--ink3, #64748B));
+}
+
+.footer-bottom {
+  border-top: 1px solid var(--border-subtle, var(--bdr2, rgba(15,23,42,.06)));
+  padding-top: 14px;
+  padding-bottom: 18px;
+}
+
+@media (max-width: 860px) {
+  .nav,
+  .topbar,
+  .site-header {
+    padding: 10px 14px;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .nav-links,
+  .primary-nav,
+  .top-actions {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 2px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .nav-links::-webkit-scrollbar,
+  .primary-nav::-webkit-scrollbar,
+  .top-actions::-webkit-scrollbar { display: none; }
+
+  .nav-r,
+  .nav-right,
+  .header-actions {
+    width: auto;
+    margin-left: auto;
+  }
+
+  .theme-logo-main { height: 24px; }
+
+  .footer-top,
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+
+  .footer-nav {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+/* Keep common shells centered and screen-balanced */
+.page,
+.hero-inner,
+.nav,
+section > .container,
+section > .page,
+section > .inner,
+.nav-inner,
+.footer-inner {
+  width: min(1200px, calc(100% - 2 * var(--space-6)));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Base readability and overflow safety */
+h1, h2, h3, h4, p, li { overflow-wrap: anywhere; }
+.h2,
+.hero-h1,
+.section-title,
+.display {
+  letter-spacing: -0.02em;
+  line-height: 1.06;
+  text-wrap: balance;
+}
+.sp,
+.hero-sub,
+.hero-body,
+.uc-p,
+p,
+li { color: var(--text-body); }
+
+/* Improve dark hero legibility (Freya/Government variants) */
+html[data-theme="dark"] .hero-h1,
+html[data-theme="dark"] .hero-sub,
+html[data-theme="dark"] .hero-body {
+  color: #EAF2FF !important;
+  text-shadow: 0 1px 1px rgba(0,0,0,.32);
+}
+
+html[data-theme="dark"] .hero-h1 .ac {
+  background: none !important;
+  -webkit-text-fill-color: var(--brand-primary-soft) !important;
+  color: var(--brand-primary-soft) !important;
+}
+html[data-theme="dark"] .hero-h1 .dim,
+html[data-theme="dark"] .hero-h1 em {
+  color: #BBD0E6 !important;
+}
+
+/* Uniform interaction feel */
+.btn,
+.btn-primary,
+.btn-p,
+.nav-cta,
+.btn-nav-cta,
+.button-primary,
+.pc-btn.featured-btn,
+.nav-link,
+.nl,
+.primary-nav a {
+  transition: transform var(--motion-base) var(--ease-standard), box-shadow var(--motion-base) var(--ease-standard), background-color var(--motion-base) var(--ease-standard), border-color var(--motion-base) var(--ease-standard), color var(--motion-base) var(--ease-standard);
+}
+
+.btn:hover,
+.btn-primary:hover,
+.btn-p:hover,
+.nav-cta:hover,
+.btn-nav-cta:hover,
+.button-primary:hover,
+.pc-btn.featured-btn:hover { transform: translateY(-2px); }
+
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
+/* Smooth reveal defaults */
+.reveal,
+.reveal.in,
+.reveal.is-visible {
+  transition-duration: var(--motion-slow);
+  transition-timing-function: var(--ease-standard);
+}
+
+/* Never leave key content invisible if JS reveal logic fails */
+html:not(.js) .reveal,
+body:not(.js) .reveal {
+  opacity: 1 !important;
+  transform: none !important;
+}
+/* Section rhythm */
+section {
+  padding: clamp(56px, 7vw, 96px) 0 !important;
+}
+
+/* Tablet layout harmonization */
+@media (max-width: 1100px) {
+  .page,
+  .hero-inner,
+  .nav,
+  section > .container,
+  section > .page,
+  section > .inner,
+  .nav-inner,
+  .footer-inner { width: calc(100% - 2 * var(--space-5)); }
+
+  .hero-inner,
+  .uc-panel,
+  .ft-hero,
+  .bridge-grid,
+  .hero-grid,
+  .split-hero,
+  .agents-grid,
+  .cost-grid,
+  .bo-strip,
+  .footer-grid,
+  .hero-stage-grid,
+  .grid-4,
+  .stack-grid { grid-template-columns: 1fr !important; }
+
+  .grid-3,
+  .workflow-grid,
+  .benefit-grid,
+  .stats-band,
+  .ft-live-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+
+  .h2,
+  .hero-h1,
+  .section-title,
+  .display { font-size: clamp(2.15rem, 5.3vw, 3.4rem) !important; }
+}
+
+/* Mobile-first finishing */
+@media (max-width: 768px) {
+  html { font-size: 15px; }
+
+  .page,
+  .hero-inner,
+  .nav,
+  section > .container,
+  section > .page,
+  section > .inner,
+  .nav-inner,
+  .footer-inner { width: calc(100% - 2 * var(--space-4)) !important; }
+
+  /* Reduce heavy decorative effects on small screens */
+  .hero-grid-bg,
+  .hero-glow,
+  .hero-glow1,
+  .hero-glow2,
+  .hero-dots,
+  .hero::before,
+  .hero::after { display: none !important; }
+
+  .nav {
+    height: auto !important;
+    min-height: 62px;
+    padding: 10px var(--space-4) !important;
+    gap: 8px !important;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .nav-logo { margin-right: 8px !important; }
+
+  .nav-links,
+  .primary-nav {
+    order: 3;
+    width: 100%;
+    margin: 6px 0 0 0 !important;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 8px;
+    padding-bottom: 2px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .nav-links::-webkit-scrollbar,
+  .primary-nav::-webkit-scrollbar { display: none; }
+
+  .nav-link,
+  .nl,
+  .primary-nav a { white-space: nowrap; flex: 0 0 auto; }
+
+  .nav-right,
+  .header-actions {
+    margin-left: auto;
+    width: auto;
+    display: flex;
+    gap: 8px;
+  }
+
+  .hero,
+  .hero-wrap { min-height: auto !important; padding-top: 92px !important; }
+  .hero-inner { gap: var(--space-6) !important; }
+
+  .hero-h1,
+  .display,
+  .h2,
+  .section-title {
+    font-size: clamp(1.95rem, 9vw, 2.9rem) !important;
+    line-height: 1.08 !important;
+  }
+
+  .hero-sub,
+  .hero-body,
+  .sp,
+  .section-subtitle,
+  .uc-p,
+  .task-text {
+    font-size: 0.98rem !important;
+    line-height: 1.72 !important;
+  }
+
+  .hero-btns,
+  .button-row,
+  .hero-actions {
+    display: grid !important;
+    grid-template-columns: 1fr;
+    gap: 10px !important;
+    width: 100%;
+  }
+
+  .hero-btns > *,
+  .button-row > *,
+  .hero-actions > *,
+  .btn,
+  .btn-primary,
+  .btn-p,
+  .btn-g,
+  .button,
+  .button-link,
+  .nav-cta,
+  .btn-nav-cta,
+  .nav-ghost,
+  .btn-back,
+  .pc-btn,
+  .uc-tab {
+    min-height: 46px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .hero-metrics,
+  .uc-stats,
+  .hero-stats,
+  .stats-band {
+    gap: var(--space-4) !important;
+    flex-wrap: wrap;
+  }
+
+  .hero-sep,
+  .hs-sep,
+  .uc-div { display: none !important; }
+
+  .cost-grid,
+  .agents-grid,
+  .bo-strip,
+  .grid-2,
+  .grid-3,
+  .grid-4,
+  .workflow-grid,
+  .benefit-grid,
+  .ft-live-grid,
+  .t-mets,
+  .stats-band { grid-template-columns: 1fr !important; }
+
+  .feature-card,
+  .workflow-card,
+  .quote-card,
+  .cta-panel,
+  .surface,
+  .footer-cta,
+  .hero-stage,
+  .terminal,
+  .freya-terminal,
+  .demo-win { padding: 20px !important; border-radius: 14px !important; }
+}
+
+/* Extra-large screens */
+@media (min-width: 1600px) {
+  .page,
+  .hero-inner,
+  .nav,
+  section > .container,
+  section > .page,
+  section > .inner,
+  .nav-inner,
+  .footer-inner { width: min(1320px, calc(100% - 120px)); }
+}
+
+
+
+/* Final hero readability safeguards */
+.hero-h1,
+.hero-sub,
+.hero-body {
+  opacity: 1 !important;
+}
+
+html[data-theme="dark"] .hero,
+html[data-theme="dark"] .hero-wrap {
+  background: linear-gradient(180deg, #061427 0%, #0A1E35 100%) !important;
+}
+
+html[data-theme="dark"] .hero-kicker,
+html[data-theme="dark"] .eyebrow {
+  color: #8FD9FF !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>
+
+<style id="antarious-svg-icon-theme">
+.ai-svg-icon {
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  vertical-align: -0.12em;
+  color: var(--brand-primary-strong, var(--teal2, #0284C7));
+}
+.ai-svg-icon svg { width: 100%; height: 100%; display: block; }
+.ai-icon-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+}
+.ai-icon-inline .ai-svg-icon {
+  width: 1.1em;
+  height: 1.1em;
+}
+html[data-theme="dark"] .ai-svg-icon {
+  color: var(--brand-primary-soft, var(--teal3, #7DD3FC));
+}
+</style>
+<script id="antarious-svg-icon-runtime">
+(function () {
+  var ICON_SVGS = {
+    alert: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3L21 19H3L12 3Z" stroke="currentColor" stroke-width="1.8"/><path d="M12 9V13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="16.5" r="1" fill="currentColor"/></svg>',
+    brain: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 5a3 3 0 016 0 3 3 0 012.8 4.1A3 3 0 0118 15a3 3 0 01-2.5 2.96A3.5 3.5 0 0112 21a3.5 3.5 0 01-3.5-3.04A3 3 0 016 15a3 3 0 01.2-5.9A3 3 0 019 5z" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v8M9.5 10.5h2.5M12 13h2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+    eye: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.5 12S6 6.5 12 6.5 21.5 12 21.5 12 18 17.5 12 17.5 2.5 12 2.5 12Z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="2.8" stroke="currentColor" stroke-width="1.8"/></svg>',
+    bolt: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.5 2L5 13h5l-1.5 9L19 10h-5L13.5 2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+    chart: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 19.5h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M6.5 16v-4M12 16V8M17.5 16v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    target: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>',
+    pen: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 20l4.5-1 9-9a1.8 1.8 0 000-2.5l-1-1a1.8 1.8 0 00-2.5 0l-9 9L4 20z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12.5 7.5l4 4" stroke="currentColor" stroke-width="1.8"/></svg>',
+    shield: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3l7 3v5c0 5.2-3.5 8.8-7 10-3.5-1.2-7-4.8-7-10V6l7-3z" stroke="currentColor" stroke-width="1.8"/><path d="M9.5 12.5l1.8 1.8 3.5-3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    megaphone: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 14V10l11-4v12L4 14z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M15 10h3a2 2 0 012 2 2 2 0 01-2 2h-3" stroke="currentColor" stroke-width="1.8"/><path d="M7.5 14.5l1.2 4h2.3l-1.1-3.5" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
+    phone: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.5 4h3l1 4-2 1.5a13 13 0 005 5L17 12l4 1v3c0 1.1-.9 2-2 2C10 18 6 14 6 7c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+    folder: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 7.5h7l2 2h9v7.5a2 2 0 01-2 2H5a2 2 0 01-2-2V7.5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+    signal: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 18h2M8 16h2M12 13h2M16 10h2M20 7h1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M4 18l16-11" stroke="currentColor" stroke-width="1.8"/></svg>',
+    timer: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="13" r="7.5" stroke="currentColor" stroke-width="1.8"/><path d="M12 9v4l2.8 1.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9 3h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    calendar: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="5" width="16" height="15" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M8 3.5v3M16 3.5v3M4 9h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    money: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/></svg>',
+    settings: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M19 12a7 7 0 00-.1-1l2-1.5-2-3.4-2.4.8a7.2 7.2 0 00-1.7-1L14.5 3h-5l-.3 2.9a7.2 7.2 0 00-1.7 1l-2.4-.8-2 3.4 2 1.5a7 7 0 000 2L3 14.5l2 3.4 2.4-.8a7.2 7.2 0 001.7 1L9.5 21h5l.3-2.9a7.2 7.2 0 001.7-1l2.4.8 2-3.4-2-1.5c.1-.3.1-.7.1-1z" stroke="currentColor" stroke-width="1.4"/></svg>',
+    puzzle: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 4h4a2 2 0 012 2v1h2a2 2 0 012 2v3h-2a2 2 0 100 4h2v2a2 2 0 01-2 2h-3v-2a2 2 0 10-4 0v2H7a2 2 0 01-2-2v-3h2a2 2 0 100-4H5V8a2 2 0 012-2h2V4z" stroke="currentColor" stroke-width="1.8"/></svg>',
+    user: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.8"/><path d="M5 19c1.6-3 4-4.5 7-4.5s5.4 1.5 7 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    flame: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3c1 3-1 4.5-2.2 5.8C9.4 10.2 8 11.7 8 14a4 4 0 008 0c0-2.5-1.4-4.2-2.6-5.8C12.2 7 11 5.5 13 3z" stroke="currentColor" stroke-width="1.8"/></svg>',
+    compass: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/><path d="M14.8 9.2l-1.8 5.6-5.6 1.8 1.8-5.6 5.6-1.8z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+    search: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="1.8"/><path d="M16 16l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    leaf: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 4c-7 0-12 4.5-12 10 0 3 2 6 6 6 5.5 0 10-5 10-12 0-2.3-1.7-4-4-4z" stroke="currentColor" stroke-width="1.8"/><path d="M8 16c2-2 4.8-4.2 9-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    mobile: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="7" y="3" width="10" height="18" rx="2" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="17.5" r="0.9" fill="currentColor"/></svg>',
+    mail: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M4 8l8 6 8-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    spark: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8L12 3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+    chat: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 6h14a2 2 0 012 2v7a2 2 0 01-2 2H10l-4 3v-3H5a2 2 0 01-2-2V8a2 2 0 012-2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+    link: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 14l4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M8 16H6a4 4 0 010-8h2M16 8h2a4 4 0 010 8h-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    handshake: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 10l4-4 3 3 3-3 6 6-4 4-3-3-2 2-5-5-2 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+  };
+
+  function render() {
+    var nodes = document.querySelectorAll('.ai-svg-icon-slot[data-ai-icon]');
+    for (var i = 0; i < nodes.length; i++) {
+      var node = nodes[i];
+      var icon = node.getAttribute('data-ai-icon');
+      var svg = ICON_SVGS[icon];
+      if (!svg) continue;
+      node.classList.add('ai-svg-icon');
+      node.setAttribute('aria-hidden', 'true');
+      node.innerHTML = svg;
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', render);
+  } else {
+    render();
+  }
+})();
+</script>
+
+
+<link rel="preload" as="image" href="/assets/logos/antarious-main.svg">
+<style id="antarious-nav-sync-style">
+.theme-logo-main{height:28px;width:auto;display:block}
+.nav-logo .theme-logo-main{height:28px}
+.footer-brand-img.theme-logo-main,.name .theme-logo-main{height:28px}
+
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:999;
+  height:62px;display:flex;align-items:center;
+  padding:0 clamp(14px,3.2vw,48px);
+  gap:clamp(10px,1.7vw,24px);
+  background:color-mix(in srgb,var(--surface-base,var(--bg,#fff)) 92%, transparent);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(15,23,42,.07);
+  transition:all .3s;
+  width:min(1200px,calc(100% - 2 * clamp(14px,3vw,24px)));
+  margin:0 auto;
+}
+.nav.scrolled{height:54px;box-shadow:0 1px 12px rgba(15,23,42,.06)}
+
+.nav-logo{display:flex;align-items:center;gap:9px;cursor:pointer;flex-shrink:0}
+.nav-links{display:flex;list-style:none;gap:2px;margin-left:clamp(8px,2vw,28px);padding:0}
+
+.nav-link{
+  font-size:13px;font-weight:700;color:var(--text-body,var(--ink2,#334155));
+  padding:8px 16px;border-radius:12px;transition:all .2s;cursor:pointer;
+  border:1px solid rgba(14,165,233,.14);
+  background:linear-gradient(135deg,rgba(14,165,233,.08),rgba(255,255,255,.02));
+  box-shadow:0 4px 14px rgba(15,23,42,.04);
+  white-space:nowrap;
+}
+.nav-link:hover,.nav-link.active{color:var(--brand-primary-strong,var(--teal2,#0284C7));border-color:rgba(14,165,233,.26);background:linear-gradient(135deg,rgba(14,165,233,.12),rgba(56,189,248,.05));transform:translateY(-1px)}
+
+.nav-right{display:flex;align-items:center;gap:10px;margin-left:auto;flex-shrink:0}
+.nav-ghost{
+  font-size:13px;font-weight:700;color:var(--brand-primary-strong,var(--teal2,#0284C7));
+  background:linear-gradient(135deg,rgba(14,165,233,.14),rgba(56,189,248,.08));
+  border:1px solid rgba(14,165,233,.24);padding:8px 18px;border-radius:12px;cursor:pointer;
+  transition:all .2s;box-shadow:0 8px 22px rgba(14,165,233,.12);white-space:nowrap;
+}
+.nav-ghost:hover{border-color:rgba(14,165,233,.38);color:var(--brand-primary,var(--teal,#0EA5E9));transform:translateY(-1px);box-shadow:0 12px 28px rgba(14,165,233,.18)}
+.nav-cta{
+  font-size:13px;font-weight:800;color:#fff;
+  border:none;padding:9px 22px;border-radius:12px;cursor:pointer;transition:all .22s;
+  background:linear-gradient(135deg,var(--brand-primary,var(--teal,#0EA5E9)),var(--brand-primary-strong,var(--teal2,#0284C7)));
+  box-shadow:0 6px 18px rgba(14,165,233,.26),0 0 0 1px rgba(14,165,233,.08);
+  white-space:nowrap;
+}
+.nav-cta:hover{background:linear-gradient(135deg,var(--brand-primary-strong,var(--teal2,#0284C7)),#0369A1);transform:translateY(-1px);box-shadow:0 10px 24px rgba(14,165,233,.34)}
+
+body{padding-top:62px}
+
+/* Large laptop / small desktop */
+@media (max-width:1100px){
+  .nav{width:calc(100% - 2 * 20px);padding:0 20px;gap:12px}
+  .nav-links{margin-left:10px}
+  .nav-link{padding:8px 13px;font-size:12.5px}
+  .nav-ghost{padding:8px 14px}
+  .nav-cta{padding:9px 16px}
+}
+
+/* Tablet and below */
+@media (max-width:860px){
+  .theme-logo-main{height:24px}
+  .nav{width:calc(100% - 2 * 14px);padding:10px 14px;gap:8px;flex-wrap:wrap;height:auto;min-height:62px}
+  .nav-links{order:3;width:100%;margin:6px 0 0 0;overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px;-ms-overflow-style:none;scrollbar-width:none}
+  .nav-links::-webkit-scrollbar{display:none}
+  .nav-right{width:auto;margin-left:auto;gap:8px}
+  .nav-link{flex:0 0 auto}
+}
+
+/* Mobile */
+@media (max-width:768px){
+  .nav{width:calc(100% - 2 * 16px);padding:10px 12px;gap:8px;align-items:center}
+  .nav-logo{margin-right:8px}
+  .nav-links{margin:6px 0 0 0;gap:8px}
+  .nav-link{padding:7px 11px;font-size:12px}
+  .nav-right{display:flex;gap:8px;margin-left:auto;width:auto}
+  .nav-ghost{padding:7px 11px;font-size:12px}
+  .nav-cta{padding:8px 12px;font-size:12px}
+}
+
+/* Very small devices */
+@media (max-width:420px){
+  .nav-right{width:100%;justify-content:flex-end}
+  .nav-ghost,.nav-cta{padding:7px 10px;font-size:11.5px}
+}
+</style>
+<style id="antarious-footer-sync-style">
+footer,
+.site-footer,
+.footer,
+.footer-inner,
+.footer-top,
+.footer-grid,
+.footer-nav,
+.footer-bottom {
+  color: var(--text-body, var(--ink2, #334155));
+}
+
+footer,
+.site-footer,
+.footer {
+  background: color-mix(in srgb, var(--surface-muted, var(--bg2, #f8fafc)) 90%, var(--surface-base, #fff));
+  border-top: 1px solid var(--border-subtle, var(--bdr, rgba(15,23,42,.09)));
+  margin-top: 56px;
+}
+
+.footer-inner,
+.shell > .wrap + .footer-nav,
+.footer-nav {
+  width: min(1200px, calc(100% - 40px));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.footer-top,
+.footer-grid,
+.footer-nav {
+  padding-top: 24px;
+  padding-bottom: 20px;
+}
+
+.footer-links,
+.footer-list {
+  display: grid;
+  gap: 8px;
+}
+
+.footer-col-h,
+.footer-title,
+.footer-head {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-muted, var(--ink4, #94A3B8));
+  margin-bottom: 10px;
+}
+
+.footer-lnk,
+.footer-list a,
+.footer-nav a {
+  color: var(--text-body, var(--ink2, #334155));
+}
+
+.footer-link-desc,
+.footer-brand-copy,
+.footer-copy {
+  color: var(--text-muted, var(--ink3, #64748B));
+}
+
+.footer-bottom {
+  border-top: 1px solid var(--border-subtle, var(--bdr2, rgba(15,23,42,.06)));
+  padding-top: 14px;
+  padding-bottom: 18px;
+}
+
+@media (max-width: 860px) {
+  .footer-top,
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+  .footer-nav {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+</style>
+<script>(function(){try{var storedTheme=localStorage.getItem('antarious-theme');document.documentElement.dataset.theme=storedTheme==='dark'?'dark':'light';}catch(error){document.documentElement.dataset.theme='light';}})();</script></head>
+<body>
+  <div class="shell">
+    <nav class="nav" id="nav">
+  <div class="nav-logo" onclick="window.location='/'"><img fetchpriority="high" decoding="async" loading="eager" class="theme-logo-main" src="/assets/logos/antarious-main.svg" alt="Antarious AI"></div>
+  <ul class="nav-links">
+    <li><button class="nav-link" onclick="window.location='/business'">For Business</button></li>
+    <li><button class="nav-link" onclick="window.location='/government'">For Government</button></li>
+    <li><button class="nav-link" onclick="window.location='/ngo'">For NGO</button></li>
+  </ul>
+  <div class="nav-right">
+    <button class="nav-ghost" onclick="window.location='/freya'">Meet Freya</button>
+    <button class="nav-cta" onclick="window.location='/#cta'">Request Demo</button>
+  </div>
+</nav>
+<main class="wrap">
+      <header class="hero">
+        <div class="eyebrow">Company</div>
+        <h1>Legal &amp; Policy</h1>
+        <p class="tagline">The terms, policies, and notices that govern how Antarious AI operates and how we handle the data entrusted to us.</p>
+        <p class="support">Antarious AI operates in environments where legal and policy transparency is not optional. The documents on this page govern the relationship between Antarious and its customers, partners, and users — and set out the specific commitments we make around data, privacy, and conduct.</p>
+      </header>
+      <div class="doc">
+<section class="doc-section" id="navigation-in-page">
+<h2>Navigation (In-Page)</h2>
+<ul>
+<li><a href="#terms-of-service">Terms of Service</a></li>
+<li><a href="#privacy-policy">Privacy Policy</a></li>
+<li><a href="#cookie-policy">Cookie Policy</a></li>
+<li><a href="#data-processing-agreement">Data Processing Agreement</a></li>
+<li><a href="#acceptable-use-policy">Acceptable Use Policy</a></li>
+<li><a href="#contact-legal">Contact Legal</a></li>
+</ul>
+<h3 id="terms-of-service">Terms of Service</h3>
+<p><strong>Effective date:</strong> [Date to be populated]<br><strong>Last updated:</strong> April 2026<br><strong>Document version:</strong> 1.0</p>
+</section>
+<section class="doc-section" id="1-introduction-and-acceptance">
+<h2>1. Introduction and Acceptance</h2>
+<p>These Terms of Service (&quot;Terms&quot;) govern access to and use of the Antarious AI platform, including Freya and all associated agents, features, integrations, and services (collectively, the &quot;Platform&quot;), provided by Antarious AI Limited (&quot;Antarious&quot;, &quot;we&quot;, &quot;us&quot;, or &quot;our&quot;).</p>
+<p>By accessing or using the Platform, or by signing an Order Form or Master Services Agreement that references these Terms, you (&quot;Customer&quot;) agree to be bound by these Terms. If you are accessing the Platform on behalf of an organisation, you represent that you have authority to bind that organisation to these Terms.</p>
+<p>If you do not agree to these Terms, you may not access or use the Platform.</p>
+</section>
+<section class="doc-section" id="2-definitions">
+<h2>2. Definitions</h2>
+<p><strong>&quot;Customer&quot;</strong> means the organisation or individual that has entered into an agreement with Antarious to access the Platform.</p>
+<p><strong>&quot;Customer Data&quot;</strong> means all data, content, and information submitted to or processed by the Platform by or on behalf of the Customer.</p>
+<p><strong>&quot;Authorised Users&quot;</strong> means individuals authorised by the Customer to access and use the Platform under the Customer&#39;s account.</p>
+<p><strong>&quot;Order Form&quot;</strong> means a written or electronic order document specifying the commercial terms of a Customer&#39;s access to the Platform.</p>
+<p><strong>&quot;Services&quot;</strong> means the Platform and any associated implementation, configuration, training, and support services provided by Antarious.</p>
+<p><strong>&quot;Confidential Information&quot;</strong> means any non-public information disclosed by one party to the other that is designated as confidential or that reasonably should be understood to be confidential given the nature of the information and circumstances of disclosure.</p>
+</section>
+<section class="doc-section" id="3-access-to-the-platform">
+<h2>3. Access to the Platform</h2>
+<h3>3.1 Licence Grant</h3>
+<p>Subject to these Terms and payment of applicable fees, Antarious grants the Customer a limited, non-exclusive, non-transferable licence to access and use the Platform during the subscription term solely for the Customer&#39;s internal business operations and in accordance with these Terms.</p>
+<h3>3.2 Authorised Users</h3>
+<p>The Customer is responsible for managing access to the Platform by Authorised Users, including ensuring that credentials are not shared and that access is revoked promptly when an Authorised User departs or changes role.</p>
+<h3>3.3 Account Responsibility</h3>
+<p>The Customer is responsible for all activity that occurs under its account, including actions taken by Authorised Users. The Customer must notify Antarious immediately if it becomes aware of any unauthorised access to its account.</p>
+<h3>3.4 Restrictions</h3>
+<p>The Customer may not:</p>
+<ul>
+<li>Sublicence, resell, or make the Platform available to third parties except as explicitly permitted in a signed partner agreement</li>
+<li>Reverse engineer, decompile, or attempt to extract source code from the Platform</li>
+<li>Use the Platform in a manner that violates applicable law or these Terms</li>
+<li>Use the Platform to process data in categories that have not been agreed with Antarious in writing</li>
+<li>Attempt to access Platform components or data outside the Customer&#39;s configured scope</li>
+</ul>
+</section>
+<section class="doc-section" id="4-customer-data">
+<h2>4. Customer Data</h2>
+<h3>4.1 Ownership</h3>
+<p>Customer Data remains the property of the Customer. Antarious acquires no ownership rights over Customer Data by virtue of processing it through the Platform.</p>
+<h3>4.2 Use of Customer Data</h3>
+<p>Antarious processes Customer Data solely to provide and improve the Services as described in these Terms and the Data Processing Agreement. Antarious does not use Customer Data to train AI models for use by other customers or for any purpose outside the scope of the Services.</p>
+<h3>4.3 Customer Responsibility for Data</h3>
+<p>The Customer is responsible for ensuring that Customer Data submitted to the Platform complies with applicable law, including data protection law, and that appropriate consents or legal bases exist for processing.</p>
+<h3>4.4 Data Security</h3>
+<p>Antarious implements security measures designed to protect Customer Data as described in the <a href="/trust/security">Security page</a> and the Data Processing Agreement. The Customer is responsible for security within its own systems and networks.</p>
+</section>
+<section class="doc-section" id="5-fees-and-payment">
+<h2>5. Fees and Payment</h2>
+<h3>5.1 Fees</h3>
+<p>Fees for access to the Platform are set out in the applicable Order Form. Fees are quoted exclusive of applicable taxes unless otherwise stated.</p>
+<h3>5.2 Payment Terms</h3>
+<p>Unless otherwise specified in the Order Form, invoices are due within thirty (30) days of the invoice date. Late payments may incur interest at the rate specified in the Order Form or, if not specified, at the applicable statutory rate.</p>
+<h3>5.3 Fee Changes</h3>
+<p>Antarious may change fees with not less than ninety (90) days&#39; written notice prior to the start of a renewal term.</p>
+</section>
+<section class="doc-section" id="6-confidentiality">
+<h2>6. Confidentiality</h2>
+<p>Each party agrees to:</p>
+<ul>
+<li>Keep the other party&#39;s Confidential Information strictly confidential</li>
+<li>Not disclose Confidential Information to third parties without prior written consent, except to employees, contractors, or advisors who have a need to know and are bound by equivalent confidentiality obligations</li>
+<li>Use Confidential Information only for the purposes of performing obligations or exercising rights under these Terms</li>
+</ul>
+<p>Confidentiality obligations do not apply to information that is or becomes publicly available through no breach of these Terms, was already known to the receiving party, or is required to be disclosed by law or regulatory authority.</p>
+</section>
+<section class="doc-section" id="7-intellectual-property">
+<h2>7. Intellectual Property</h2>
+<h3>7.1 Antarious IP</h3>
+<p>The Platform, including all software, agents, models, interfaces, and documentation, is the intellectual property of Antarious and its licensors. These Terms do not transfer any intellectual property rights to the Customer.</p>
+<h3>7.2 Customer IP</h3>
+<p>Customer Data and any Customer-specific configurations, workflows, or content remain the intellectual property of the Customer. These Terms do not transfer any Customer intellectual property rights to Antarious.</p>
+<h3>7.3 Feedback</h3>
+<p>If the Customer provides feedback or suggestions about the Platform, Antarious may use that feedback without restriction or obligation to the Customer.</p>
+</section>
+<section class="doc-section" id="8-warranties-and-disclaimers">
+<h2>8. Warranties and Disclaimers</h2>
+<h3>8.1 Antarious Warranties</h3>
+<p>Antarious warrants that:</p>
+<ul>
+<li>The Platform will perform materially in accordance with its documentation during the subscription term</li>
+<li>Antarious will implement reasonable security measures to protect Customer Data</li>
+<li>Antarious will comply with applicable data protection law in its processing of Customer Data</li>
+</ul>
+<h3>8.2 Customer Warranties</h3>
+<p>The Customer warrants that:</p>
+<ul>
+<li>It has the authority to enter into these Terms</li>
+<li>Its use of the Platform and submission of Customer Data complies with applicable law</li>
+<li>It will maintain appropriate security over Authorised User credentials and access</li>
+</ul>
+<h3>8.3 Disclaimers</h3>
+<p>Except as expressly set out in these Terms, the Platform is provided &quot;as is&quot;. Antarious disclaims all implied warranties, including warranties of merchantability, fitness for a particular purpose, and non-infringement, to the fullest extent permitted by applicable law.</p>
+</section>
+<section class="doc-section" id="9-limitation-of-liability">
+<h2>9. Limitation of Liability</h2>
+<h3>9.1 Exclusion of Consequential Loss</h3>
+<p>To the fullest extent permitted by applicable law, neither party will be liable to the other for any indirect, incidental, special, or consequential losses, including loss of revenue, loss of profit, loss of data, or loss of opportunity, arising out of or in connection with these Terms.</p>
+<h3>9.2 Cap on Liability</h3>
+<p>Each party&#39;s total cumulative liability arising out of or related to these Terms, whether in contract, tort, or otherwise, will not exceed the total fees paid or payable by the Customer to Antarious in the twelve (12) months preceding the event giving rise to the claim.</p>
+<h3>9.3 Essential Basis</h3>
+<p>The limitations in this section reflect an allocation of risk that is an essential element of the basis of the bargain between the parties. Antarious would not provide the Platform on the terms set out in these Terms without these limitations.</p>
+</section>
+<section class="doc-section" id="10-term-and-termination">
+<h2>10. Term and Termination</h2>
+<h3>10.1 Term</h3>
+<p>These Terms commence on the date the Customer first accesses the Platform and continue for the subscription term specified in the Order Form, unless terminated earlier in accordance with these Terms.</p>
+<h3>10.2 Termination for Cause</h3>
+<p>Either party may terminate these Terms immediately on written notice if the other party materially breaches these Terms and fails to remedy the breach within thirty (30) days of receiving written notice of the breach.</p>
+<h3>10.3 Effect of Termination</h3>
+<p>On termination:</p>
+<ul>
+<li>The Customer&#39;s access to the Platform is revoked</li>
+<li>Antarious will provide Customer Data in a standard exportable format within thirty (30) days of the termination date, if requested</li>
+<li>Following a transition period specified in the Order Form, Antarious will securely delete Customer Data and provide written confirmation of deletion</li>
+<li>Provisions that by their nature should survive termination (including confidentiality, intellectual property, limitation of liability, and governing law) will survive</li>
+</ul>
+</section>
+<section class="doc-section" id="11-governing-law-and-disputes">
+<h2>11. Governing Law and Disputes</h2>
+<p>These Terms are governed by the laws of England and Wales. The parties submit to the exclusive jurisdiction of the courts of England and Wales for the resolution of any dispute arising out of or in connection with these Terms, subject to either party&#39;s right to seek emergency injunctive relief in any jurisdiction.</p>
+</section>
+<section class="doc-section" id="12-general">
+<h2>12. General</h2>
+<h3>12.1 Amendments</h3>
+<p>Antarious may amend these Terms with thirty (30) days&#39; notice for existing customers. Continued use of the Platform after the effective date of the amended Terms constitutes acceptance. For material changes, Antarious will seek Customer acknowledgement where required by applicable law.</p>
+<h3>12.2 Assignment</h3>
+<p>The Customer may not assign its rights or obligations under these Terms without Antarious&#39;s prior written consent. Antarious may assign these Terms in connection with a merger, acquisition, or sale of substantially all of its assets.</p>
+<h3>12.3 Entire Agreement</h3>
+<p>These Terms, together with the applicable Order Form, Data Processing Agreement, and any other documents incorporated by reference, constitute the entire agreement between the parties with respect to their subject matter and supersede all prior agreements.</p>
+<h3>12.4 Severability</h3>
+<p>If any provision of these Terms is found to be unenforceable, the remaining provisions will continue in full force and effect.</p>
+<h3 id="privacy-policy">Privacy Policy</h3>
+<p><strong>Effective date:</strong> [Date to be populated]<br><strong>Last updated:</strong> April 2026</p>
+</section>
+<section class="doc-section" id="1-who-we-are">
+<h2>1. Who We Are</h2>
+<p>Antarious AI Limited (&quot;Antarious&quot;, &quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) is the data controller for personal data collected through our website (antarious.ai) and our customer-facing communications. For personal data processed within the Platform on behalf of our customers, Antarious acts as a data processor — in which case the customer is the data controller and the Data Processing Agreement governs that processing.</p>
+<p><strong>Contact:</strong> the legal team</p>
+</section>
+<section class="doc-section" id="2-personal-data-we-collect">
+<h2>2. Personal Data We Collect</h2>
+<h3>2.1 Data You Provide to Us</h3>
+<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:14px">
+<thead><tr>
+<th style="text-align:left;padding:10px;border:1px solid rgba(15,23,42,.12);background:#F8FBFF">Data Category</th>
+<th style="text-align:left;padding:10px;border:1px solid rgba(15,23,42,.12);background:#F8FBFF">Examples</th>
+<th style="text-align:left;padding:10px;border:1px solid rgba(15,23,42,.12);background:#F8FBFF">When Collected</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Contact information</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Name, job title, organisation, email address, phone number</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Demo requests, contact form submissions, account creation</td>
+</tr>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Account information</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Username, password (hashed), role, access level</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Account creation and management</td>
+</tr>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Communication data</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Content of emails, enquiries, support requests</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">When you contact us</td>
+</tr>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Payment information</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Billing contact details (payment card data is processed by our payment processor, not stored by Antarious)</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Invoicing and payment processing</td>
+</tr>
+</tbody></table></div>
+<h3>2.2 Data Collected Automatically</h3>
+<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:14px">
+<thead><tr>
+<th style="text-align:left;padding:10px;border:1px solid rgba(15,23,42,.12);background:#F8FBFF">Data Category</th>
+<th style="text-align:left;padding:10px;border:1px solid rgba(15,23,42,.12);background:#F8FBFF">Examples</th>
+<th style="text-align:left;padding:10px;border:1px solid rgba(15,23,42,.12);background:#F8FBFF">Purpose</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Usage data</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Pages visited, features used, time on platform, actions taken</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Platform improvement, security monitoring</td>
+</tr>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Technical data</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">IP address, browser type, device type, operating system</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Security and fraud prevention</td>
+</tr>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Cookie data</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Session identifiers, preference settings</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Platform functionality and analytics (see Cookie Policy)</td>
+</tr>
+</tbody></table></div>
+<h3>2.3 Data We Do Not Collect</h3>
+<p>Antarious does not intentionally collect sensitive personal data (special category data under UK/EU GDPR) through its website or commercial communications. If you believe sensitive data has been inadvertently submitted, please contact the legal team.</p>
+</section>
+<section class="doc-section" id="3-how-we-use-personal-data">
+<h2>3. How We Use Personal Data</h2>
+<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:14px">
+<thead><tr>
+<th style="text-align:left;padding:10px;border:1px solid rgba(15,23,42,.12);background:#F8FBFF">Purpose</th>
+<th style="text-align:left;padding:10px;border:1px solid rgba(15,23,42,.12);background:#F8FBFF">Legal Basis</th>
+<th style="text-align:left;padding:10px;border:1px solid rgba(15,23,42,.12);background:#F8FBFF">Data Used</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Providing the Platform and Services</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Contract performance</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Account information, contact information</td>
+</tr>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Responding to enquiries and demo requests</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Legitimate interest / consent</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Contact information, communication data</td>
+</tr>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Account management and support</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Contract performance</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Account information, usage data</td>
+</tr>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Security monitoring and incident response</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Legitimate interest</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Technical data, usage data</td>
+</tr>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Improving the Platform</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Legitimate interest</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Usage data (anonymised or aggregated where possible)</td>
+</tr>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Marketing communications (where opted in)</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Consent</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Contact information</td>
+</tr>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Legal and regulatory compliance</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Legal obligation</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">As required by applicable law</td>
+</tr>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Invoicing and payment</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Contract performance</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Payment and contact information</td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="doc-section" id="4-how-we-share-personal-data">
+<h2>4. How We Share Personal Data</h2>
+<p>Antarious does not sell personal data. We share personal data only in the following circumstances:</p>
+<ul>
+<li><strong>Service providers and sub-processors:</strong> We share data with third-party providers who support our operations (cloud infrastructure, payment processing, email delivery, security services). A current list of sub-processors is available on request. All sub-processors are bound by data processing agreements and adequate data protection standards.</li>
+<li><strong>Business transfers:</strong> In the event of a merger, acquisition, or sale of substantially all assets, personal data may be transferred to the acquiring entity, subject to equivalent protection.</li>
+<li><strong>Legal requirements:</strong> We may disclose personal data where required by law, regulation, or court order, or where necessary to protect the rights and safety of Antarious, its customers, or the public.</li>
+<li><strong>With your consent:</strong> We share data with third parties where you have provided explicit consent to that sharing.</li>
+</ul>
+</section>
+<section class="doc-section" id="5-international-data-transfers">
+<h2>5. International Data Transfers</h2>
+<p>Where personal data is transferred outside the UK or European Economic Area, Antarious implements appropriate safeguards — including Standard Contractual Clauses or equivalent mechanisms — to ensure that data protection standards equivalent to UK/EU GDPR apply.</p>
+</section>
+<section class="doc-section" id="6-data-retention">
+<h2>6. Data Retention</h2>
+<p>We retain personal data for as long as necessary for the purposes set out in this policy, or as required by applicable law or contract. Specific retention periods:</p>
+<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:14px">
+<thead><tr>
+<th style="text-align:left;padding:10px;border:1px solid rgba(15,23,42,.12);background:#F8FBFF">Data Category</th>
+<th style="text-align:left;padding:10px;border:1px solid rgba(15,23,42,.12);background:#F8FBFF">Retention Period</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Account data</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Duration of account plus two years</td>
+</tr>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Contact and communication data</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Three years from last interaction</td>
+</tr>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Usage and technical data</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Two years, or as required for security purposes</td>
+</tr>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Audit records (Platform)</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Seven years minimum (configurable per customer requirements)</td>
+</tr>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Payment records</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Seven years (legal and tax requirement)</td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="doc-section" id="7-your-rights">
+<h2>7. Your Rights</h2>
+<p>Under applicable data protection law, you have the following rights in relation to your personal data:</p>
+<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:14px">
+<thead><tr>
+<th style="text-align:left;padding:10px;border:1px solid rgba(15,23,42,.12);background:#F8FBFF">Right</th>
+<th style="text-align:left;padding:10px;border:1px solid rgba(15,23,42,.12);background:#F8FBFF">Description</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top"><strong>Access</strong></td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Request a copy of the personal data we hold about you</td>
+</tr>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top"><strong>Rectification</strong></td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Request correction of inaccurate or incomplete data</td>
+</tr>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top"><strong>Erasure</strong></td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Request deletion of your data where there is no lawful basis for continued processing</td>
+</tr>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top"><strong>Restriction</strong></td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Request that we restrict processing of your data in certain circumstances</td>
+</tr>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top"><strong>Portability</strong></td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Receive your data in a machine-readable format where processing is based on consent or contract</td>
+</tr>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top"><strong>Object</strong></td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Object to processing based on legitimate interest</td>
+</tr>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top"><strong>Withdraw consent</strong></td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Withdraw consent at any time where processing is consent-based</td>
+</tr>
+</tbody></table></div>
+<p>To exercise any of these rights, contact: the legal team</p>
+<p>We will respond to valid requests within one month. Where requests are complex or numerous, we may extend this period by a further two months with notice.</p>
+<p>You also have the right to lodge a complaint with the relevant supervisory authority — in the UK, the Information Commissioner&#39;s Office (ICO) at ico.org.uk.</p>
+<h3 id="cookie-policy">Cookie Policy</h3>
+<p><strong>Effective date:</strong> [Date to be populated]<br><strong>Last updated:</strong> April 2026</p>
+</section>
+<section class="doc-section" id="1-what-cookies-are">
+<h2>1. What Cookies Are</h2>
+<p>Cookies are small text files placed on your device when you visit a website. They are used to recognise your device, remember your preferences, and enable certain functionality. We also use similar technologies such as pixels and local storage where relevant.</p>
+</section>
+<section class="doc-section" id="2-cookies-we-use">
+<h2>2. Cookies We Use</h2>
+<h3>2.1 Strictly Necessary Cookies</h3>
+<p>These cookies are required for the website and Platform to function and cannot be disabled.</p>
+<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:14px">
+<thead><tr>
+<th style="text-align:left;padding:10px;border:1px solid rgba(15,23,42,.12);background:#F8FBFF">Cookie</th>
+<th style="text-align:left;padding:10px;border:1px solid rgba(15,23,42,.12);background:#F8FBFF">Purpose</th>
+<th style="text-align:left;padding:10px;border:1px solid rgba(15,23,42,.12);background:#F8FBFF">Duration</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Session identifier</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Maintains your authenticated session</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Session (deleted on browser close)</td>
+</tr>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">CSRF token</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Protects against cross-site request forgery</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Session</td>
+</tr>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Load balancer</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Routes requests to the correct server</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Session</td>
+</tr>
+</tbody></table></div>
+<h3>2.2 Functional Cookies</h3>
+<p>These cookies enable enhanced functionality and personalisation. They may be set by us or by third-party providers.</p>
+<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:14px">
+<thead><tr>
+<th style="text-align:left;padding:10px;border:1px solid rgba(15,23,42,.12);background:#F8FBFF">Cookie</th>
+<th style="text-align:left;padding:10px;border:1px solid rgba(15,23,42,.12);background:#F8FBFF">Purpose</th>
+<th style="text-align:left;padding:10px;border:1px solid rgba(15,23,42,.12);background:#F8FBFF">Duration</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Preference settings</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Remembers your UI preferences (e.g., language, display mode)</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">12 months</td>
+</tr>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Onboarding state</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Tracks onboarding progress for new users</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">30 days</td>
+</tr>
+</tbody></table></div>
+<h3>2.3 Analytics Cookies</h3>
+<p>These cookies help us understand how visitors use our website, so we can improve it. Data is aggregated and anonymised where possible.</p>
+<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:14px">
+<thead><tr>
+<th style="text-align:left;padding:10px;border:1px solid rgba(15,23,42,.12);background:#F8FBFF">Cookie</th>
+<th style="text-align:left;padding:10px;border:1px solid rgba(15,23,42,.12);background:#F8FBFF">Provider</th>
+<th style="text-align:left;padding:10px;border:1px solid rgba(15,23,42,.12);background:#F8FBFF">Purpose</th>
+<th style="text-align:left;padding:10px;border:1px solid rgba(15,23,42,.12);background:#F8FBFF">Duration</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Analytics identifier</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">[Analytics provider — to be populated]</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Page views, navigation patterns, feature usage</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">24 months</td>
+</tr>
+</tbody></table></div>
+<h3>2.4 Marketing Cookies</h3>
+<p>These cookies are used to deliver relevant communications. They are only set where you have given consent.</p>
+<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:14px">
+<thead><tr>
+<th style="text-align:left;padding:10px;border:1px solid rgba(15,23,42,.12);background:#F8FBFF">Cookie</th>
+<th style="text-align:left;padding:10px;border:1px solid rgba(15,23,42,.12);background:#F8FBFF">Provider</th>
+<th style="text-align:left;padding:10px;border:1px solid rgba(15,23,42,.12);background:#F8FBFF">Purpose</th>
+<th style="text-align:left;padding:10px;border:1px solid rgba(15,23,42,.12);background:#F8FBFF">Duration</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">[Marketing cookie]</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">[Provider — to be populated]</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">Ad targeting, campaign performance</td>
+<td style="padding:10px;border:1px solid rgba(15,23,42,.12);vertical-align:top">12 months</td>
+</tr>
+</tbody></table></div>
+</section>
+<section class="doc-section" id="3-managing-cookies">
+<h2>3. Managing Cookies</h2>
+<p>You can control cookies through:</p>
+<ul>
+<li><strong>Our cookie preference centre:</strong> Accessible via the cookie banner on first visit and from the footer of our website at any time</li>
+<li><strong>Your browser settings:</strong> Most browsers allow you to view, manage, and delete cookies. Note that disabling strictly necessary cookies will affect Platform functionality</li>
+<li><strong>Opt-out tools:</strong> For analytics and marketing cookies from third-party providers, you may use the provider&#39;s own opt-out mechanisms</li>
+</ul>
+<h3 id="data-processing-agreement">Data Processing Agreement</h3>
+<p class="callout-line"><strong>Overview</strong></p>
+<p>For all Antarious deployments where Antarious processes personal data on behalf of a Customer organisation, a Data Processing Agreement (DPA) is executed prior to go-live.</p>
+<p>The DPA governs:</p>
+<ul>
+<li>The categories of personal data processed by Antarious on the Customer&#39;s behalf</li>
+<li>The purposes and duration of processing</li>
+<li>The obligations of Antarious as a data processor under UK GDPR, EU GDPR, and applicable national data protection law</li>
+<li>Security measures applied to Customer personal data</li>
+<li>Sub-processor arrangements, including the sub-processor list and notification of changes</li>
+<li>Data subject rights support procedures</li>
+<li>Breach notification obligations (notification to the Customer within 72 hours of confirmed awareness)</li>
+<li>Data return and deletion obligations on termination</li>
+<li>International transfer safeguards</li>
+<li>Audit rights — the Customer&#39;s right to audit Antarious&#39;s compliance with the DPA on reasonable notice</li>
+</ul>
+<p class="callout-line"><strong>Requesting a DPA</strong></p>
+<p>The Antarious standard DPA is available on request. To request the DPA, or to submit a Customer&#39;s own DPA for review, contact: the legal team</p>
+<p>For government and enterprise deployments, DPA negotiations are handled by the Antarious legal team in conjunction with the customer&#39;s deployment engagement.</p>
+<h3 id="acceptable-use-policy">Acceptable Use Policy</h3>
+<p><strong>Effective date:</strong> [Date to be populated]<br><strong>Last updated:</strong> April 2026</p>
+</section>
+<section class="doc-section" id="1-purpose">
+<h2>1. Purpose</h2>
+<p>This Acceptable Use Policy (&quot;AUP&quot;) sets out the rules governing use of the Antarious Platform by Customers and Authorised Users. It forms part of the Terms of Service.</p>
+</section>
+<section class="doc-section" id="2-permitted-use">
+<h2>2. Permitted Use</h2>
+<p>The Platform may be used only for lawful purposes and in accordance with the Terms of Service. Permitted use includes:</p>
+<ul>
+<li>Automating operational workflows within the Customer&#39;s organisation</li>
+<li>Processing Customer Data as described in the agreed deployment configuration</li>
+<li>Generating intelligence, drafts, and recommendations for human review and approval</li>
+<li>Managing the approval and execution of business operations within configured governance structures</li>
+</ul>
+</section>
+<section class="doc-section" id="3-prohibited-use">
+<h2>3. Prohibited Use</h2>
+<p>Customers and Authorised Users may not use the Platform to:</p>
+<p class="callout-line"><strong>3.1 Process prohibited data categories</strong></p>
+<ul>
+<li>Process data relating to children under 16 without explicit parental consent and Antarious agreement</li>
+<li>Process data in special categories (health, biometric, genetic, political, religious, etc.) without explicit Antarious agreement and documented legal basis</li>
+<li>Process classified government information above the security classification level agreed for the deployment</li>
+</ul>
+<p class="callout-line"><strong>3.2 Conduct harmful or illegal activities</strong></p>
+<ul>
+<li>Generate, distribute, or act upon content that is unlawful, defamatory, discriminatory, or harassing</li>
+<li>Engage in automated outreach or communications in violation of anti-spam laws (including GDPR, CAN-SPAM, CASL)</li>
+<li>Conduct or facilitate fraud, deception, or misrepresentation</li>
+<li>Circumvent the Platform&#39;s human approval requirements to enable unauthorised automated action</li>
+</ul>
+<p class="callout-line"><strong>3.3 Compromise Platform integrity</strong></p>
+<ul>
+<li>Attempt to gain unauthorised access to any part of the Platform or any other system accessible through it</li>
+<li>Submit input designed to manipulate, destabilise, or exploit Freya or the agent architecture</li>
+<li>Use the Platform in a manner that creates disproportionate load on shared infrastructure</li>
+<li>Circumvent or attempt to circumvent access controls, rate limits, or security measures</li>
+</ul>
+<p class="callout-line"><strong>3.4 Misuse intellectual property</strong></p>
+<ul>
+<li>Use the Platform to generate content that infringes third-party intellectual property rights</li>
+<li>Reproduce or distribute Antarious&#39;s proprietary platform components, documentation, or models outside the terms of the licence</li>
+</ul>
+</section>
+<section class="doc-section" id="4-enforcement">
+<h2>4. Enforcement</h2>
+<p>Antarious reserves the right to investigate suspected violations of this AUP and to suspend or terminate access where a violation is confirmed or reasonably suspected. Antarious will provide notice where practical, except where immediate suspension is necessary to protect the Platform, other customers, or third parties.</p>
+<h3 id="contact-legal">Contact Legal</h3>
+<p>For all legal, contractual, and policy-related enquiries:</p>
+<p><strong>Contact channel:</strong> Available on request<br><strong>Response target:</strong> Three business days</p>
+<p>For data subject rights requests under UK GDPR: the legal team (subject line: Data Subject Rights Request)<br>For security-related legal matters: the security team</p>
+<p><em>Antarious AI &#183; Company &#183; Legal &amp; Policy</em><br><em>Last reviewed: April 2026</em></p>
+</section>
+
+      </div>
+      <footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="name"><img fetchpriority="high" decoding="async" loading="eager" class="theme-logo-main" src="/assets/logos/antarious-main.svg" alt="Antarious AI"></div>
+        <div class="tagline">The Agentic AI Operating System for business, government, and NGO teams.</div>
+      </div>
+      <div>
+        <div class="footer-col-h">Platform</div>
+        <ul class="footer-links">
+          <li><a class="footer-lnk" href="/#hero">Overview</a></li>
+          <li><a class="footer-lnk" href="/freya">Freya</a></li>
+          <li><a class="footer-lnk" href="/#usecases">Workflows</a></li>
+          <li><a class="footer-lnk" href="/#comparison">Trust</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-h">Modules</div>
+        <ul class="footer-links">
+          <li><a class="footer-lnk" href="/business">For Business</a></li>
+          <li><a class="footer-lnk" href="/government">For Government</a></li>
+          <li><a class="footer-lnk" href="/ngo">For NGO</a></li>
+          <li><a class="footer-lnk" href="/freya">Cross-Industry Freya</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-h">Trust</div>
+        <ul class="footer-links">
+          <li class="footer-link-item"><a class="footer-lnk" href="/trust/human-approval">Human Approval</a><span class="footer-link-desc">How approvals remain with designated human owners.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="/trust/audit-trail">Audit Trail</a><span class="footer-link-desc">End-to-end logging of actions, context, and decisions.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="/trust/role-based-control">Role-Based Control</a><span class="footer-link-desc">Access boundaries and permissions by role and function.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="/trust/security">Security</a><span class="footer-link-desc">Controls, safeguards, and deployment security posture.</span></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-h">Company</div>
+        <ul class="footer-links">
+          <li class="footer-link-item"><a class="footer-lnk" href="/company/about">About</a><span class="footer-link-desc">Who we are and what we are building.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="/company/contact">Contact</a><span class="footer-link-desc">How to reach sales, support, and partnerships.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="/company/partnerships">Partnerships</a><span class="footer-link-desc">Collaboration models for delivery and integration partners.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="/company/legal">Legal</a><span class="footer-link-desc">Policy, terms, and governance-related notices.</span></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-h">Resources</div>
+        <ul class="footer-links">
+          <li class="footer-link-item"><a class="footer-lnk" href="/resources/documentation">Documentation</a><span class="footer-link-desc">API reference, SDKs, and integration guides.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="/resources/help-center">Help Centre</a><span class="footer-link-desc">FAQs, guides, and 24/7 support resources.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="/faq/comprehensive">FAQ</a><span class="footer-link-desc">Answers on deployment, governance, integrations, and Freya.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="/resources/webinars">Webinars</a><span class="footer-link-desc">Live training and on-demand learning sessions.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="/resources/partner-programme">Partner Programme</a><span class="footer-link-desc">Reseller and integration partnership opportunities.</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">(c) 2026 Antarious. All rights reserved.</div>
+      <div class="footer-badges"><span class="footer-badge">HUMAN-IN-THE-LOOP</span><span class="footer-badge">AUDITABLE AI</span><span class="footer-badge">CROSS-INDUSTRY</span><span class="footer-badge">PREMIUM DEPLOYMENT</span></div>
+    </div>
+  </div>
+</footer>
+    </main>
+  </div>
+<script id="antarious-nav-active">
+(function () {
+  var file = (window.location.pathname.split('/').pop() || '/').toLowerCase();
+
+  var map = {
+    '/business': 'For Business',
+    '/government': 'For Government',
+    '/ngo': 'For NGO'
+  };
+
+  var targetLabel = map[file] || null;
+  var navButtons = document.querySelectorAll('.nav-link');
+  for (var i = 0; i < navButtons.length; i++) {
+    var btn = navButtons[i];
+    var text = (btn.textContent || '').trim();
+    if (targetLabel && text === targetLabel) {
+      btn.classList.add('active');
+      btn.setAttribute('aria-current', 'page');
+    } else {
+      btn.classList.remove('active');
+      btn.removeAttribute('aria-current');
+    }
+  }
+
+  var freyaBtn = document.querySelector('.nav-ghost');
+  if (freyaBtn) {
+    var isFreya = file === '/freya';
+    freyaBtn.classList.toggle('active', isFreya);
+    if (isFreya) {
+      freyaBtn.setAttribute('aria-current', 'page');
+    } else {
+      freyaBtn.removeAttribute('aria-current');
+    }
+  }
+})();
+</script>
+<script id="antarious-nav-sync-script">
+(function(){
+  var nav = document.getElementById('nav');
+  if(!nav) return;
+  function onScroll(){ nav.classList.toggle('scrolled', window.scrollY > 60); }
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+})();
+</script>
+</body>
+</html>
+`;
+
+export default html;

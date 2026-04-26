@@ -1,0 +1,1260 @@
+const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Partner Programme Hub | Antarious</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#F8FBFF;--card:#FFFFFF;--ink:#0F172A;--ink2:#334155;--ink3:#64748B;--line:rgba(15,23,42,.08);--teal:#0EA5E9;--teal2:#0284C7;--glow:rgba(14,165,233,.12)}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:"DM Sans",sans-serif;background:linear-gradient(180deg,#FFFFFF 0%,#F8FBFF 100%);color:var(--ink);line-height:1.75}
+    a{text-decoration:none;color:var(--teal2)}
+    .shell{min-height:100vh}
+    .topbar{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:rgba(255,255,255,.9);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+    .brand{display:flex;align-items:center;gap:12px;font-family:"Outfit",sans-serif;font-weight:800;color:var(--ink)}
+    .brand img{height:28px;width:auto;display:block}
+    .top-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .top-link,.top-cta{font-family:"Outfit",sans-serif;font-size:13px;border-radius:12px;padding:9px 16px;transition:all .2s}
+    .top-link{color:var(--ink2);border:1px solid rgba(14,165,233,.14);background:linear-gradient(135deg,rgba(14,165,233,.08),rgba(255,255,255,.02))}
+    .top-cta{color:#fff;background:linear-gradient(135deg,var(--teal),var(--teal2));border:1px solid transparent;box-shadow:0 8px 22px rgba(14,165,233,.18)}
+    .wrap{max-width:1120px;margin:0 auto;padding:40px 24px 72px}
+    .hero{padding:28px 0 26px}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:"DM Mono",monospace;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--teal2);margin-bottom:16px}
+    .eyebrow::before{content:"";width:16px;height:1.5px;background:var(--teal2)}
+    h1{font-family:"Outfit",sans-serif;font-size:clamp(34px,5vw,62px);line-height:.98;letter-spacing:-2px;margin:0 0 16px}
+    .tagline{font-family:"Outfit",sans-serif;font-size:clamp(18px,2.1vw,28px);font-weight:700;line-height:1.28;color:var(--ink2);max-width:860px;margin:0 0 14px}
+    .support{max-width:840px;color:var(--ink3);font-size:16px}
+    .doc{display:grid;gap:18px}
+    .doc-section{background:var(--card);border:1px solid var(--line);border-radius:28px;padding:28px;box-shadow:0 18px 46px rgba(15,23,42,.05)}
+    .doc-section h2{font-family:"Outfit",sans-serif;font-size:22px;line-height:1.1;letter-spacing:-.6px;margin:0 0 18px}
+    .doc-section h3{font-family:"Outfit",sans-serif;font-size:17px;line-height:1.25;letter-spacing:-.4px;margin:20px 0 10px;color:var(--ink)}
+    .doc-section p{margin:0 0 14px;color:var(--ink2);font-size:15px}
+    .doc-section ul{margin:0 0 10px;padding-left:20px;color:var(--ink2)}
+    .doc-section li{margin:0 0 9px}
+    .doc-section strong{color:var(--ink)}
+    .callout-line{font-family:"Outfit",sans-serif;font-weight:700;color:var(--teal2)!important}
+    .search-mock{margin:0 0 16px;padding:14px 16px;border-radius:16px;border:1px solid rgba(14,165,233,.18);background:linear-gradient(135deg,rgba(14,165,233,.08),rgba(255,255,255,.92));color:var(--ink3)}
+    .disabled-link{color:var(--teal2);font-weight:600}
+    .footer-nav{margin-top:34px;display:flex;gap:12px;flex-wrap:wrap}
+    .footer-nav a{font-family:"Outfit",sans-serif;font-size:13px;font-weight:700;border-radius:999px;padding:9px 14px;border:1px solid var(--line);background:#fff;color:var(--ink2)}
+    @media(max-width:720px){
+      .topbar{padding:16px 18px;align-items:flex-start;flex-direction:column;gap:12px}
+      .wrap{padding:28px 18px 54px}
+      .doc-section{padding:22px}
+      .top-actions{width:100%}
+    }
+  </style>
+<style id="antarious-design-system-overrides">
+/* antarious-design-system-overrides */
+:root,
+[data-theme="light"] {
+  --brand-primary: #0EA5E9;
+  --brand-primary-strong: #0284C7;
+  --brand-primary-soft: #38BDF8;
+  --brand-success: #059669;
+  --brand-danger: #DC2626;
+  --brand-warning: #D97706;
+  --surface-base: #FFFFFF;
+  --surface-muted: #F8FAFC;
+  --text-strong: #0F172A;
+  --text-body: #334155;
+  --text-muted: #64748B;
+  --border-subtle: rgba(15,23,42,.09);
+  --motion-fast: 180ms;
+  --motion-base: 260ms;
+  --motion-slow: 420ms;
+  --ease-standard: cubic-bezier(.22,1,.36,1);
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+}
+
+html[data-theme="dark"] {
+  --surface-base: #07131E;
+  --surface-muted: #0B1722;
+  --text-strong: #E5EEF7;
+  --text-body: #D6E0EA;
+  --text-muted: #9AB0C4;
+  --border-subtle: rgba(255,255,255,.10);
+  --brand-primary: #38BDF8;
+  --brand-primary-strong: #0EA5E9;
+  --brand-primary-soft: #7DD3FC;
+  --brand-success: #34D399;
+  --brand-danger: #F87171;
+  --brand-warning: #FBBF24;
+}
+
+:root {
+  --td: var(--brand-primary);
+  --tdd: var(--brand-primary-strong);
+  --tl: var(--brand-primary-soft);
+  --teal: var(--brand-primary);
+  --teal2: var(--brand-primary-strong);
+  --teal3: var(--brand-primary-soft);
+  --green: var(--brand-success);
+  --red: var(--brand-danger);
+  --amber: var(--brand-warning);
+}
+
+html { font-size: 16px; }
+body {
+  background: var(--surface-base);
+  color: var(--text-strong);
+  line-height: 1.66;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+
+.antarious-wordmark {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-strong, var(--ink, #0F172A));
+  line-height: 1;
+}
+.antarious-wordmark svg {
+  width: clamp(140px, 18vw, 182px);
+  height: auto;
+  display: block;
+}
+html[data-theme="dark"] .antarious-wordmark {
+  color: #F3F8FF;
+}
+
+
+.theme-logo-main {
+  height: 28px;
+  width: auto;
+  display: block;
+}
+.nav-logo .theme-logo-main {
+  height: 28px;
+}
+.footer-brand-img.theme-logo-main,
+.name .theme-logo-main {
+  height: 28px;
+}
+@media (max-width: 768px) {
+  .theme-logo-main { height: 24px; }
+}
+
+
+/* Global nav-footer consistency */
+.nav,
+.topbar,
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 950;
+  min-height: 62px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--border-subtle, var(--bdr, rgba(15,23,42,.09)));
+  background: color-mix(in srgb, var(--surface-base, var(--bg, #fff)) 92%, transparent);
+  backdrop-filter: blur(20px);
+}
+
+.nav-logo,
+.brand {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.theme-logo-main {
+  height: 28px;
+  width: auto;
+  display: block;
+}
+
+.nav-links,
+.nav-r,
+.nav-right,
+.top-actions,
+.header-actions,
+.primary-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-r,
+.nav-right,
+.top-actions,
+.header-actions { margin-left: auto; }
+
+.nl,
+.nav-link,
+.top-link,
+.primary-nav a,
+.nav-sector-btn,
+.nav-freya-btn,
+.nav-ghost,
+.btn-back {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-body, var(--ink2, #334155));
+  background: color-mix(in srgb, var(--surface-base, #fff) 90%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand-primary, #0EA5E9) 18%, var(--border-subtle, rgba(15,23,42,.09)));
+  border-radius: 10px;
+  padding: 8px 14px;
+  white-space: nowrap;
+}
+
+.nav-cta,
+.btn-nav-cta,
+.top-cta {
+  font-size: 13px;
+  font-weight: 800;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 9px 18px;
+  background: linear-gradient(135deg, var(--brand-primary, #0EA5E9), var(--brand-primary-strong, #0284C7));
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--brand-primary, #0EA5E9) 35%, transparent);
+}
+
+footer,
+.site-footer,
+.footer,
+.footer-inner,
+.footer-top,
+.footer-grid,
+.footer-nav,
+.footer-bottom {
+  color: var(--text-body, var(--ink2, #334155));
+}
+
+footer,
+.site-footer,
+.footer {
+  background: color-mix(in srgb, var(--surface-muted, var(--bg2, #f8fafc)) 90%, var(--surface-base, #fff));
+  border-top: 1px solid var(--border-subtle, var(--bdr, rgba(15,23,42,.09)));
+  margin-top: 56px;
+}
+
+.footer-inner,
+.shell > .wrap + .footer-nav,
+.footer-nav {
+  width: min(1200px, calc(100% - 40px));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.footer-top,
+.footer-grid,
+.footer-nav {
+  padding-top: 24px;
+  padding-bottom: 20px;
+}
+
+.footer-links,
+.footer-list {
+  display: grid;
+  gap: 8px;
+}
+
+.footer-col-h,
+.footer-title,
+.footer-head {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-muted, var(--ink4, #94A3B8));
+  margin-bottom: 10px;
+}
+
+.footer-lnk,
+.footer-list a,
+.footer-nav a {
+  color: var(--text-body, var(--ink2, #334155));
+}
+
+.footer-link-desc,
+.footer-brand-copy,
+.footer-copy {
+  color: var(--text-muted, var(--ink3, #64748B));
+}
+
+.footer-bottom {
+  border-top: 1px solid var(--border-subtle, var(--bdr2, rgba(15,23,42,.06)));
+  padding-top: 14px;
+  padding-bottom: 18px;
+}
+
+@media (max-width: 860px) {
+  .nav,
+  .topbar,
+  .site-header {
+    padding: 10px 14px;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .nav-links,
+  .primary-nav,
+  .top-actions {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 2px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .nav-links::-webkit-scrollbar,
+  .primary-nav::-webkit-scrollbar,
+  .top-actions::-webkit-scrollbar { display: none; }
+
+  .nav-r,
+  .nav-right,
+  .header-actions {
+    width: auto;
+    margin-left: auto;
+  }
+
+  .theme-logo-main { height: 24px; }
+
+  .footer-top,
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+
+  .footer-nav {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+/* Keep common shells centered and screen-balanced */
+.page,
+.hero-inner,
+.nav,
+section > .container,
+section > .page,
+section > .inner,
+.nav-inner,
+.footer-inner {
+  width: min(1200px, calc(100% - 2 * var(--space-6)));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Base readability and overflow safety */
+h1, h2, h3, h4, p, li { overflow-wrap: anywhere; }
+.h2,
+.hero-h1,
+.section-title,
+.display {
+  letter-spacing: -0.02em;
+  line-height: 1.06;
+  text-wrap: balance;
+}
+.sp,
+.hero-sub,
+.hero-body,
+.uc-p,
+p,
+li { color: var(--text-body); }
+
+/* Improve dark hero legibility (Freya/Government variants) */
+html[data-theme="dark"] .hero-h1,
+html[data-theme="dark"] .hero-sub,
+html[data-theme="dark"] .hero-body {
+  color: #EAF2FF !important;
+  text-shadow: 0 1px 1px rgba(0,0,0,.32);
+}
+
+html[data-theme="dark"] .hero-h1 .ac {
+  background: none !important;
+  -webkit-text-fill-color: var(--brand-primary-soft) !important;
+  color: var(--brand-primary-soft) !important;
+}
+html[data-theme="dark"] .hero-h1 .dim,
+html[data-theme="dark"] .hero-h1 em {
+  color: #BBD0E6 !important;
+}
+
+/* Uniform interaction feel */
+.btn,
+.btn-primary,
+.btn-p,
+.nav-cta,
+.btn-nav-cta,
+.button-primary,
+.pc-btn.featured-btn,
+.nav-link,
+.nl,
+.primary-nav a {
+  transition: transform var(--motion-base) var(--ease-standard), box-shadow var(--motion-base) var(--ease-standard), background-color var(--motion-base) var(--ease-standard), border-color var(--motion-base) var(--ease-standard), color var(--motion-base) var(--ease-standard);
+}
+
+.btn:hover,
+.btn-primary:hover,
+.btn-p:hover,
+.nav-cta:hover,
+.btn-nav-cta:hover,
+.button-primary:hover,
+.pc-btn.featured-btn:hover { transform: translateY(-2px); }
+
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
+/* Smooth reveal defaults */
+.reveal,
+.reveal.in,
+.reveal.is-visible {
+  transition-duration: var(--motion-slow);
+  transition-timing-function: var(--ease-standard);
+}
+
+/* Never leave key content invisible if JS reveal logic fails */
+html:not(.js) .reveal,
+body:not(.js) .reveal {
+  opacity: 1 !important;
+  transform: none !important;
+}
+/* Section rhythm */
+section {
+  padding: clamp(56px, 7vw, 96px) 0 !important;
+}
+
+/* Tablet layout harmonization */
+@media (max-width: 1100px) {
+  .page,
+  .hero-inner,
+  .nav,
+  section > .container,
+  section > .page,
+  section > .inner,
+  .nav-inner,
+  .footer-inner { width: calc(100% - 2 * var(--space-5)); }
+
+  .hero-inner,
+  .uc-panel,
+  .ft-hero,
+  .bridge-grid,
+  .hero-grid,
+  .split-hero,
+  .agents-grid,
+  .cost-grid,
+  .bo-strip,
+  .footer-grid,
+  .hero-stage-grid,
+  .grid-4,
+  .stack-grid { grid-template-columns: 1fr !important; }
+
+  .grid-3,
+  .workflow-grid,
+  .benefit-grid,
+  .stats-band,
+  .ft-live-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+
+  .h2,
+  .hero-h1,
+  .section-title,
+  .display { font-size: clamp(2.15rem, 5.3vw, 3.4rem) !important; }
+}
+
+/* Mobile-first finishing */
+@media (max-width: 768px) {
+  html { font-size: 15px; }
+
+  .page,
+  .hero-inner,
+  .nav,
+  section > .container,
+  section > .page,
+  section > .inner,
+  .nav-inner,
+  .footer-inner { width: calc(100% - 2 * var(--space-4)) !important; }
+
+  /* Reduce heavy decorative effects on small screens */
+  .hero-grid-bg,
+  .hero-glow,
+  .hero-glow1,
+  .hero-glow2,
+  .hero-dots,
+  .hero::before,
+  .hero::after { display: none !important; }
+
+  .nav {
+    height: auto !important;
+    min-height: 62px;
+    padding: 10px var(--space-4) !important;
+    gap: 8px !important;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .nav-logo { margin-right: 8px !important; }
+
+  .nav-links,
+  .primary-nav {
+    order: 3;
+    width: 100%;
+    margin: 6px 0 0 0 !important;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 8px;
+    padding-bottom: 2px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .nav-links::-webkit-scrollbar,
+  .primary-nav::-webkit-scrollbar { display: none; }
+
+  .nav-link,
+  .nl,
+  .primary-nav a { white-space: nowrap; flex: 0 0 auto; }
+
+  .nav-right,
+  .header-actions {
+    margin-left: auto;
+    width: auto;
+    display: flex;
+    gap: 8px;
+  }
+
+  .hero,
+  .hero-wrap { min-height: auto !important; padding-top: 92px !important; }
+  .hero-inner { gap: var(--space-6) !important; }
+
+  .hero-h1,
+  .display,
+  .h2,
+  .section-title {
+    font-size: clamp(1.95rem, 9vw, 2.9rem) !important;
+    line-height: 1.08 !important;
+  }
+
+  .hero-sub,
+  .hero-body,
+  .sp,
+  .section-subtitle,
+  .uc-p,
+  .task-text {
+    font-size: 0.98rem !important;
+    line-height: 1.72 !important;
+  }
+
+  .hero-btns,
+  .button-row,
+  .hero-actions {
+    display: grid !important;
+    grid-template-columns: 1fr;
+    gap: 10px !important;
+    width: 100%;
+  }
+
+  .hero-btns > *,
+  .button-row > *,
+  .hero-actions > *,
+  .btn,
+  .btn-primary,
+  .btn-p,
+  .btn-g,
+  .button,
+  .button-link,
+  .nav-cta,
+  .btn-nav-cta,
+  .nav-ghost,
+  .btn-back,
+  .pc-btn,
+  .uc-tab {
+    min-height: 46px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .hero-metrics,
+  .uc-stats,
+  .hero-stats,
+  .stats-band {
+    gap: var(--space-4) !important;
+    flex-wrap: wrap;
+  }
+
+  .hero-sep,
+  .hs-sep,
+  .uc-div { display: none !important; }
+
+  .cost-grid,
+  .agents-grid,
+  .bo-strip,
+  .grid-2,
+  .grid-3,
+  .grid-4,
+  .workflow-grid,
+  .benefit-grid,
+  .ft-live-grid,
+  .t-mets,
+  .stats-band { grid-template-columns: 1fr !important; }
+
+  .feature-card,
+  .workflow-card,
+  .quote-card,
+  .cta-panel,
+  .surface,
+  .footer-cta,
+  .hero-stage,
+  .terminal,
+  .freya-terminal,
+  .demo-win { padding: 20px !important; border-radius: 14px !important; }
+}
+
+/* Extra-large screens */
+@media (min-width: 1600px) {
+  .page,
+  .hero-inner,
+  .nav,
+  section > .container,
+  section > .page,
+  section > .inner,
+  .nav-inner,
+  .footer-inner { width: min(1320px, calc(100% - 120px)); }
+}
+
+
+
+/* Final hero readability safeguards */
+.hero-h1,
+.hero-sub,
+.hero-body {
+  opacity: 1 !important;
+}
+
+html[data-theme="dark"] .hero,
+html[data-theme="dark"] .hero-wrap {
+  background: linear-gradient(180deg, #061427 0%, #0A1E35 100%) !important;
+}
+
+html[data-theme="dark"] .hero-kicker,
+html[data-theme="dark"] .eyebrow {
+  color: #8FD9FF !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>
+
+<style id="antarious-svg-icon-theme">
+.ai-svg-icon {
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  vertical-align: -0.12em;
+  color: var(--brand-primary-strong, var(--teal2, #0284C7));
+}
+.ai-svg-icon svg { width: 100%; height: 100%; display: block; }
+.ai-icon-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+}
+.ai-icon-inline .ai-svg-icon {
+  width: 1.1em;
+  height: 1.1em;
+}
+html[data-theme="dark"] .ai-svg-icon {
+  color: var(--brand-primary-soft, var(--teal3, #7DD3FC));
+}
+</style>
+<script id="antarious-svg-icon-runtime">
+(function () {
+  var ICON_SVGS = {
+    alert: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3L21 19H3L12 3Z" stroke="currentColor" stroke-width="1.8"/><path d="M12 9V13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="16.5" r="1" fill="currentColor"/></svg>',
+    brain: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 5a3 3 0 016 0 3 3 0 012.8 4.1A3 3 0 0118 15a3 3 0 01-2.5 2.96A3.5 3.5 0 0112 21a3.5 3.5 0 01-3.5-3.04A3 3 0 016 15a3 3 0 01.2-5.9A3 3 0 019 5z" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v8M9.5 10.5h2.5M12 13h2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+    eye: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.5 12S6 6.5 12 6.5 21.5 12 21.5 12 18 17.5 12 17.5 2.5 12 2.5 12Z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="2.8" stroke="currentColor" stroke-width="1.8"/></svg>',
+    bolt: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.5 2L5 13h5l-1.5 9L19 10h-5L13.5 2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+    chart: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 19.5h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M6.5 16v-4M12 16V8M17.5 16v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    target: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>',
+    pen: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 20l4.5-1 9-9a1.8 1.8 0 000-2.5l-1-1a1.8 1.8 0 00-2.5 0l-9 9L4 20z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12.5 7.5l4 4" stroke="currentColor" stroke-width="1.8"/></svg>',
+    shield: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3l7 3v5c0 5.2-3.5 8.8-7 10-3.5-1.2-7-4.8-7-10V6l7-3z" stroke="currentColor" stroke-width="1.8"/><path d="M9.5 12.5l1.8 1.8 3.5-3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    megaphone: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 14V10l11-4v12L4 14z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M15 10h3a2 2 0 012 2 2 2 0 01-2 2h-3" stroke="currentColor" stroke-width="1.8"/><path d="M7.5 14.5l1.2 4h2.3l-1.1-3.5" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
+    phone: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.5 4h3l1 4-2 1.5a13 13 0 005 5L17 12l4 1v3c0 1.1-.9 2-2 2C10 18 6 14 6 7c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+    folder: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 7.5h7l2 2h9v7.5a2 2 0 01-2 2H5a2 2 0 01-2-2V7.5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+    signal: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 18h2M8 16h2M12 13h2M16 10h2M20 7h1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M4 18l16-11" stroke="currentColor" stroke-width="1.8"/></svg>',
+    timer: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="13" r="7.5" stroke="currentColor" stroke-width="1.8"/><path d="M12 9v4l2.8 1.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9 3h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    calendar: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="5" width="16" height="15" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M8 3.5v3M16 3.5v3M4 9h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    money: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/></svg>',
+    settings: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M19 12a7 7 0 00-.1-1l2-1.5-2-3.4-2.4.8a7.2 7.2 0 00-1.7-1L14.5 3h-5l-.3 2.9a7.2 7.2 0 00-1.7 1l-2.4-.8-2 3.4 2 1.5a7 7 0 000 2L3 14.5l2 3.4 2.4-.8a7.2 7.2 0 001.7 1L9.5 21h5l.3-2.9a7.2 7.2 0 001.7-1l2.4.8 2-3.4-2-1.5c.1-.3.1-.7.1-1z" stroke="currentColor" stroke-width="1.4"/></svg>',
+    puzzle: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 4h4a2 2 0 012 2v1h2a2 2 0 012 2v3h-2a2 2 0 100 4h2v2a2 2 0 01-2 2h-3v-2a2 2 0 10-4 0v2H7a2 2 0 01-2-2v-3h2a2 2 0 100-4H5V8a2 2 0 012-2h2V4z" stroke="currentColor" stroke-width="1.8"/></svg>',
+    user: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.8"/><path d="M5 19c1.6-3 4-4.5 7-4.5s5.4 1.5 7 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    flame: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3c1 3-1 4.5-2.2 5.8C9.4 10.2 8 11.7 8 14a4 4 0 008 0c0-2.5-1.4-4.2-2.6-5.8C12.2 7 11 5.5 13 3z" stroke="currentColor" stroke-width="1.8"/></svg>',
+    compass: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/><path d="M14.8 9.2l-1.8 5.6-5.6 1.8 1.8-5.6 5.6-1.8z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+    search: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="1.8"/><path d="M16 16l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    leaf: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 4c-7 0-12 4.5-12 10 0 3 2 6 6 6 5.5 0 10-5 10-12 0-2.3-1.7-4-4-4z" stroke="currentColor" stroke-width="1.8"/><path d="M8 16c2-2 4.8-4.2 9-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    mobile: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="7" y="3" width="10" height="18" rx="2" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="17.5" r="0.9" fill="currentColor"/></svg>',
+    mail: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M4 8l8 6 8-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    spark: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8L12 3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+    chat: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 6h14a2 2 0 012 2v7a2 2 0 01-2 2H10l-4 3v-3H5a2 2 0 01-2-2V8a2 2 0 012-2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+    link: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 14l4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M8 16H6a4 4 0 010-8h2M16 8h2a4 4 0 010 8h-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    handshake: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 10l4-4 3 3 3-3 6 6-4 4-3-3-2 2-5-5-2 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+  };
+
+  function render() {
+    var nodes = document.querySelectorAll('.ai-svg-icon-slot[data-ai-icon]');
+    for (var i = 0; i < nodes.length; i++) {
+      var node = nodes[i];
+      var icon = node.getAttribute('data-ai-icon');
+      var svg = ICON_SVGS[icon];
+      if (!svg) continue;
+      node.classList.add('ai-svg-icon');
+      node.setAttribute('aria-hidden', 'true');
+      node.innerHTML = svg;
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', render);
+  } else {
+    render();
+  }
+})();
+</script>
+
+
+<link rel="preload" as="image" href="/assets/logos/antarious-main.svg">
+<style id="antarious-nav-sync-style">
+.theme-logo-main{height:28px;width:auto;display:block}
+.nav-logo .theme-logo-main{height:28px}
+.footer-brand-img.theme-logo-main,.name .theme-logo-main{height:28px}
+
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:999;
+  height:62px;display:flex;align-items:center;
+  padding:0 clamp(14px,3.2vw,48px);
+  gap:clamp(10px,1.7vw,24px);
+  background:color-mix(in srgb,var(--surface-base,var(--bg,#fff)) 92%, transparent);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(15,23,42,.07);
+  transition:all .3s;
+  width:min(1200px,calc(100% - 2 * clamp(14px,3vw,24px)));
+  margin:0 auto;
+}
+.nav.scrolled{height:54px;box-shadow:0 1px 12px rgba(15,23,42,.06)}
+
+.nav-logo{display:flex;align-items:center;gap:9px;cursor:pointer;flex-shrink:0}
+.nav-links{display:flex;list-style:none;gap:2px;margin-left:clamp(8px,2vw,28px);padding:0}
+
+.nav-link{
+  font-size:13px;font-weight:700;color:var(--text-body,var(--ink2,#334155));
+  padding:8px 16px;border-radius:12px;transition:all .2s;cursor:pointer;
+  border:1px solid rgba(14,165,233,.14);
+  background:linear-gradient(135deg,rgba(14,165,233,.08),rgba(255,255,255,.02));
+  box-shadow:0 4px 14px rgba(15,23,42,.04);
+  white-space:nowrap;
+}
+.nav-link:hover,.nav-link.active{color:var(--brand-primary-strong,var(--teal2,#0284C7));border-color:rgba(14,165,233,.26);background:linear-gradient(135deg,rgba(14,165,233,.12),rgba(56,189,248,.05));transform:translateY(-1px)}
+
+.nav-right{display:flex;align-items:center;gap:10px;margin-left:auto;flex-shrink:0}
+.nav-ghost{
+  font-size:13px;font-weight:700;color:var(--brand-primary-strong,var(--teal2,#0284C7));
+  background:linear-gradient(135deg,rgba(14,165,233,.14),rgba(56,189,248,.08));
+  border:1px solid rgba(14,165,233,.24);padding:8px 18px;border-radius:12px;cursor:pointer;
+  transition:all .2s;box-shadow:0 8px 22px rgba(14,165,233,.12);white-space:nowrap;
+}
+.nav-ghost:hover{border-color:rgba(14,165,233,.38);color:var(--brand-primary,var(--teal,#0EA5E9));transform:translateY(-1px);box-shadow:0 12px 28px rgba(14,165,233,.18)}
+.nav-cta{
+  font-size:13px;font-weight:800;color:#fff;
+  border:none;padding:9px 22px;border-radius:12px;cursor:pointer;transition:all .22s;
+  background:linear-gradient(135deg,var(--brand-primary,var(--teal,#0EA5E9)),var(--brand-primary-strong,var(--teal2,#0284C7)));
+  box-shadow:0 6px 18px rgba(14,165,233,.26),0 0 0 1px rgba(14,165,233,.08);
+  white-space:nowrap;
+}
+.nav-cta:hover{background:linear-gradient(135deg,var(--brand-primary-strong,var(--teal2,#0284C7)),#0369A1);transform:translateY(-1px);box-shadow:0 10px 24px rgba(14,165,233,.34)}
+
+body{padding-top:62px}
+
+/* Large laptop / small desktop */
+@media (max-width:1100px){
+  .nav{width:calc(100% - 2 * 20px);padding:0 20px;gap:12px}
+  .nav-links{margin-left:10px}
+  .nav-link{padding:8px 13px;font-size:12.5px}
+  .nav-ghost{padding:8px 14px}
+  .nav-cta{padding:9px 16px}
+}
+
+/* Tablet and below */
+@media (max-width:860px){
+  .theme-logo-main{height:24px}
+  .nav{width:calc(100% - 2 * 14px);padding:10px 14px;gap:8px;flex-wrap:wrap;height:auto;min-height:62px}
+  .nav-links{order:3;width:100%;margin:6px 0 0 0;overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px;-ms-overflow-style:none;scrollbar-width:none}
+  .nav-links::-webkit-scrollbar{display:none}
+  .nav-right{width:auto;margin-left:auto;gap:8px}
+  .nav-link{flex:0 0 auto}
+}
+
+/* Mobile */
+@media (max-width:768px){
+  .nav{width:calc(100% - 2 * 16px);padding:10px 12px;gap:8px;align-items:center}
+  .nav-logo{margin-right:8px}
+  .nav-links{margin:6px 0 0 0;gap:8px}
+  .nav-link{padding:7px 11px;font-size:12px}
+  .nav-right{display:flex;gap:8px;margin-left:auto;width:auto}
+  .nav-ghost{padding:7px 11px;font-size:12px}
+  .nav-cta{padding:8px 12px;font-size:12px}
+}
+
+/* Very small devices */
+@media (max-width:420px){
+  .nav-right{width:100%;justify-content:flex-end}
+  .nav-ghost,.nav-cta{padding:7px 10px;font-size:11.5px}
+}
+</style>
+<style id="antarious-footer-sync-style">
+footer,
+.site-footer,
+.footer,
+.footer-inner,
+.footer-top,
+.footer-grid,
+.footer-nav,
+.footer-bottom {
+  color: var(--text-body, var(--ink2, #334155));
+}
+
+footer,
+.site-footer,
+.footer {
+  background: color-mix(in srgb, var(--surface-muted, var(--bg2, #f8fafc)) 90%, var(--surface-base, #fff));
+  border-top: 1px solid var(--border-subtle, var(--bdr, rgba(15,23,42,.09)));
+  margin-top: 56px;
+}
+
+.footer-inner,
+.shell > .wrap + .footer-nav,
+.footer-nav {
+  width: min(1200px, calc(100% - 40px));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.footer-top,
+.footer-grid,
+.footer-nav {
+  padding-top: 24px;
+  padding-bottom: 20px;
+}
+
+.footer-links,
+.footer-list {
+  display: grid;
+  gap: 8px;
+}
+
+.footer-col-h,
+.footer-title,
+.footer-head {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-muted, var(--ink4, #94A3B8));
+  margin-bottom: 10px;
+}
+
+.footer-lnk,
+.footer-list a,
+.footer-nav a {
+  color: var(--text-body, var(--ink2, #334155));
+}
+
+.footer-link-desc,
+.footer-brand-copy,
+.footer-copy {
+  color: var(--text-muted, var(--ink3, #64748B));
+}
+
+.footer-bottom {
+  border-top: 1px solid var(--border-subtle, var(--bdr2, rgba(15,23,42,.06)));
+  padding-top: 14px;
+  padding-bottom: 18px;
+}
+
+@media (max-width: 860px) {
+  .footer-top,
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+  .footer-nav {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+</style>
+<script>(function(){try{var storedTheme=localStorage.getItem('antarious-theme');document.documentElement.dataset.theme=storedTheme==='dark'?'dark':'light';}catch(error){document.documentElement.dataset.theme='light';}})();</script></head>
+<body>
+  <div class="shell">
+    <nav class="nav" id="nav">
+  <div class="nav-logo" onclick="window.location='/'"><img fetchpriority="high" decoding="async" loading="eager" class="theme-logo-main" src="/assets/logos/antarious-main.svg" alt="Antarious AI"></div>
+  <ul class="nav-links">
+    <li><button class="nav-link" onclick="window.location='/business'">For Business</button></li>
+    <li><button class="nav-link" onclick="window.location='/government'">For Government</button></li>
+    <li><button class="nav-link" onclick="window.location='/ngo'">For NGO</button></li>
+  </ul>
+  <div class="nav-right">
+    <button class="nav-ghost" onclick="window.location='/freya'">Meet Freya</button>
+    <button class="nav-cta" onclick="window.location='/#cta'">Request Demo</button>
+  </div>
+</nav>
+<main class="wrap">
+      <header class="hero">
+        <div class="eyebrow">Resources</div>
+        <h1>Partner Programme Hub</h1>
+        <p class="tagline">Everything active Antarious partners need to build, deliver, and grow — in one place.</p>
+        <p class="support">This page is the operational resource centre for active Antarious partners. If you are looking for information about joining the partnership programme, commercial terms, or tier structure, visit the <a href="/company/partnerships">Partnerships page →</a>. If you are an active partner looking for tools, training, support, and resources to deliver exceptional Antarious deployments — you are in the right place.</p>
+      </header>
+      <div class="doc">
+<section class="doc-section" id="section-01">
+<h2>Section 01 — Partner Portal Access</h2>
+<h3>Your Primary Hub</h3>
+<p>The Antarious Partner Portal is the central hub for all partner activity — deal registration, pipeline tracking, training, certification, resources, and support. Everything you need to operate as an Antarious partner is accessible from the Portal.</p>
+<p class="callout-line"><strong><span class="disabled-link">Log in to the Partner Portal →</span></strong></p>
+<h3>What Is in the Portal</h3>
+<p><strong>Deal Registration and Pipeline</strong><br>Register new opportunities, track deal status, manage your pipeline, and monitor referral commission. All opportunities registered in the Portal are protected — meaning your referral commission applies regardless of the commercial route the client takes.</p>
+<p><strong>Commission and Revenue Tracking</strong><br>Real-time view of your earned and pending commission, confirmed deployments, and revenue attributed to your partnership. Exportable for your internal finance processes.</p>
+<p><strong>Training and Certification</strong><br>Access the full Antarious Implementation Certification curriculum, track completion across your team, and manage certification renewals. Includes the sandbox environment for hands-on exercises.</p>
+<p><strong>Resource Library</strong><br>All sales collateral, technical documentation, deployment playbooks, and marketing assets — organised by sector, audience, and use case. Always the current version.</p>
+<p><strong>Support Channel</strong><br>Partner-priority support for technical and commercial queries. Submit requests directly through the Portal for faster routing.</p>
+<p><strong>Partner Community</strong><br>Discussion boards, shared learnings, and peer-to-peer connection with other Antarious partners globally.</p>
+</section>
+<section class="doc-section" id="section-02">
+<h2>Section 02 — Antarious Implementation Certification</h2>
+<h3>Becoming and Remaining a Certified Implementation Specialist</h3>
+<p>Antarious Implementation Certification is the technical foundation of the partnership programme. Certified specialists are qualified to configure, deploy, and support Antarious for client organisations across all three sectors.</p>
+<h3>Certification Curriculum</h3>
+<p>The full curriculum is delivered through the Partner Portal as self-paced online modules with scheduled live lab sessions. Total learning time is approximately 20 hours.</p>
+<p><strong>Module 1 — Platform Architecture</strong><br><em>4 hours &#183; Self-paced</em></p>
+<p>A comprehensive introduction to the Antarious platform architecture — covering Freya&#39;s agent orchestration model, the memory system, the approval workflow engine, and the audit trail infrastructure. Participants completing this module will understand how the platform is structured, how agents communicate, and how deployments are built from the ground up.</p>
+<p>Topics covered:</p>
+<ul>
+<li>Freya&#39;s core intelligence layer and how it orchestrates specialist agents</li>
+<li>The agent context-sharing model — how agents build on each other&#39;s work</li>
+<li>The approve-before-execute model — how it is implemented at the platform level</li>
+<li>Persistent memory architecture — what is stored, how it is structured, and how it is queried</li>
+<li>Audit trail system — record generation, immutability, storage, and retrieval</li>
+<li>Data flow through the platform — ingestion, processing, output, and storage</li>
+</ul>
+<p><span class="disabled-link">Start Module 1 →</span> <em>(Portal login required)</em></p>
+<p><strong>Module 2 — Deployment Configuration</strong><br><em>6 hours &#183; Self-paced with live lab session</em></p>
+<p>The practical core of the certification programme. Participants work through the full deployment configuration process in a guided sandbox environment — from initial data source connection to role configuration, agent setup, approval workflow design, and go-live validation.</p>
+<p>Topics covered:</p>
+<ul>
+<li>Data source integration — authentication methods, field mapping, sync configuration</li>
+<li>Agent configuration — parameters, triggers, thresholds, and sector-specific settings</li>
+<li>Role and permission setup — mapping authority structures to Antarious permission dimensions</li>
+<li>Approval workflow design — single, sequential, parallel, conditional, and threshold-based flows</li>
+<li>Institutional memory initialisation — seeding context and historical data</li>
+<li>Deployment validation — testing workflows, verifying integrations, and pre-go-live checklist</li>
+</ul>
+<p><em>Live lab session: 3 hours, scheduled with cohorts. See the Portal for upcoming lab dates.</em></p>
+<p><span class="disabled-link">Start Module 2 →</span> <em>(Portal login required)</em></p>
+<p><strong>Module 3 — Sector Configuration</strong><br><em>4 hours per sector &#183; Self-paced</em></p>
+<p>Sector-specific configuration guidance for each of the three environments Antarious serves. Partners complete the modules relevant to their sector focus; completing all three confers multi-sector certification status.</p>
+<p class="callout-line"><strong>Module 3A — Government Configuration</strong></p>
+<ul>
+<li>The 8 government agents — configuration parameters and deployment patterns</li>
+<li>Data sovereignty and security requirements for government deployments</li>
+<li>Compliance configuration — audit trail settings, retention periods, and role boundaries for public sector environments</li>
+<li>Ministerial briefing and Cabinet paper workflow setup</li>
+<li>Integration with government information systems — SharePoint, SAP, Oracle ERP, SQL databases</li>
+</ul>
+<p class="callout-line"><strong>Module 3B — NGO / Development Configuration</strong></p>
+<ul>
+<li>The 10 NGO programme agents — configuration parameters and deployment patterns</li>
+<li>Field data platform integration — ODK, KoBoToolbox, SurveyCTO, DHIS2</li>
+<li>Multi-partner data aggregation configuration</li>
+<li>Donor compliance workflow setup — World Bank, USAID, DFID report structures</li>
+<li>Psychometric Profiling Agent configuration — dimension weighting and scoring calibration</li>
+</ul>
+<p class="callout-line"><strong>Module 3C — Business / GTM Configuration</strong></p>
+<ul>
+<li>The 13 GTM agents — configuration parameters and deployment patterns</li>
+<li>CRM and marketing platform integration — Salesforce, HubSpot, Apollo.io, and others</li>
+<li>Attribution model configuration — 5-model attribution setup and channel mapping</li>
+<li>Outreach workflow configuration — sequence design, personalisation variables, reply classification</li>
+<li>Agency multi-client workspace setup — data isolation and white-label portal configuration</li>
+</ul>
+<p><span class="disabled-link">Start Module 3 →</span> <em>(Portal login required)</em></p>
+<p><strong>Module 4 — Governance and Trust Architecture</strong><br><em>3 hours &#183; Self-paced</em></p>
+<p>A deep-dive into the trust architecture — human approval, audit trail, role-based control, and security — with a focus on how these are configured for client deployments and how to support clients through governance and compliance requirements.</p>
+<p>Topics covered:</p>
+<ul>
+<li>Configuring human approval workflows for different governance structures</li>
+<li>Audit trail configuration — retention periods, access controls, export setup</li>
+<li>Role configuration for complex authority structures — including matrix organisations</li>
+<li>Security configuration — encryption settings, SSO integration, access policy setup</li>
+<li>Compliance mapping — how to support client compliance teams with evidence and documentation</li>
+<li>Supporting procurement and due diligence processes as a partner</li>
+</ul>
+<p><span class="disabled-link">Start Module 4 →</span> <em>(Portal login required)</em></p>
+<p><strong>Module 5 — Client Onboarding and Change Management</strong><br><em>3 hours &#183; Self-paced</em></p>
+<p>How to prepare a client organisation for an Antarious deployment and manage the human side of the change — stakeholder engagement, training design, go-live planning, and post-deployment support.</p>
+<p>Topics covered:</p>
+<ul>
+<li>Pre-deployment stakeholder engagement — who to involve and when</li>
+<li>Change management considerations for agentic AI adoption — common resistance patterns and how to address them</li>
+<li>Training design for different user roles — what each role needs to know before go-live</li>
+<li>Go-live planning — phased rollout vs. full deployment, communication planning, success metrics</li>
+<li>Post-deployment review — the 30-day and 90-day review framework</li>
+<li>Building a long-term client relationship — how to grow a deployment over time</li>
+</ul>
+<p><span class="disabled-link">Start Module 5 →</span> <em>(Portal login required)</em></p>
+<h3>Certification Assessment</h3>
+<p>The certification assessment comprises two components:</p>
+<p><strong>Practical component (60%):</strong><br>A deployment configuration exercise in the sandbox environment. Participants are given a client scenario and must configure a deployment — including integrations, role setup, agent configuration, and approval workflows — that meets the scenario requirements. Assessed by the Antarious certification team.</p>
+<p><strong>Written component (40%):</strong><br>A written assessment covering deployment planning, governance design, and sector-specific configuration decisions. Submitted through the Portal and assessed against a published marking rubric.</p>
+<p><strong>Pass mark:</strong> 75% across both components<br><strong>Resit policy:</strong> One resit permitted within 60 days of the initial assessment. A second resit requires completion of the relevant modules again.<br><strong>Result turnaround:</strong> Within 10 business days of submission</p>
+<h3>Certification Maintenance</h3>
+<p><strong>Validity:</strong> Antarious Implementation Certification is valid for 12 months from the date of award.</p>
+<p><strong>Annual recertification:</strong><br>Recertification requires completion of the annual update module — a 2-hour module covering platform changes, new features, and updated configuration practices from the preceding year. Recertification does not require repeating the full curriculum.</p>
+<p><strong>Major version updates:</strong><br>When Antarious releases a major platform version, a supplementary update module is published. Partners are notified and given a 90-day window to complete it. Completion of the update module is required to maintain certified status.</p>
+<p><strong>Lapsed certification:</strong><br>If certification lapses (renewal not completed within the validity window), a partner may recertify by completing the update module plus the practical assessment component. The full curriculum does not need to be repeated unless more than 24 months have elapsed since original certification.</p>
+<h3>Certification Record and Badge</h3>
+<p>Certified specialists receive:</p>
+<ul>
+<li>A digital certification badge for use on LinkedIn, email signatures, proposals, and partner materials</li>
+<li>A certification record accessible through the Partner Portal, including certification date and sector specialisations</li>
+<li>Inclusion in the Antarious certified specialist directory (accessible to prospective clients evaluating partner capability)</li>
+</ul>
+</section>
+<section class="doc-section" id="section-03">
+<h2>Section 03 — Sales and Pre-Sales Resources</h2>
+<h3>Winning New Clients with Antarious</h3>
+<p>The Partner Portal Resource Library contains a full set of sales and pre-sales materials. Below is an orientation guide to what is available and when to use each resource.</p>
+<p><strong>Platform Overview Deck</strong><br><em>Use for: First meetings with prospective clients who are new to Antarious</em><br>A sector-neutral introduction to Freya, the agent architecture, and the trust model. Editable for co-branding with your organisation. Available in Business, Government, and NGO variants.<br><span class="disabled-link">Access in Partner Portal →</span></p>
+<p><strong>Sector-Specific Pitch Decks</strong><br><em>Use for: Qualified opportunities where the sector is confirmed</em><br>Detailed pitch decks for Business, Government, and NGO — covering the specific problem Antarious solves in that sector, the relevant agents, use cases, outcomes, and trust architecture. Designed to support a 45-minute discovery and pitch meeting.<br><span class="disabled-link">Access in Partner Portal →</span></p>
+<p><strong>ROI Calculator</strong><br><em>Use for: Commercial conversations where the client needs to build an internal business case</em><br>An interactive model that takes inputs from the client&#39;s current operational profile — team size, tool stack, hours spent on specific tasks — and produces a projection of time savings, cost reduction, and output increases. Available as an Excel file and an in-Portal web tool.<br><span class="disabled-link">Access in Partner Portal →</span></p>
+<p><strong>Competitive Positioning Guide</strong><br><em>Use for: Situations where the client is evaluating other AI tools alongside Antarious</em><br>A detailed guide to how Antarious differs from common alternatives — chatbots, copilots, point solution AI tools, and horizontal AI platforms. Includes objection handling guidance for the most common comparisons. <em>Not for distribution to clients — for internal partner use only.</em><br><span class="disabled-link">Access in Partner Portal →</span></p>
+<p><strong>Trust and Governance Briefing Pack</strong><br><em>Use for: Procurement, legal, compliance, and information assurance audiences</em><br>A pack designed for the governance and procurement stage of an opportunity — covering the trust architecture, security posture, compliance framework alignment, and procurement documentation available. Particularly useful for government and enterprise opportunities where security review is part of the procurement process.<br><span class="disabled-link">Access in Partner Portal →</span></p>
+<p><strong>Case Study Templates</strong><br><em>Use for: Building your own client success stories</em><br>Structured templates for documenting a completed Antarious deployment as a case study — covering the challenge, the deployment approach, the outcomes, and client quotes. Submit completed case studies to the partnerships team for co-branding and potential joint publication.<br><span class="disabled-link">Access in Partner Portal →</span></p>
+<p><strong>Proposal Templates</strong><br><em>Use for: Formal proposal submissions</em><br>A set of proposal templates covering different deal types — implementation-only, implementation and resale combined, and multi-phase deployments. Structured to include all elements that enterprise and government procurement processes typically require.<br><span class="disabled-link">Access in Partner Portal →</span></p>
+</section>
+<section class="doc-section" id="section-04">
+<h2>Section 04 — Delivery Resources</h2>
+<h3>Deploying Antarious for Clients</h3>
+<p><strong>Deployment Playbook — Business / GTM</strong><br>A step-by-step delivery playbook for a GTM deployment — from discovery and data source mapping through to agent configuration, go-live, and post-deployment review. Includes client workshop templates, configuration checklists, and handover documentation.<br><span class="disabled-link">Access in Partner Portal →</span></p>
+<p><strong>Deployment Playbook — Government</strong><br>A delivery playbook for government deployments — including additional sections on security review, information assurance, data sovereignty configuration, and the specific approval workflow structures common in public sector environments.<br><span class="disabled-link">Access in Partner Portal →</span></p>
+<p><strong>Deployment Playbook — NGO / Development</strong><br>A delivery playbook for development sector deployments — including guidance on field data platform integration, multi-partner data aggregation setup, donor compliance workflow configuration, and low-connectivity environment considerations.<br><span class="disabled-link">Access in Partner Portal →</span></p>
+<p><strong>Discovery Workshop Template</strong><br>A facilitated workshop template for the pre-deployment discovery phase — covering data source mapping, authority structure documentation, workflow prioritisation, and governance requirements. Available in 2-hour and full-day formats.<br><span class="disabled-link">Access in Partner Portal →</span></p>
+<p><strong>Client Training Materials</strong><br>Role-specific training guides and presentation decks for client onboarding — covering System Administrator, Approver, Operational User, M&amp;E Officer, and Compliance Officer roles. Editable for co-branding with your or your client&#39;s organisation.<br><span class="disabled-link">Access in Partner Portal →</span></p>
+<p><strong>Go-Live Checklist</strong><br>A comprehensive pre-go-live validation checklist covering all deployment components — integration health, role configuration, approval workflow testing, agent trigger validation, audit trail verification, and user access confirmation.<br><span class="disabled-link">Access in Partner Portal →</span></p>
+<p><strong>Post-Deployment Review Framework</strong><br>A structured framework for the 30-day and 90-day post-deployment reviews — covering adoption metrics, workflow performance, issue log, and expansion opportunities. Includes a client-facing review template and an internal partner performance assessment.<br><span class="disabled-link">Access in Partner Portal →</span></p>
+</section>
+<section class="doc-section" id="section-05">
+<h2>Section 05 — Marketing and Co-Marketing</h2>
+<h3>Growing Your Antarious Practice</h3>
+<p><strong>Partner Badge and Certification Marks</strong><br>Antarious partner and certification badge files — in multiple formats for use on your website, proposals, LinkedIn, and email signatures. Usage guidelines included.<br><span class="disabled-link">Download from Partner Portal →</span></p>
+<p><strong>Co-Branded Marketing Templates</strong><br>Email campaign templates, social media post templates, and event materials designed for partner co-branding. Submit co-branded materials to the partnerships team for review before use — a 48-hour review turnaround is our standard.<br><span class="disabled-link">Access in Partner Portal →</span></p>
+<p><strong>Requesting a Joint Case Study</strong><br>If you have completed a successful deployment, we want to tell the story jointly. A joint case study with Antarious gives you a credibility-building asset with our brand alongside yours, and distribution through our website, email, and social channels.</p>
+<p>To initiate a joint case study: email the partnerships team with the subject line &quot;Case Study Request&quot; and a brief summary of the deployment. We will respond within three business days.</p>
+<p><strong>Joint Webinar Opportunities</strong><br>Implementation and Strategic Partners can propose joint webinars for the Antarious webinar calendar. Joint sessions give your organisation visibility to the Antarious audience and establish your team&#39;s expertise in a specific sector or deployment area.</p>
+<p>To propose a joint session: email the partnerships team with a proposed topic, target audience, and suggested format.</p>
+<p><strong>Lead Sharing and Pipeline Referrals</strong><br>Where Antarious generates inbound interest from organisations in your sector or geography, we route introductions to partners who are the best fit. To be considered for inbound referrals, ensure your Partner Portal profile is complete and your sector specialisations and geographic coverage are accurately recorded.</p>
+</section>
+<section class="doc-section" id="section-06">
+<h2>Section 06 — Partner Support</h2>
+<h3>Getting Help as a Partner</h3>
+<p>Partner support is handled separately from general customer support — with dedicated routing and priority response.</p>
+<p><strong>Partner Support Channel</strong><br>Available through the Partner Portal — submit requests directly for fastest routing. Include your partner ID and the deployment or opportunity context in your request.</p>
+<p><strong>Contact channel:</strong> Available on request<br><strong>Contact channel:</strong> Available on request</p>
+<p class="callout-line"><strong>Response targets for partners:</strong></p>
+<ul>
+<li>Critical deployment issue (client-impacting): 4 business hours</li>
+<li>Technical query (non-critical): 1 business day</li>
+<li>Commercial and programme query: 2 business days</li>
+<li>Resource and documentation request: 1 business day</li>
+</ul>
+<p><strong>Dedicated Partner Success Manager (Strategic Partners)</strong><br>Strategic Partners have a named Antarious partner success manager. All support, commercial, and strategic queries go through your named contact.</p>
+</section>
+<section class="doc-section" id="section-07">
+<h2>Section 07 — Partner Community</h2>
+<h3>Connect with Other Antarious Partners</h3>
+<p>The Antarious Partner Community is an active forum within the Partner Portal where implementation partners share knowledge, ask questions, and learn from each other&#39;s deployments.</p>
+<p class="callout-line"><strong>Discussion categories:</strong></p>
+<ul>
+<li>Deployment questions and technical problem-solving</li>
+<li>Sector-specific best practices — Government, NGO, Business</li>
+<li>Integration troubleshooting and configuration sharing</li>
+<li>Change management and client onboarding experiences</li>
+<li>Commercial and partnership programme questions</li>
+<li>New feature discussion and early access feedback</li>
+</ul>
+<p><strong>Community norms:</strong><br>The community is peer-to-peer — Antarious team members participate but do not monitor every thread. For time-sensitive issues, use the support channel rather than the community. For knowledge sharing and non-urgent questions, the community is often the fastest source of high-quality answers.</p>
+</section>
+<section class="doc-section" id="section-08">
+<h2>Section 08 — Partner Portal Profile</h2>
+<h3>Keeping Your Profile Current</h3>
+<p>Your Partner Portal profile is used by the Antarious team to route inbound opportunities and by prospective clients looking for implementation partners. Keeping it accurate and complete directly affects the quality of opportunities that come your way.</p>
+<p class="callout-line"><strong>Profile fields that matter most:</strong></p>
+<ul>
+<li><strong>Sector specialisations:</strong> Which of the three sectors you have active expertise in</li>
+<li><strong>Geographic coverage:</strong> The countries and regions you serve</li>
+<li><strong>Certified specialists:</strong> The number of active certified Implementation Specialists on your team, updated after each certification or renewal</li>
+<li><strong>Completed deployments:</strong> A count of live Antarious deployments you have delivered (verified by Antarious)</li>
+<li><strong>Languages:</strong> Operating languages of your team — particularly relevant for NGO and government deployments in non-English-speaking markets</li>
+<li><strong>Brief description:</strong> A 100–150 word summary of your organisation and your Antarious practice, as it will appear in the partner directory</li>
+</ul>
+<p>Update your profile at any time through the Partner Portal. Material changes — particularly to certified specialist count — should be updated promptly to maintain directory accuracy.</p>
+</section>
+<section class="doc-section" id="section-09">
+<h2>Section 09 — Annual Partner Review</h2>
+<h3>How Partnership Performance Is Reviewed</h3>
+<p>Antarious conducts an annual review of all Implementation and Strategic partnerships. The review covers:</p>
+<ul>
+<li>Deployment volume and quality (client satisfaction, post-deployment performance)</li>
+<li>Certification status — number of active certified specialists</li>
+<li>Commercial commitments — whether the agreed activity levels have been met</li>
+<li>Co-marketing participation and shared pipeline activity</li>
+<li>Support quality — resolution rates and client feedback on partner-managed deployments</li>
+</ul>
+<p class="callout-line"><strong>Outcomes of the annual review:</strong></p>
+<ul>
+<li>Confirmed tier status for the next year</li>
+<li>Tier upgrade (where activity and capability merit it)</li>
+<li>Tier review (where commitments have not been met — with a defined path to resolution)</li>
+<li>Partnership renewal terms for the next year</li>
+</ul>
+<p>Partners are notified of their review date 60 days in advance and receive a self-assessment template to complete before the review meeting.</p>
+</section>
+
+      </div>
+      <footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="name"><img fetchpriority="high" decoding="async" loading="eager" class="theme-logo-main" src="/assets/logos/antarious-main.svg" alt="Antarious AI"></div>
+        <div class="tagline">The Agentic AI Operating System for business, government, and NGO teams.</div>
+      </div>
+      <div>
+        <div class="footer-col-h">Platform</div>
+        <ul class="footer-links">
+          <li><a class="footer-lnk" href="/#hero">Overview</a></li>
+          <li><a class="footer-lnk" href="/freya">Freya</a></li>
+          <li><a class="footer-lnk" href="/#usecases">Workflows</a></li>
+          <li><a class="footer-lnk" href="/#comparison">Trust</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-h">Modules</div>
+        <ul class="footer-links">
+          <li><a class="footer-lnk" href="/business">For Business</a></li>
+          <li><a class="footer-lnk" href="/government">For Government</a></li>
+          <li><a class="footer-lnk" href="/ngo">For NGO</a></li>
+          <li><a class="footer-lnk" href="/freya">Cross-Industry Freya</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-h">Trust</div>
+        <ul class="footer-links">
+          <li class="footer-link-item"><a class="footer-lnk" href="/trust/human-approval">Human Approval</a><span class="footer-link-desc">How approvals remain with designated human owners.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="/trust/audit-trail">Audit Trail</a><span class="footer-link-desc">End-to-end logging of actions, context, and decisions.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="/trust/role-based-control">Role-Based Control</a><span class="footer-link-desc">Access boundaries and permissions by role and function.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="/trust/security">Security</a><span class="footer-link-desc">Controls, safeguards, and deployment security posture.</span></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-h">Company</div>
+        <ul class="footer-links">
+          <li class="footer-link-item"><a class="footer-lnk" href="/company/about">About</a><span class="footer-link-desc">Who we are and what we are building.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="/company/contact">Contact</a><span class="footer-link-desc">How to reach sales, support, and partnerships.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="/company/partnerships">Partnerships</a><span class="footer-link-desc">Collaboration models for delivery and integration partners.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="/company/legal">Legal</a><span class="footer-link-desc">Policy, terms, and governance-related notices.</span></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-h">Resources</div>
+        <ul class="footer-links">
+          <li class="footer-link-item"><a class="footer-lnk" href="/resources/documentation">Documentation</a><span class="footer-link-desc">API reference, SDKs, and integration guides.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="/resources/help-center">Help Centre</a><span class="footer-link-desc">FAQs, guides, and 24/7 support resources.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="/faq/comprehensive">FAQ</a><span class="footer-link-desc">Answers on deployment, governance, integrations, and Freya.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="/resources/webinars">Webinars</a><span class="footer-link-desc">Live training and on-demand learning sessions.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="/resources/partner-programme">Partner Programme</a><span class="footer-link-desc">Reseller and integration partnership opportunities.</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">(c) 2026 Antarious. All rights reserved.</div>
+      <div class="footer-badges"><span class="footer-badge">HUMAN-IN-THE-LOOP</span><span class="footer-badge">AUDITABLE AI</span><span class="footer-badge">CROSS-INDUSTRY</span><span class="footer-badge">PREMIUM DEPLOYMENT</span></div>
+    </div>
+  </div>
+</footer>
+    </main>
+  </div>
+<script id="antarious-nav-active">
+(function () {
+  var file = (window.location.pathname.split('/').pop() || '/').toLowerCase();
+
+  var map = {
+    '/business': 'For Business',
+    '/government': 'For Government',
+    '/ngo': 'For NGO'
+  };
+
+  var targetLabel = map[file] || null;
+  var navButtons = document.querySelectorAll('.nav-link');
+  for (var i = 0; i < navButtons.length; i++) {
+    var btn = navButtons[i];
+    var text = (btn.textContent || '').trim();
+    if (targetLabel && text === targetLabel) {
+      btn.classList.add('active');
+      btn.setAttribute('aria-current', 'page');
+    } else {
+      btn.classList.remove('active');
+      btn.removeAttribute('aria-current');
+    }
+  }
+
+  var freyaBtn = document.querySelector('.nav-ghost');
+  if (freyaBtn) {
+    var isFreya = file === '/freya';
+    freyaBtn.classList.toggle('active', isFreya);
+    if (isFreya) {
+      freyaBtn.setAttribute('aria-current', 'page');
+    } else {
+      freyaBtn.removeAttribute('aria-current');
+    }
+  }
+})();
+</script>
+<script id="antarious-nav-sync-script">
+(function(){
+  var nav = document.getElementById('nav');
+  if(!nav) return;
+  function onScroll(){ nav.classList.toggle('scrolled', window.scrollY > 60); }
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+})();
+</script>
+</body>
+</html>
+`;
+
+export default html;

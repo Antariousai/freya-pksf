@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Antarious AI for Government — Policy Intelligence &amp; Service Delivery Platform</title>
+<meta name="description" content="Antarious AI gives government departments real-time intelligence across policy implementation, service delivery, compliance, and inter-departmental coordination. Powered by Freya.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700&family=DM+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Plus Jakarta Sans",sans-serif;line-height:1.65;overflow-x:hidden;transition:background .35s,color .35s}
+[data-theme="light"]{--bg:#F9F8FF;--bg2:#FFFFFF;--bg3:#F2F0FF;--bg4:#EAE8FF;--ink:#100C2A;--ink2:#2A2454;--ink3:#534E7A;--ink4:#8B87A8;--ink5:#C4C1DB;--ac:#660033;--acd:#4D0028;--acl:#B04A74;--act:#8A1B47;--acbg:rgba(102,0,51,.07);--acbg2:rgba(102,0,51,.13);--acbdr:rgba(102,0,51,.2);--acbdr2:rgba(102,0,51,.4);--td:#0284C7;--teal:#0EA5E9;--tbg:rgba(14,165,233,.07);--tbdr:rgba(14,165,233,.2);--green:#059669;--gbg:rgba(5,150,105,.08);--gbdr:rgba(5,150,105,.2);--red:#DC2626;--rbg:rgba(220,38,38,.06);--rbdr:rgba(220,38,38,.17);--amber:#D97706;--abg:rgba(217,119,6,.07);--bdr:rgba(16,12,42,.08);--bdr2:rgba(16,12,42,.05);--sh:0 1px 4px rgba(0,0,0,.05),0 8px 32px rgba(0,0,0,.06);--sh2:0 4px 24px rgba(0,0,0,.07),0 20px 64px rgba(0,0,0,.07);--sha:0 4px 24px rgba(102,0,51,.18);--logo:block;--logo-w:none}
+[data-theme="dark"]{--bg:#08061A;--bg2:#100C2A;--bg3:#181436;--bg4:#211C44;--ink:#EEEDff;--ink2:#C4C1DB;--ink3:#857FAB;--ink4:#4A4470;--ink5:#2A2454;--ac:#B04A74;--acd:#8A1B47;--acl:#D98AA8;--act:#660033;--acbg:rgba(176,74,116,.1);--acbg2:rgba(176,74,116,.18);--acbdr:rgba(176,74,116,.25);--acbdr2:rgba(176,74,116,.45);--td:#38BDF8;--teal:#0EA5E9;--tbg:rgba(14,165,233,.1);--tbdr:rgba(14,165,233,.25);--green:#34D399;--gbg:rgba(52,211,153,.1);--gbdr:rgba(52,211,153,.25);--red:#F87171;--rbg:rgba(248,113,113,.08);--rbdr:rgba(248,113,113,.22);--amber:#FCD34D;--abg:rgba(252,211,77,.08);--bdr:rgba(255,255,255,.08);--bdr2:rgba(255,255,255,.05);--sh:0 1px 4px rgba(0,0,0,.3),0 8px 32px rgba(0,0,0,.25);--sh2:0 4px 24px rgba(0,0,0,.28),0 20px 64px rgba(0,0,0,.3);--sha:0 4px 24px rgba(176,74,116,.15);--logo:none;--logo-w:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+@keyframes slideL{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes spinR{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}
+@keyframes blink{50%{opacity:0}}
+@keyframes liveBar{0%{width:4%}65%{width:87%}85%{width:94%}100%{width:99%}}
+@keyframes particleSpin{from{transform:rotate(var(--pr,0deg)) translateX(var(--pd,80px))}to{transform:rotate(calc(var(--pr,0deg) + 360deg)) translateX(var(--pd,80px))}}
+@keyframes orbGlow{0%,100%{box-shadow:0 0 0 0 rgba(102,0,51,.3),0 0 40px rgba(102,0,51,.15)}50%{box-shadow:0 0 0 16px rgba(102,0,51,.05),0 0 70px rgba(102,0,51,.25)}}
+@keyframes conic{from{--ca:0deg}to{--ca:360deg}}
+@keyframes rippleOut{0%{transform:scale(1);opacity:.6}100%{transform:scale(2.2);opacity:0}}
+@property --ca{syntax:'<angle>';initial-value:0deg;inherits:false}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
+.reveal.in{opacity:1;transform:none}
+.d1{transition-delay:.08s}.d2{transition-delay:.15s}.d3{transition-delay:.22s}.d4{transition-delay:.29s}
+body{background:var(--bg);color:var(--ink)}
+section{padding:96px 0}.alt{background:var(--bg2)}
+.page{max-width:1200px;margin:0 auto;padding:0 48px}
+.divider{height:1px;background:var(--bdr)}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:"DM Mono",monospace;font-size:9.5px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--ac);margin-bottom:16px}
+.eyebrow::before{content:"";width:16px;height:1.5px;background:var(--ac);border-radius:2px;flex-shrink:0}
+.h2{font-family:"Outfit",sans-serif;font-size:clamp(26px,3.5vw,50px);font-weight:900;color:var(--ink);line-height:1.05;letter-spacing:-1.6px;margin-bottom:16px}
+.h2 em{color:var(--ac);font-style:italic}
+.sp{font-size:17px;color:var(--ink3);line-height:1.82;max-width:600px;margin-bottom:52px}
+.sp.w{max-width:800px}
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:900;height:64px;display:flex;align-items:center;padding:0 48px;gap:8px;background:rgba(249,248,255,.92);backdrop-filter:blur(24px);border-bottom:1px solid var(--bdr);transition:all .3s}
+[data-theme="dark"] .nav{background:rgba(8,6,26,.92)}
+.nav.scrolled{height:55px;box-shadow:0 1px 16px rgba(0,0,0,.08)}
+.nav-logo{flex-shrink:0;margin-right:20px;cursor:pointer}
+.nav-logo img{height:28px;display:block}
+.logo-main{display:var(--logo)}.logo-white{display:var(--logo-w)}
+.nl{font-family:"Outfit",sans-serif;font-size:13.5px;font-weight:600;color:var(--ink3);padding:6px 13px;border-radius:8px;cursor:pointer;border:none;background:none;transition:all .17s;white-space:nowrap}
+.nl:hover{color:var(--ink);background:var(--bg3)}
+.nav-sector-btn{
+  font-family:"Outfit",sans-serif;font-size:13px;font-weight:700;color:var(--ink2);
+  background:linear-gradient(135deg,rgba(14,165,233,.08),rgba(255,255,255,.02));
+  border:1px solid rgba(14,165,233,.14);padding:8px 16px;border-radius:12px;cursor:pointer;
+  transition:all .2s;box-shadow:0 4px 14px rgba(16,12,42,.04)
+}
+.nav-sector-btn:hover{color:var(--td);border-color:rgba(14,165,233,.26);background:linear-gradient(135deg,rgba(14,165,233,.12),rgba(56,189,248,.05));transform:translateY(-1px)}
+.nav-freya-btn{
+  font-family:"Outfit",sans-serif;font-size:13px;font-weight:800;color:#0284C7;
+  background:linear-gradient(135deg,rgba(14,165,233,.14),rgba(56,189,248,.08));
+  border:1px solid rgba(14,165,233,.24);padding:8px 18px;border-radius:12px;cursor:pointer;
+  transition:all .2s;box-shadow:0 8px 22px rgba(14,165,233,.12)
+}
+.nav-freya-btn:hover{color:#0EA5E9;border-color:rgba(14,165,233,.38);transform:translateY(-1px);background:linear-gradient(135deg,rgba(14,165,233,.18),rgba(56,189,248,.1))}
+.nav-r{display:flex;gap:8px;margin-left:auto;flex-shrink:0;align-items:center}
+.btn-nav-cta{font-family:"Outfit",sans-serif;font-size:13px;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--ac),var(--acd));border:none;padding:9px 22px;border-radius:12px;cursor:pointer;transition:all .22s;box-shadow:0 6px 16px rgba(102,0,51,.24)}
+.btn-nav-cta:hover{background:linear-gradient(135deg,var(--acd),#4D0028);transform:translateY(-1px);box-shadow:0 10px 24px rgba(102,0,51,.3)}
+/* HERO */
+.hero-wrap{min-height:100vh;position:relative;overflow:hidden;background:var(--bg)}
+.hero-dots{position:absolute;inset:0;background-image:radial-gradient(var(--acbdr) 1px,transparent 1px);background-size:44px 44px;mask-image:radial-gradient(ellipse at 62% 38%,black 20%,transparent 65%);pointer-events:none;opacity:.6}
+.hero-glow{position:absolute;top:-18%;right:-8%;width:650px;height:650px;background:radial-gradient(circle,rgba(102,0,51,.08),transparent 60%);pointer-events:none}
+[data-theme="dark"] .hero-glow{background:radial-gradient(circle,rgba(176,74,116,.13),transparent 60%)}
+.hero-inner{max-width:1240px;margin:0 auto;padding:120px 48px 100px;display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center;position:relative;z-index:2}
+.hero-kicker{display:inline-flex;align-items:center;gap:9px;font-family:"DM Mono",monospace;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--ac);margin-bottom:20px;animation:fadeUp .5s ease both}
+.hero-kicker::before{content:"";width:18px;height:1.5px;background:var(--ac);flex-shrink:0}
+.kd{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 7px rgba(5,150,105,.6);animation:pulse 1.8s ease infinite}
+.hero-h1{font-family:"Outfit",sans-serif;font-size:clamp(38px,5vw,72px);font-weight:900;color:var(--ink);line-height:.95;letter-spacing:-2.8px;margin-bottom:4px;animation:fadeUp .55s .06s ease both}
+.hero-h1 .ac{color:var(--ac)}.hero-h1 .dm{color:var(--ink4);font-weight:400}
+.hero-sub{font-family:"Outfit",sans-serif;font-size:clamp(16px,1.8vw,22px);font-weight:600;color:var(--ink3);margin-bottom:16px;letter-spacing:-.3px;animation:fadeUp .55s .10s ease both}
+.hero-sub strong{color:var(--ink2)}
+.hero-body{font-size:16px;line-height:1.8;color:var(--ink3);max-width:490px;margin-bottom:30px;animation:fadeUp .55s .14s ease both}
+.hero-btns{display:flex;gap:12px;margin-bottom:40px;animation:fadeUp .55s .18s ease both;flex-wrap:wrap}
+.hero-stats{display:flex;gap:22px;padding-top:22px;border-top:1px solid var(--bdr);animation:fadeUp .55s .22s ease both;flex-wrap:wrap;align-items:flex-start}
+.hs-v{font-family:"Outfit",sans-serif;font-size:27px;font-weight:900;color:var(--ac);line-height:1}
+.hs-l{font-family:"DM Mono",monospace;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink4);margin-top:4px}
+.hs-sep{width:1px;height:30px;background:var(--bdr);align-self:center;flex-shrink:0}
+.btn{font-family:"Outfit",sans-serif;font-weight:700;border:none;cursor:pointer;transition:all .25s;display:inline-flex;align-items:center;gap:8px;border-radius:12px}
+.btn-p{background:var(--ac);color:#fff;padding:14px 32px;font-size:15px;box-shadow:var(--sha)}
+.btn-p:hover{background:var(--acd);transform:translateY(-2px);box-shadow:0 8px 32px rgba(102,0,51,.34)}
+.btn-p svg{transition:transform .2s}.btn-p:hover svg{transform:translateX(3px)}
+.btn-g{background:var(--bg2);color:var(--ink2);border:1.5px solid var(--bdr);padding:13px 28px;font-size:15px;box-shadow:var(--sh)}
+.btn-g:hover{border-color:var(--acbdr);color:var(--ac);transform:translateY(-2px);box-shadow:var(--sh2)}
+/* TERMINAL */
+.terminal{background:var(--bg2);border:1.5px solid var(--bdr);border-radius:24px;box-shadow:var(--sh2);overflow:hidden;animation:fadeUp .6s .08s ease both}
+.t-bar{display:flex;align-items:center;gap:10px;padding:11px 16px;background:var(--bg3);border-bottom:1px solid var(--bdr2)}
+.t-dots{display:flex;gap:5px}.t-dot{width:10px;height:10px;border-radius:50%}
+.t-title{flex:1;text-align:center;font-family:"DM Mono",monospace;font-size:9.5px;font-weight:700;letter-spacing:1.5px;color:var(--ink4)}
+.t-live{display:flex;align-items:center;gap:5px;font-family:"DM Mono",monospace;font-size:9px;font-weight:700;color:var(--green);background:var(--gbg);border:1px solid var(--gbdr);padding:2px 9px;border-radius:20px}
+.t-ldot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 1.5s ease infinite}
+.t-prog{height:2px;background:var(--bg3)}.t-pf{height:100%;background:linear-gradient(90deg,var(--acl),var(--ac));animation:liveBar 4s ease-in-out infinite}
+.t-body{padding:16px;display:flex;flex-direction:column;gap:11px}
+.t-frow{display:flex;align-items:center;gap:12px;padding:11px 14px;background:linear-gradient(135deg,var(--acbg),transparent);border:1.5px solid var(--acbdr);border-radius:16px}
+.t-morb{width:44px;height:44px;border-radius:50%;position:relative;flex-shrink:0}
+.t-mface{width:100%;height:100%;border-radius:50%;background:conic-gradient(from var(--ca) at 50% 50%,#4D0028,#B04A74 30%,#8A1B47 60%,#660033 85%,#4D0028);animation:conic 5s linear infinite,orbGlow 3s ease infinite;display:flex;align-items:center;justify-content:center;font-family:"Outfit",sans-serif;font-size:17px;font-weight:900;color:#fff}
+.t-mring{position:absolute;inset:-4px;border-radius:50%;border:1.5px solid rgba(102,0,51,.28);animation:rippleOut 2.5s ease-out infinite}
+.t-fname{font-family:"Outfit",sans-serif;font-size:15px;font-weight:800;color:var(--ink)}
+.t-fstatus{font-family:"DM Mono",monospace;font-size:9px;font-weight:700;letter-spacing:1px;color:var(--green);margin-top:2px;display:flex;align-items:center;gap:5px}
+.t-fstatus::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.5s ease infinite;flex-shrink:0}
+.t-fagents{font-family:"DM Mono",monospace;font-size:8.5px;color:var(--ink4);margin-top:1px}
+.t-think{font-family:"DM Mono",monospace;font-size:11px;color:var(--ink3);padding:9px 12px;background:var(--bg3);border-radius:8px;border-left:2px solid var(--ac);line-height:1.6;min-height:36px}
+.t-cur{animation:blink .8s step-end infinite}
+.tasks{display:flex;flex-direction:column;gap:5px}
+.task{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;border:1px solid var(--bdr2);background:var(--bg2)}
+.task.done{background:var(--gbg);border-color:var(--gbdr)}.task.run{background:var(--acbg);border-color:var(--acbdr)}.task.wait{opacity:.4}
+.tic{width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0}
+.tcd{background:var(--gbg);color:var(--green)}.tcr{background:var(--acbg);color:var(--ac)}.tcw{background:var(--bg3);color:var(--ink4)}
+.task-txt{flex:1;font-size:11.5px;color:var(--ink2)}
+.task-tm{font-family:"DM Mono",monospace;font-size:9px;font-weight:700}
+.tmc{color:var(--green)}.tmr{color:var(--ac);animation:pulse 2s ease infinite}.tmw{color:var(--ink4)}
+.t-alert{background:var(--abg);border:1px solid rgba(217,119,6,.2);border-radius:8px;padding:9px 12px;display:flex;gap:8px}
+.ta-lbl{font-family:"DM Mono",monospace;font-size:8.5px;font-weight:700;letter-spacing:1px;color:var(--amber);text-transform:uppercase;margin-bottom:2px}
+.ta-txt{font-size:11.5px;color:var(--ink2);line-height:1.55}
+.t-mets{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.tm{background:var(--bg3);border:1px solid var(--bdr2);border-radius:8px;padding:9px;text-align:center}
+.tm-v{font-family:"Outfit",sans-serif;font-size:18px;font-weight:900;color:var(--ac);line-height:1}
+.tm-l{font-family:"DM Mono",monospace;font-size:8px;color:var(--ink4);letter-spacing:1px;text-transform:uppercase;margin-top:3px}
+/* TRUST */
+.trust-strip{overflow:hidden;border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);background:var(--bg2);padding:14px 0}
+.trust-lbl{text-align:center;font-family:"DM Mono",monospace;font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--ink5);margin-bottom:12px}
+.scroll-row{overflow:hidden;white-space:nowrap}
+.scroll-inner{display:inline-flex;gap:52px;animation:slideL 28s linear infinite;align-items:center}
+.slogo{font-family:"Outfit",sans-serif;font-size:12.5px;font-weight:700;color:var(--ink5);flex-shrink:0;cursor:default}
+/* PAIN */
+.cost-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bdr);border-radius:24px;overflow:hidden;border:1px solid var(--bdr);margin-bottom:32px}
+.cc{background:var(--bg2);padding:28px 22px;position:relative;overflow:hidden;cursor:default}
+.cc::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--cc,var(--red))}
+.cc-icon{font-size:22px;margin-bottom:10px}
+.cc-val{font-family:"Outfit",sans-serif;font-size:38px;font-weight:900;color:var(--cc,var(--red));line-height:1;margin-bottom:5px}
+.cc-title{font-family:"Outfit",sans-serif;font-size:14px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.cc-desc{font-size:12.5px;color:var(--ink3);line-height:1.65}
+/* AGENTS */
+.agents-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.ag{background:var(--bg2);border:1px solid var(--bdr);border-top:3px solid var(--ac);border-radius:18px;padding:22px 20px;transition:all .22s;cursor:default}
+.ag:hover{transform:translateY(-4px);box-shadow:var(--sh2)}
+.ag-num{font-family:"DM Mono",monospace;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ac);margin-bottom:8px}
+.ag-icon{font-size:24px;margin-bottom:10px;display:block}
+.ag-name{font-family:"Outfit",sans-serif;font-size:16px;font-weight:800;color:var(--ink);margin-bottom:6px}
+.ag-body{font-size:12.5px;color:var(--ink3);line-height:1.68}
+.ag-feats{display:flex;flex-direction:column;gap:4px;margin-top:10px}
+.agf{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink2)}
+.agf::before{content:"";color:var(--ac);font-weight:700;flex-shrink:0;font-size:11px}
+/* OUTCOMES */
+.outcomes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.oc{background:var(--bg2);border:1.5px solid var(--bdr);border-radius:18px;padding:24px 20px;text-align:center;cursor:default;transition:all .2s}
+.oc:hover{border-color:var(--acbdr);transform:translateY(-3px);box-shadow:var(--sh2)}
+.oc-icon{font-size:28px;margin-bottom:12px;display:block}
+.oc-val{font-family:"Outfit",sans-serif;font-size:36px;font-weight:900;color:var(--ac);line-height:1;margin-bottom:5px}
+.oc-lbl{font-family:"DM Mono",monospace;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink4);margin-bottom:7px}
+.oc-desc{font-size:12.5px;color:var(--ink3);line-height:1.65}
+/* USE CASES */
+.uc-tabs{display:flex;gap:6px;margin-bottom:32px;flex-wrap:wrap}
+.uc-tab{font-family:"DM Mono",monospace;font-size:10.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--ink3);background:var(--bg2);border:1.5px solid var(--bdr);padding:9px 18px;border-radius:16px;cursor:pointer;transition:all .2s}
+.uc-tab.on{color:var(--ac);background:var(--acbg);border-color:var(--acbdr2)}
+.uc-tab:hover:not(.on){color:var(--ink2);background:var(--bg3)}
+.uc-panel{display:none;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+.uc-panel.on{display:grid}
+.uc-h3{font-family:"Outfit",sans-serif;font-size:clamp(19px,2.3vw,30px);font-weight:900;color:var(--ink);line-height:1.08;letter-spacing:-.7px;margin-bottom:12px}
+.uc-h3 em{color:var(--ac);font-style:italic}
+.uc-p{font-size:14.5px;color:var(--ink2);line-height:1.78;margin-bottom:16px}
+.uc-stats{display:flex;gap:18px;margin-bottom:20px;flex-wrap:wrap;align-items:flex-start}
+.uc-sv{font-family:"Outfit",sans-serif;font-size:24px;font-weight:900;color:var(--ac);line-height:1}
+.uc-sl{font-family:"DM Mono",monospace;font-size:8.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink4);margin-top:3px}
+.uc-div{width:1px;background:var(--bdr);height:32px;align-self:center;flex-shrink:0}
+.uc-steps{display:flex;flex-direction:column;gap:7px;margin-bottom:18px}
+.uc-step{display:flex;gap:9px;align-items:flex-start;padding:9px 11px;border-radius:8px;background:var(--bg3);border:1px solid var(--bdr2)}
+.uc-sn{width:20px;height:20px;border-radius:5px;background:var(--acbg);border:1px solid var(--acbdr);display:flex;align-items:center;justify-content:center;font-family:"DM Mono",monospace;font-size:9px;font-weight:700;color:var(--ac);flex-shrink:0}
+.uc-st{font-size:12.5px;color:var(--ink2);line-height:1.55}
+.demo-win{background:var(--bg2);border:1.5px solid var(--bdr);border-radius:16px;overflow:hidden;box-shadow:var(--sh2)}
+.dw-bar{background:var(--bg3);padding:10px 14px;border-bottom:1px solid var(--bdr2);display:flex;align-items:center;gap:8px}
+.dw-dots{display:flex;gap:4px}.dw-dot{width:9px;height:9px;border-radius:50%}
+.dw-url{flex:1;text-align:center;font-family:"DM Mono",monospace;font-size:9.5px;color:var(--ink4)}
+.dw-live{display:flex;align-items:center;gap:4px;font-family:"DM Mono",monospace;font-size:8.5px;font-weight:700;color:var(--green)}
+.dw-ldot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 1.5s ease infinite}
+.dw-prog{height:2px;background:var(--bg3)}.dw-pf{height:100%;background:linear-gradient(90deg,var(--acl),var(--ac));animation:liveBar 3.5s ease-in-out infinite}
+.dw-body{padding:16px;min-height:260px}
+.f-tick{display:flex;align-items:center;gap:8px;padding:7px 11px;background:var(--acbg);border:1px solid var(--acbdr);border-radius:8px;margin-bottom:11px}
+.f-tick-orb{width:20px;height:20px;border-radius:50%;background:conic-gradient(from var(--ca),#4D0028,#B04A74,#4D0028);animation:conic 4s linear infinite;display:flex;align-items:center;justify-content:center;font-family:"Outfit",sans-serif;font-size:9px;font-weight:900;color:#fff;flex-shrink:0}
+.f-tick-txt{font-family:"DM Mono",monospace;font-size:10px;font-weight:700;color:var(--ac);flex:1}
+.f-tick-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 1.4s ease infinite;flex-shrink:0}
+/* BRIDGE */
+.bridge-grid{display:grid;grid-template-columns:1fr 64px 1fr;border-radius:24px;overflow:hidden;border:1.5px solid var(--bdr);background:var(--bg2);box-shadow:var(--sh2);margin-bottom:28px}
+.b-human{padding:34px 30px;border-right:1px solid var(--bdr)}
+.b-freya{padding:34px 30px;background:linear-gradient(150deg,var(--acbg),var(--bg2))}
+.b-mid{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:var(--bg3);border-left:1px solid var(--bdr);border-right:1px solid var(--bdr)}
+.b-plus{font-family:"Outfit",sans-serif;font-size:26px;font-weight:900;color:var(--ac)}
+.b-vl{width:1.5px;height:26px;background:linear-gradient(to bottom,transparent,var(--acbdr),transparent)}
+.b-av{width:62px;height:62px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:12px;background:rgba(14,165,233,.08);border:2px solid rgba(14,165,233,.2)}
+.b-forb{width:62px;height:62px;border-radius:50%;position:relative;margin-bottom:12px}
+.bfc{width:100%;height:100%;border-radius:50%;background:conic-gradient(from var(--ca) at 50% 50%,#4D0028,#B04A74 30%,#8A1B47 60%,#660033 85%,#4D0028);animation:conic 4s linear infinite,orbGlow 3.5s ease infinite}
+.bfi{position:absolute;inset:6px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-family:"Outfit",sans-serif;font-size:19px;font-weight:900;color:var(--ac)}
+.bfr1{position:absolute;inset:-5px;border-radius:50%;border:1.5px solid rgba(102,0,51,.24);animation:rippleOut 2.8s ease-out infinite}
+.b-name{font-family:"Outfit",sans-serif;font-size:15px;font-weight:800;color:var(--ink);margin-bottom:4px}
+.b-sub{font-size:12px;color:var(--ink3);margin-bottom:18px;line-height:1.5}
+.b-items{display:flex;flex-direction:column;gap:6px}
+.b-item{display:flex;align-items:center;gap:8px;padding:8px 11px;border-radius:8px;background:var(--bg3);border:1px solid var(--bdr2);font-size:12.5px;color:var(--ink2);cursor:default}
+.b-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.bridge-note{text-align:center;padding:16px 28px;background:var(--acbg);border:1.5px solid var(--acbdr);border-radius:16px;margin-bottom:24px;font-size:14px;color:var(--ink2);line-height:1.65}
+.bridge-note strong{color:var(--ink)}
+/* CTA */
+.cta-card{background:var(--ac);border-radius:28px;padding:72px 56px;text-align:center;position:relative;overflow:hidden}
+.cta-dots{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.1) 1px,transparent 1px);background-size:32px 32px;mask-image:radial-gradient(ellipse at 50% 40%,black 30%,transparent 68%);pointer-events:none}
+.cta-c{position:relative;z-index:2}
+.cta-ey{font-family:"DM Mono",monospace;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.7);margin-bottom:14px}
+.cta-h2{font-family:"Outfit",sans-serif;font-size:clamp(26px,4vw,50px);font-weight:900;color:#fff;line-height:1.04;letter-spacing:-1.5px;margin-bottom:12px}
+.cta-p{font-size:16px;color:rgba(255,255,255,.72);line-height:1.75;max-width:440px;margin:0 auto 34px}
+.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn-cta-p{font-family:"Outfit",sans-serif;font-size:15px;font-weight:700;color:var(--ac);background:#fff;border:none;padding:14px 34px;border-radius:14px;cursor:pointer;transition:all .25s;box-shadow:0 4px 24px rgba(0,0,0,.18);display:inline-flex;align-items:center;gap:8px}
+.btn-cta-p:hover{transform:translateY(-2px)}
+.btn-cta-g{font-family:"Outfit",sans-serif;font-size:15px;font-weight:600;color:rgba(255,255,255,.82);background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);padding:13px 26px;border-radius:14px;cursor:pointer;transition:all .22s}
+/* FOOTER */
+footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:64px 0 30px}
+.footer-inner{max-width:1200px;margin:0 auto;padding:0 48px}
+.footer-top{display:grid;grid-template-columns:1.4fr repeat(5,1fr);gap:40px;margin-bottom:48px}
+.footer-brand .name{font-family:var(--f1);font-size:18px;font-weight:800;color:var(--ink);margin-bottom:10px;display:flex;align-items:center;gap:8px;letter-spacing:-.3px}
+.footer-brand-img{height:28px;width:auto}
+.footer-brand .tagline{font-size:13px;color:var(--ink3);line-height:1.65;max-width:220px}
+.footer-col-h{font-family:var(--f1);font-size:12px;font-weight:700;color:var(--ink);letter-spacing:-.2px;margin-bottom:14px;text-transform:uppercase;font-size:10px;font-family:var(--fm);letter-spacing:2px;color:var(--ink4)}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:8px}
+.footer-lnk{font-size:13px;color:var(--ink3);cursor:pointer;transition:color .15s}
+.footer-lnk:hover{color:var(--ac)}
+.footer-link-item{display:flex;flex-direction:column;gap:3px}
+.footer-link-item .footer-lnk{font-weight:600}
+.footer-link-desc{font-size:11px;line-height:1.45;color:var(--ink4);max-width:240px}
+.footer-bottom{display:flex;align-items:center;justify-content:space-between;padding-top:24px;border-top:1px solid var(--bdr);flex-wrap:wrap;gap:12px}
+.footer-copy{font-family:var(--fm);font-size:10px;color:var(--ink4)}
+.footer-badges{display:flex;gap:8px;flex-wrap:wrap}
+.footer-badge{font-family:var(--fm);font-size:8.5px;font-weight:700;letter-spacing:1px;color:var(--ink3);background:#fff;border:1px solid var(--bdr);padding:3px 10px;border-radius:20px}
+@media(max-width:1060px){.hero-inner{grid-template-columns:1fr;max-width:640px;padding:110px 48px 80px}.terminal{max-width:520px;margin:0 auto}.bridge-grid{grid-template-columns:1fr}.b-mid{display:none}.b-human{border-right:none;border-bottom:1px solid var(--bdr)}.footer-top{grid-template-columns:1fr 1fr 1fr}.outcomes-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:860px){.page{padding:0 20px}.nav{padding:0 20px}.nl{display:none}section{padding:64px 0}.agents-grid{grid-template-columns:1fr}.cost-grid{grid-template-columns:1fr 1fr}.uc-panel.on{grid-template-columns:1fr}.demo-win{display:none}.cta-card{padding:48px 20px}.footer-top{grid-template-columns:1fr 1fr}.hero-inner{padding:100px 20px 72px}.outcomes-grid{grid-template-columns:1fr}}
+@media(max-width:560px){.cost-grid{grid-template-columns:1fr}}
+/* GOVERNMENT PAGE REDESIGN */
+body.page-government{background:
+  linear-gradient(180deg,#FBFAFF 0%,#F6F3FF 38%,#F9F8FF 100%),
+  repeating-linear-gradient(90deg,transparent 0,transparent 120px,rgba(102,0,51,.03) 120px,rgba(102,0,51,.03) 121px)}
+  .page-government .hero-wrap::after{content:"";position:absolute;left:48px;right:48px;bottom:54px;height:1px;background:linear-gradient(90deg,rgba(102,0,51,0),rgba(102,0,51,.25),rgba(102,0,51,0));pointer-events:none}
+  .page-government .gov-problem .cost-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;padding:14px;border-radius:30px;background:linear-gradient(180deg,rgba(102,0,51,.05),rgba(102,0,51,.08));border:1px solid rgba(102,0,51,.12);box-shadow:0 18px 42px rgba(16,12,42,.05)}
+  .page-government .gov-problem .cc{position:relative;padding:24px 24px 24px 82px;border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(250,248,255,.92));border:1px solid rgba(102,0,51,.14);box-shadow:none}
+  .page-government .gov-problem .cc::before{content:"";position:absolute;left:31px;top:24px;bottom:24px;width:1px;background:linear-gradient(180deg,rgba(102,0,51,.32),rgba(102,0,51,.04))}
+.page-government .gov-problem .cc-icon{position:absolute;left:14px;top:20px;width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(102,0,51,.08)}
+.page-government .gov-principle .bridge-grid{grid-template-columns:minmax(0,1fr) 104px minmax(0,1fr);gap:18px;align-items:stretch}
+  .page-government .gov-principle .b-mid{display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:24px;background:linear-gradient(180deg,#2C0C18,#431222);border:1px solid rgba(176,74,116,.16);box-shadow:0 16px 38px rgba(16,12,42,.12)}
+  .page-government .gov-principle .b-plus{background:linear-gradient(135deg,#8A1B47,#B04A74);box-shadow:0 8px 24px rgba(102,0,51,.28)}
+  .page-government .gov-principle .b-vl{width:1px;flex:1;background:linear-gradient(180deg,rgba(176,74,116,0),rgba(176,74,116,.5),rgba(176,74,116,0))}
+  .page-government .gov-principle .b-human,.page-government .gov-principle .b-freya{display:block;border-radius:26px;padding:28px 30px;border:1px solid rgba(102,0,51,.14);box-shadow:0 14px 34px rgba(16,12,42,.05)}
+.page-government .gov-principle .b-human{background:linear-gradient(180deg,#fff,#faf8ff)}
+  .page-government .gov-principle .b-freya{background:linear-gradient(145deg,#2C0C18,#431222);border-color:rgba(176,74,116,.16);box-shadow:0 18px 48px rgba(16,12,42,.14)}
+.page-government .gov-principle .b-freya .b-name,.page-government .gov-principle .b-freya .b-sub,.page-government .gov-principle .b-freya .b-item{color:#EDF2FF}
+.page-government .gov-principle .b-freya .b-item{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.08)}
+  .page-government .gov-principle .b-freya .b-dot{background:#B04A74!important}
+.page-government .gov-principle .b-sub{max-width:700px}
+.page-government .terminal,.page-government .demo-win{position:relative;overflow:hidden}
+.page-government .terminal::after,.page-government .demo-win::after{content:"";position:absolute;left:-15%;right:-15%;top:-30%;height:38%;background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.2),rgba(255,255,255,0));transform:rotate(-7deg);animation:govSweep 7.5s ease-in-out infinite;pointer-events:none}
+.page-government .gov-agents .agents-grid{display:flex;flex-direction:column;gap:14px}
+  .page-government .gov-agents .ag{position:relative;padding:26px 26px 24px 96px;border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(250,248,255,.94));border:1px solid rgba(102,0,51,.14);box-shadow:0 16px 34px rgba(16,12,42,.05)}
+  .page-government .gov-agents .ag::before{content:"";position:absolute;left:31px;top:24px;bottom:24px;width:1px;background:linear-gradient(180deg,rgba(102,0,51,.3),rgba(102,0,51,.04))}
+  .page-government .gov-agents .ag-icon{position:absolute;left:16px;top:20px;width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(102,0,51,.08)}
+.page-government .gov-agents .ag-num{font-size:10px;letter-spacing:1.8px}
+.page-government .gov-agents .ag-feats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}
+  .page-government .gov-roles .uc-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:10px;border-radius:16px;background:rgba(102,0,51,.05);border:1px solid rgba(102,0,51,.12)}
+  .page-government .gov-roles .uc-panel{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:22px;padding:26px;border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(250,248,255,.94));border:1px solid rgba(102,0,51,.14);box-shadow:0 16px 38px rgba(16,12,42,.05)}
+.page-government .gov-roles .demo-win{border-radius:20px;background:linear-gradient(180deg,#fff,#fbf9ff);box-shadow:inset 0 0 0 1px rgba(16,12,42,.05)}
+.page-government .gov-outcomes .outcomes-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+  .page-government .gov-outcomes .oc{border-radius:18px;background:linear-gradient(180deg,#fff,#faf8ff);border:1px solid rgba(102,0,51,.12);box-shadow:0 14px 30px rgba(16,12,42,.05)}
+@keyframes govSweep{0%,100%{transform:translateY(0) rotate(-7deg);opacity:0}20%{opacity:.82}48%{transform:translateY(220%) rotate(-7deg);opacity:0}}
+@media(max-width:980px){
+  .page-government .gov-problem .cost-grid,
+  .page-government .gov-outcomes .outcomes-grid{grid-template-columns:1fr}
+  .page-government .gov-principle .bridge-grid{grid-template-columns:1fr}
+  .page-government .gov-principle .b-mid{min-height:96px}
+  .page-government .gov-agents .ag-feats{grid-template-columns:1fr}
+  .page-government .gov-roles .uc-panel{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .page-government .gov-roles .uc-tabs{grid-template-columns:1fr}
+}
+</style>
+<style id="antarious-design-system-overrides">
+/* antarious-design-system-overrides */
+:root,
+[data-theme="light"] {
+  --brand-primary: #0EA5E9;
+  --brand-primary-strong: #0284C7;
+  --brand-primary-soft: #38BDF8;
+  --brand-success: #059669;
+  --brand-danger: #DC2626;
+  --brand-warning: #D97706;
+  --surface-base: #FFFFFF;
+  --surface-muted: #F8FAFC;
+  --text-strong: #0F172A;
+  --text-body: #334155;
+  --text-muted: #64748B;
+  --border-subtle: rgba(15,23,42,.09);
+  --motion-fast: 180ms;
+  --motion-base: 260ms;
+  --motion-slow: 420ms;
+  --ease-standard: cubic-bezier(.22,1,.36,1);
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+}
+
+html[data-theme="dark"] {
+  --surface-base: #07131E;
+  --surface-muted: #0B1722;
+  --text-strong: #E5EEF7;
+  --text-body: #D6E0EA;
+  --text-muted: #9AB0C4;
+  --border-subtle: rgba(255,255,255,.10);
+  --brand-primary: #38BDF8;
+  --brand-primary-strong: #0EA5E9;
+  --brand-primary-soft: #7DD3FC;
+  --brand-success: #34D399;
+  --brand-danger: #F87171;
+  --brand-warning: #FBBF24;
+}
+
+:root {
+  --td: var(--brand-primary);
+  --tdd: var(--brand-primary-strong);
+  --tl: var(--brand-primary-soft);
+  --teal: var(--brand-primary);
+  --teal2: var(--brand-primary-strong);
+  --teal3: var(--brand-primary-soft);
+  --green: var(--brand-success);
+  --red: var(--brand-danger);
+  --amber: var(--brand-warning);
+}
+
+html { font-size: 16px; }
+body {
+  background: var(--surface-base);
+  color: var(--text-strong);
+  line-height: 1.66;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+
+.antarious-wordmark {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-strong, var(--ink, #0F172A));
+  line-height: 1;
+}
+.antarious-wordmark svg {
+  width: clamp(140px, 18vw, 182px);
+  height: auto;
+  display: block;
+}
+html[data-theme="dark"] .antarious-wordmark {
+  color: #F3F8FF;
+}
+
+
+.theme-logo-main {
+  height: 28px;
+  width: auto;
+  display: block;
+}
+.nav-logo .theme-logo-main {
+  height: 28px;
+}
+.footer-brand-img.theme-logo-main,
+.name .theme-logo-main {
+  height: 28px;
+}
+@media (max-width: 768px) {
+  .theme-logo-main { height: 24px; }
+}
+
+
+/* Global nav-footer consistency */
+.nav,
+.topbar,
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 950;
+  min-height: 62px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--border-subtle, var(--bdr, rgba(15,23,42,.09)));
+  background: color-mix(in srgb, var(--surface-base, var(--bg, #fff)) 92%, transparent);
+  backdrop-filter: blur(20px);
+}
+
+.nav-logo,
+.brand {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.theme-logo-main {
+  height: 28px;
+  width: auto;
+  display: block;
+}
+
+.nav-links,
+.nav-r,
+.nav-right,
+.top-actions,
+.header-actions,
+.primary-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-r,
+.nav-right,
+.top-actions,
+.header-actions { margin-left: auto; }
+
+.nl,
+.nav-link,
+.top-link,
+.primary-nav a,
+.nav-sector-btn,
+.nav-freya-btn,
+.nav-ghost,
+.btn-back {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-body, var(--ink2, #334155));
+  background: color-mix(in srgb, var(--surface-base, #fff) 90%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand-primary, #0EA5E9) 18%, var(--border-subtle, rgba(15,23,42,.09)));
+  border-radius: 10px;
+  padding: 8px 14px;
+  white-space: nowrap;
+}
+
+.nav-cta,
+.btn-nav-cta,
+.top-cta {
+  font-size: 13px;
+  font-weight: 800;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 9px 18px;
+  background: linear-gradient(135deg, var(--brand-primary, #0EA5E9), var(--brand-primary-strong, #0284C7));
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--brand-primary, #0EA5E9) 35%, transparent);
+}
+
+footer,
+.site-footer,
+.footer,
+.footer-inner,
+.footer-top,
+.footer-grid,
+.footer-nav,
+.footer-bottom {
+  color: var(--text-body, var(--ink2, #334155));
+}
+
+footer,
+.site-footer,
+.footer {
+  background: color-mix(in srgb, var(--surface-muted, var(--bg2, #f8fafc)) 90%, var(--surface-base, #fff));
+  border-top: 1px solid var(--border-subtle, var(--bdr, rgba(15,23,42,.09)));
+  margin-top: 56px;
+}
+
+.footer-inner,
+.shell > .wrap + .footer-nav,
+.footer-nav {
+  width: min(1200px, calc(100% - 40px));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.footer-top,
+.footer-grid,
+.footer-nav {
+  padding-top: 24px;
+  padding-bottom: 20px;
+}
+
+.footer-links,
+.footer-list {
+  display: grid;
+  gap: 8px;
+}
+
+.footer-col-h,
+.footer-title,
+.footer-head {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-muted, var(--ink4, #94A3B8));
+  margin-bottom: 10px;
+}
+
+.footer-lnk,
+.footer-list a,
+.footer-nav a {
+  color: var(--text-body, var(--ink2, #334155));
+}
+
+.footer-link-desc,
+.footer-brand-copy,
+.footer-copy {
+  color: var(--text-muted, var(--ink3, #64748B));
+}
+
+.footer-bottom {
+  border-top: 1px solid var(--border-subtle, var(--bdr2, rgba(15,23,42,.06)));
+  padding-top: 14px;
+  padding-bottom: 18px;
+}
+
+@media (max-width: 860px) {
+  .nav,
+  .topbar,
+  .site-header {
+    padding: 10px 14px;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .nav-links,
+  .primary-nav,
+  .top-actions {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 2px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .nav-links::-webkit-scrollbar,
+  .primary-nav::-webkit-scrollbar,
+  .top-actions::-webkit-scrollbar { display: none; }
+
+  .nav-r,
+  .nav-right,
+  .header-actions {
+    width: auto;
+    margin-left: auto;
+  }
+
+  .theme-logo-main { height: 24px; }
+
+  .footer-top,
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+
+  .footer-nav {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+/* Keep common shells centered and screen-balanced */
+.page,
+.hero-inner,
+.nav,
+section > .container,
+section > .page,
+section > .inner,
+.nav-inner,
+.footer-inner {
+  width: min(1200px, calc(100% - 2 * var(--space-6)));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Base readability and overflow safety */
+h1, h2, h3, h4, p, li { overflow-wrap: anywhere; }
+.h2,
+.hero-h1,
+.section-title,
+.display {
+  letter-spacing: -0.02em;
+  line-height: 1.06;
+  text-wrap: balance;
+}
+.sp,
+.hero-sub,
+.hero-body,
+.uc-p,
+p,
+li { color: var(--text-body); }
+
+/* Improve dark hero legibility (Freya/Government variants) */
+html[data-theme="dark"] .hero-h1,
+html[data-theme="dark"] .hero-sub,
+html[data-theme="dark"] .hero-body {
+  color: #EAF2FF !important;
+  text-shadow: 0 1px 1px rgba(0,0,0,.32);
+}
+
+html[data-theme="dark"] .hero-h1 .ac {
+  background: none !important;
+  -webkit-text-fill-color: var(--brand-primary-soft) !important;
+  color: var(--brand-primary-soft) !important;
+}
+html[data-theme="dark"] .hero-h1 .dim,
+html[data-theme="dark"] .hero-h1 em {
+  color: #BBD0E6 !important;
+}
+
+/* Uniform interaction feel */
+.btn,
+.btn-primary,
+.btn-p,
+.nav-cta,
+.btn-nav-cta,
+.button-primary,
+.pc-btn.featured-btn,
+.nav-link,
+.nl,
+.primary-nav a {
+  transition: transform var(--motion-base) var(--ease-standard), box-shadow var(--motion-base) var(--ease-standard), background-color var(--motion-base) var(--ease-standard), border-color var(--motion-base) var(--ease-standard), color var(--motion-base) var(--ease-standard);
+}
+
+.btn:hover,
+.btn-primary:hover,
+.btn-p:hover,
+.nav-cta:hover,
+.btn-nav-cta:hover,
+.button-primary:hover,
+.pc-btn.featured-btn:hover { transform: translateY(-2px); }
+
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
+/* Smooth reveal defaults */
+.reveal,
+.reveal.in,
+.reveal.is-visible {
+  transition-duration: var(--motion-slow);
+  transition-timing-function: var(--ease-standard);
+}
+
+/* Never leave key content invisible if JS reveal logic fails */
+html:not(.js) .reveal,
+body:not(.js) .reveal {
+  opacity: 1 !important;
+  transform: none !important;
+}
+/* Section rhythm */
+section {
+  padding: clamp(56px, 7vw, 96px) 0 !important;
+}
+
+/* Tablet layout harmonization */
+@media (max-width: 1100px) {
+  .page,
+  .hero-inner,
+  .nav,
+  section > .container,
+  section > .page,
+  section > .inner,
+  .nav-inner,
+  .footer-inner { width: calc(100% - 2 * var(--space-5)); }
+
+  .hero-inner,
+  .uc-panel,
+  .ft-hero,
+  .bridge-grid,
+  .hero-grid,
+  .split-hero,
+  .agents-grid,
+  .cost-grid,
+  .bo-strip,
+  .footer-grid,
+  .hero-stage-grid,
+  .grid-4,
+  .stack-grid { grid-template-columns: 1fr !important; }
+
+  .grid-3,
+  .workflow-grid,
+  .benefit-grid,
+  .stats-band,
+  .ft-live-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+
+  .h2,
+  .hero-h1,
+  .section-title,
+  .display { font-size: clamp(2.15rem, 5.3vw, 3.4rem) !important; }
+}
+
+/* Mobile-first finishing */
+@media (max-width: 768px) {
+  html { font-size: 15px; }
+
+  .page,
+  .hero-inner,
+  .nav,
+  section > .container,
+  section > .page,
+  section > .inner,
+  .nav-inner,
+  .footer-inner { width: calc(100% - 2 * var(--space-4)) !important; }
+
+  /* Reduce heavy decorative effects on small screens */
+  .hero-grid-bg,
+  .hero-glow,
+  .hero-glow1,
+  .hero-glow2,
+  .hero-dots,
+  .hero::before,
+  .hero::after { display: none !important; }
+
+  .nav {
+    height: auto !important;
+    min-height: 62px;
+    padding: 10px var(--space-4) !important;
+    gap: 8px !important;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .nav-logo { margin-right: 8px !important; }
+
+  .nav-links,
+  .primary-nav {
+    order: 3;
+    width: 100%;
+    margin: 6px 0 0 0 !important;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 8px;
+    padding-bottom: 2px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .nav-links::-webkit-scrollbar,
+  .primary-nav::-webkit-scrollbar { display: none; }
+
+  .nav-link,
+  .nl,
+  .primary-nav a { white-space: nowrap; flex: 0 0 auto; }
+
+  .nav-right,
+  .header-actions {
+    margin-left: auto;
+    width: auto;
+    display: flex;
+    gap: 8px;
+  }
+
+  .hero,
+  .hero-wrap { min-height: auto !important; padding-top: 92px !important; }
+  .hero-inner { gap: var(--space-6) !important; }
+
+  .hero-h1,
+  .display,
+  .h2,
+  .section-title {
+    font-size: clamp(1.95rem, 9vw, 2.9rem) !important;
+    line-height: 1.08 !important;
+  }
+
+  .hero-sub,
+  .hero-body,
+  .sp,
+  .section-subtitle,
+  .uc-p,
+  .task-text {
+    font-size: 0.98rem !important;
+    line-height: 1.72 !important;
+  }
+
+  .hero-btns,
+  .button-row,
+  .hero-actions {
+    display: grid !important;
+    grid-template-columns: 1fr;
+    gap: 10px !important;
+    width: 100%;
+  }
+
+  .hero-btns > *,
+  .button-row > *,
+  .hero-actions > *,
+  .btn,
+  .btn-primary,
+  .btn-p,
+  .btn-g,
+  .button,
+  .button-link,
+  .nav-cta,
+  .btn-nav-cta,
+  .nav-ghost,
+  .btn-back,
+  .pc-btn,
+  .uc-tab {
+    min-height: 46px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .hero-metrics,
+  .uc-stats,
+  .hero-stats,
+  .stats-band {
+    gap: var(--space-4) !important;
+    flex-wrap: wrap;
+  }
+
+  .hero-sep,
+  .hs-sep,
+  .uc-div { display: none !important; }
+
+  .cost-grid,
+  .agents-grid,
+  .bo-strip,
+  .grid-2,
+  .grid-3,
+  .grid-4,
+  .workflow-grid,
+  .benefit-grid,
+  .ft-live-grid,
+  .t-mets,
+  .stats-band { grid-template-columns: 1fr !important; }
+
+  .feature-card,
+  .workflow-card,
+  .quote-card,
+  .cta-panel,
+  .surface,
+  .footer-cta,
+  .hero-stage,
+  .terminal,
+  .freya-terminal,
+  .demo-win { padding: 20px !important; border-radius: 14px !important; }
+}
+
+/* Extra-large screens */
+@media (min-width: 1600px) {
+  .page,
+  .hero-inner,
+  .nav,
+  section > .container,
+  section > .page,
+  section > .inner,
+  .nav-inner,
+  .footer-inner { width: min(1320px, calc(100% - 120px)); }
+}
+
+
+
+/* Final hero readability safeguards */
+.hero-h1,
+.hero-sub,
+.hero-body {
+  opacity: 1 !important;
+}
+
+html[data-theme="dark"] .hero,
+html[data-theme="dark"] .hero-wrap {
+  background: linear-gradient(180deg, #061427 0%, #0A1E35 100%) !important;
+}
+
+html[data-theme="dark"] .hero-kicker,
+html[data-theme="dark"] .eyebrow {
+  color: #8FD9FF !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>
+
+<style id="antarious-svg-icon-theme">
+.ai-svg-icon {
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  vertical-align: -0.12em;
+  color: var(--brand-primary-strong, var(--teal2, #0284C7));
+}
+.ai-svg-icon svg { width: 100%; height: 100%; display: block; }
+.ai-icon-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+}
+.ai-icon-inline .ai-svg-icon {
+  width: 1.1em;
+  height: 1.1em;
+}
+html[data-theme="dark"] .ai-svg-icon {
+  color: var(--brand-primary-soft, var(--teal3, #7DD3FC));
+}
+</style>
+<script id="antarious-svg-icon-runtime">
+(function () {
+  var ICON_SVGS = {
+    alert: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3L21 19H3L12 3Z" stroke="currentColor" stroke-width="1.8"/><path d="M12 9V13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="16.5" r="1" fill="currentColor"/></svg>',
+    brain: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 5a3 3 0 016 0 3 3 0 012.8 4.1A3 3 0 0118 15a3 3 0 01-2.5 2.96A3.5 3.5 0 0112 21a3.5 3.5 0 01-3.5-3.04A3 3 0 016 15a3 3 0 01.2-5.9A3 3 0 019 5z" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v8M9.5 10.5h2.5M12 13h2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+    eye: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.5 12S6 6.5 12 6.5 21.5 12 21.5 12 18 17.5 12 17.5 2.5 12 2.5 12Z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="2.8" stroke="currentColor" stroke-width="1.8"/></svg>',
+    bolt: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.5 2L5 13h5l-1.5 9L19 10h-5L13.5 2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+    chart: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 19.5h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M6.5 16v-4M12 16V8M17.5 16v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    target: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>',
+    pen: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 20l4.5-1 9-9a1.8 1.8 0 000-2.5l-1-1a1.8 1.8 0 00-2.5 0l-9 9L4 20z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12.5 7.5l4 4" stroke="currentColor" stroke-width="1.8"/></svg>',
+    shield: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3l7 3v5c0 5.2-3.5 8.8-7 10-3.5-1.2-7-4.8-7-10V6l7-3z" stroke="currentColor" stroke-width="1.8"/><path d="M9.5 12.5l1.8 1.8 3.5-3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    megaphone: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 14V10l11-4v12L4 14z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M15 10h3a2 2 0 012 2 2 2 0 01-2 2h-3" stroke="currentColor" stroke-width="1.8"/><path d="M7.5 14.5l1.2 4h2.3l-1.1-3.5" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
+    phone: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.5 4h3l1 4-2 1.5a13 13 0 005 5L17 12l4 1v3c0 1.1-.9 2-2 2C10 18 6 14 6 7c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+    folder: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 7.5h7l2 2h9v7.5a2 2 0 01-2 2H5a2 2 0 01-2-2V7.5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+    signal: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 18h2M8 16h2M12 13h2M16 10h2M20 7h1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M4 18l16-11" stroke="currentColor" stroke-width="1.8"/></svg>',
+    timer: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="13" r="7.5" stroke="currentColor" stroke-width="1.8"/><path d="M12 9v4l2.8 1.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9 3h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    calendar: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="5" width="16" height="15" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M8 3.5v3M16 3.5v3M4 9h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    money: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/></svg>',
+    settings: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M19 12a7 7 0 00-.1-1l2-1.5-2-3.4-2.4.8a7.2 7.2 0 00-1.7-1L14.5 3h-5l-.3 2.9a7.2 7.2 0 00-1.7 1l-2.4-.8-2 3.4 2 1.5a7 7 0 000 2L3 14.5l2 3.4 2.4-.8a7.2 7.2 0 001.7 1L9.5 21h5l.3-2.9a7.2 7.2 0 001.7-1l2.4.8 2-3.4-2-1.5c.1-.3.1-.7.1-1z" stroke="currentColor" stroke-width="1.4"/></svg>',
+    puzzle: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 4h4a2 2 0 012 2v1h2a2 2 0 012 2v3h-2a2 2 0 100 4h2v2a2 2 0 01-2 2h-3v-2a2 2 0 10-4 0v2H7a2 2 0 01-2-2v-3h2a2 2 0 100-4H5V8a2 2 0 012-2h2V4z" stroke="currentColor" stroke-width="1.8"/></svg>',
+    user: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.8"/><path d="M5 19c1.6-3 4-4.5 7-4.5s5.4 1.5 7 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    flame: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3c1 3-1 4.5-2.2 5.8C9.4 10.2 8 11.7 8 14a4 4 0 008 0c0-2.5-1.4-4.2-2.6-5.8C12.2 7 11 5.5 13 3z" stroke="currentColor" stroke-width="1.8"/></svg>',
+    compass: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/><path d="M14.8 9.2l-1.8 5.6-5.6 1.8 1.8-5.6 5.6-1.8z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+    search: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="1.8"/><path d="M16 16l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    leaf: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 4c-7 0-12 4.5-12 10 0 3 2 6 6 6 5.5 0 10-5 10-12 0-2.3-1.7-4-4-4z" stroke="currentColor" stroke-width="1.8"/><path d="M8 16c2-2 4.8-4.2 9-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    mobile: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="7" y="3" width="10" height="18" rx="2" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="17.5" r="0.9" fill="currentColor"/></svg>',
+    mail: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M4 8l8 6 8-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    spark: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8L12 3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+    chat: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 6h14a2 2 0 012 2v7a2 2 0 01-2 2H10l-4 3v-3H5a2 2 0 01-2-2V8a2 2 0 012-2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+    link: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 14l4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M8 16H6a4 4 0 010-8h2M16 8h2a4 4 0 010 8h-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    handshake: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 10l4-4 3 3 3-3 6 6-4 4-3-3-2 2-5-5-2 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+  };
+
+  function render() {
+    var nodes = document.querySelectorAll('.ai-svg-icon-slot[data-ai-icon]');
+    for (var i = 0; i < nodes.length; i++) {
+      var node = nodes[i];
+      var icon = node.getAttribute('data-ai-icon');
+      var svg = ICON_SVGS[icon];
+      if (!svg) continue;
+      node.classList.add('ai-svg-icon');
+      node.setAttribute('aria-hidden', 'true');
+      node.innerHTML = svg;
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', render);
+  } else {
+    render();
+  }
+})();
+</script>
+
+
+<link rel="preload" as="image" href="assets/logos/antarious-main.svg">
+<style id="antarious-nav-sync-style">
+.theme-logo-main{height:28px;width:auto;display:block}
+.nav-logo .theme-logo-main{height:28px}
+.footer-brand-img.theme-logo-main,.name .theme-logo-main{height:28px}
+
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:999;
+  height:62px;display:flex;align-items:center;
+  padding:0 clamp(14px,3.2vw,48px);
+  gap:clamp(10px,1.7vw,24px);
+  background:color-mix(in srgb,var(--surface-base,var(--bg,#fff)) 92%, transparent);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(15,23,42,.07);
+  transition:all .3s;
+  width:min(1200px,calc(100% - 2 * clamp(14px,3vw,24px)));
+  margin:0 auto;
+}
+.nav.scrolled{height:54px;box-shadow:0 1px 12px rgba(15,23,42,.06)}
+
+.nav-logo{display:flex;align-items:center;gap:9px;cursor:pointer;flex-shrink:0}
+.nav-links{display:flex;list-style:none;gap:2px;margin-left:clamp(8px,2vw,28px);padding:0}
+
+.nav-link{
+  font-size:13px;font-weight:700;color:var(--text-body,var(--ink2,#334155));
+  padding:8px 16px;border-radius:12px;transition:all .2s;cursor:pointer;
+  border:1px solid rgba(14,165,233,.14);
+  background:linear-gradient(135deg,rgba(14,165,233,.08),rgba(255,255,255,.02));
+  box-shadow:0 4px 14px rgba(15,23,42,.04);
+  white-space:nowrap;
+}
+.nav-link:hover,.nav-link.active{color:var(--brand-primary-strong,var(--teal2,#0284C7));border-color:rgba(14,165,233,.26);background:linear-gradient(135deg,rgba(14,165,233,.12),rgba(56,189,248,.05));transform:translateY(-1px)}
+
+.nav-right{display:flex;align-items:center;gap:10px;margin-left:auto;flex-shrink:0}
+.nav-ghost{
+  font-size:13px;font-weight:700;color:var(--brand-primary-strong,var(--teal2,#0284C7));
+  background:linear-gradient(135deg,rgba(14,165,233,.14),rgba(56,189,248,.08));
+  border:1px solid rgba(14,165,233,.24);padding:8px 18px;border-radius:12px;cursor:pointer;
+  transition:all .2s;box-shadow:0 8px 22px rgba(14,165,233,.12);white-space:nowrap;
+}
+.nav-ghost:hover{border-color:rgba(14,165,233,.38);color:var(--brand-primary,var(--teal,#0EA5E9));transform:translateY(-1px);box-shadow:0 12px 28px rgba(14,165,233,.18)}
+.nav-cta{
+  font-size:13px;font-weight:800;color:#fff;
+  border:none;padding:9px 22px;border-radius:12px;cursor:pointer;transition:all .22s;
+  background:linear-gradient(135deg,var(--brand-primary,var(--teal,#0EA5E9)),var(--brand-primary-strong,var(--teal2,#0284C7)));
+  box-shadow:0 6px 18px rgba(14,165,233,.26),0 0 0 1px rgba(14,165,233,.08);
+  white-space:nowrap;
+}
+.nav-cta:hover{background:linear-gradient(135deg,var(--brand-primary-strong,var(--teal2,#0284C7)),#0369A1);transform:translateY(-1px);box-shadow:0 10px 24px rgba(14,165,233,.34)}
+
+body{padding-top:62px}
+
+/* Large laptop / small desktop */
+@media (max-width:1100px){
+  .nav{width:calc(100% - 2 * 20px);padding:0 20px;gap:12px}
+  .nav-links{margin-left:10px}
+  .nav-link{padding:8px 13px;font-size:12.5px}
+  .nav-ghost{padding:8px 14px}
+  .nav-cta{padding:9px 16px}
+}
+
+/* Tablet and below */
+@media (max-width:860px){
+  .theme-logo-main{height:24px}
+  .nav{width:calc(100% - 2 * 14px);padding:10px 14px;gap:8px;flex-wrap:wrap;height:auto;min-height:62px}
+  .nav-links{order:3;width:100%;margin:6px 0 0 0;overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px;-ms-overflow-style:none;scrollbar-width:none}
+  .nav-links::-webkit-scrollbar{display:none}
+  .nav-right{width:auto;margin-left:auto;gap:8px}
+  .nav-link{flex:0 0 auto}
+}
+
+/* Mobile */
+@media (max-width:768px){
+  .nav{width:calc(100% - 2 * 16px);padding:10px 12px;gap:8px;align-items:center}
+  .nav-logo{margin-right:8px}
+  .nav-links{margin:6px 0 0 0;gap:8px}
+  .nav-link{padding:7px 11px;font-size:12px}
+  .nav-right{display:flex;gap:8px;margin-left:auto;width:auto}
+  .nav-ghost{padding:7px 11px;font-size:12px}
+  .nav-cta{padding:8px 12px;font-size:12px}
+}
+
+/* Very small devices */
+@media (max-width:420px){
+  .nav-right{width:100%;justify-content:flex-end}
+  .nav-ghost,.nav-cta{padding:7px 10px;font-size:11.5px}
+}
+</style>
+<style id="antarious-footer-sync-style">
+footer,
+.site-footer,
+.footer,
+.footer-inner,
+.footer-top,
+.footer-grid,
+.footer-nav,
+.footer-bottom {
+  color: var(--text-body, var(--ink2, #334155));
+}
+
+footer,
+.site-footer,
+.footer {
+  background: color-mix(in srgb, var(--surface-muted, var(--bg2, #f8fafc)) 90%, var(--surface-base, #fff));
+  border-top: 1px solid var(--border-subtle, var(--bdr, rgba(15,23,42,.09)));
+  margin-top: 56px;
+}
+
+.footer-inner,
+.shell > .wrap + .footer-nav,
+.footer-nav {
+  width: min(1200px, calc(100% - 40px));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.footer-top,
+.footer-grid,
+.footer-nav {
+  padding-top: 24px;
+  padding-bottom: 20px;
+}
+
+.footer-links,
+.footer-list {
+  display: grid;
+  gap: 8px;
+}
+
+.footer-col-h,
+.footer-title,
+.footer-head {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-muted, var(--ink4, #94A3B8));
+  margin-bottom: 10px;
+}
+
+.footer-lnk,
+.footer-list a,
+.footer-nav a {
+  color: var(--text-body, var(--ink2, #334155));
+}
+
+.footer-link-desc,
+.footer-brand-copy,
+.footer-copy {
+  color: var(--text-muted, var(--ink3, #64748B));
+}
+
+.footer-bottom {
+  border-top: 1px solid var(--border-subtle, var(--bdr2, rgba(15,23,42,.06)));
+  padding-top: 14px;
+  padding-bottom: 18px;
+}
+
+@media (max-width: 860px) {
+  .footer-top,
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+  .footer-nav {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+</style>
+</head>
+<body class="page-government">
+<nav class="nav" id="nav">
+  <div class="nav-logo" onclick="window.location='index.html'"><img fetchpriority="high" decoding="async" loading="eager" class="theme-logo-main" src="assets/logos/antarious-main.svg" alt="Antarious AI"></div>
+  <ul class="nav-links">
+    <li><button class="nav-link" onclick="window.location='business.html'">For Business</button></li>
+    <li><button class="nav-link" onclick="window.location='government.html'">For Government</button></li>
+    <li><button class="nav-link" onclick="window.location='ngo.html'">For NGO</button></li>
+  </ul>
+  <div class="nav-right">
+    <button class="nav-ghost" onclick="window.location='freya.html'">Meet Freya</button>
+    <button class="nav-cta" onclick="window.location='index.html#cta'">Request Demo</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero-wrap">
+  <div class="hero-dots"></div><div class="hero-glow"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-kicker">For Government Departments &amp; Agencies <span class="kd"></span></div>
+      <h1 class="hero-h1">Policy execution<br><span class="ac">at scale.</span><br><span class="dm">Intelligence</span><br><span class="dm">in real time.</span></h1>
+      <p class="hero-sub">Powered by <strong>Freya</strong>, your autonomous government intelligence AI.</p>
+      <p class="hero-body">Antarious AI gives government departments a connected intelligence layer — tracking policy implementation, monitoring service delivery across agencies, automating compliance reporting, and surfacing critical decisions to the right people at the right time.</p>
+      <div class="hero-btns"><button class="btn btn-p">Request a Briefing <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button><button class="btn btn-g" onclick="location.href='freya.html'">Meet Freya →</button></div>
+      <div class="hero-stats"><div><div class="hs-v">80%</div><div class="hs-l">Faster compliance briefs</div></div><div class="hs-sep"></div><div><div class="hs-v">Real-time</div><div class="hs-l">Service delivery intel</div></div><div class="hs-sep"></div><div><div class="hs-v">∞</div><div class="hs-l">Institutional memory</div></div><div class="hs-sep"></div><div><div class="hs-v">100%</div><div class="hs-l">Audit trail</div></div></div>
+    </div>
+    <div class="terminal">
+      <div class="t-bar"><div class="t-dots"><div class="t-dot" style="background:#EF4444"></div><div class="t-dot" style="background:#F59E0B"></div><div class="t-dot" style="background:#10B981"></div></div><div class="t-title">FREYA — POLICY OPERATIONS</div><div class="t-live"><span class="t-ldot"></span>ACTIVE</div></div>
+      <div class="t-prog"><div class="t-pf"></div></div>
+      <div class="t-body">
+        <div class="t-frow"><div class="t-morb"><div class="t-mface">F</div><div class="t-mring"></div></div><div><div class="t-fname">Freya</div><div class="t-fstatus">RUNNING · 6 AGENTS ACTIVE</div><div class="t-fagents">Monitoring 24 departments · Real-time delivery tracking</div></div></div>
+        <div class="t-think" id="govThink">Compiling inter-departmental Q2 delivery brief…&thinsp;<span class="t-cur">|</span></div>
+        <div class="tasks">
+          <div class="task done"><div class="tic tcd"></div><div class="task-txt">Service delivery KPIs updated across 24 departments</div><div class="task-tm tmc">Auto </div></div>
+          <div class="task done"><div class="tic tcd"></div><div class="task-txt">Policy compliance brief compiled — 3 obligations tracked</div><div class="task-tm tmc">8 min </div></div>
+          <div class="task done"><div class="tic tcd"></div><div class="task-txt">Budget utilisation report — Q2 actuals vs. targets</div><div class="task-tm tmc">Auto </div></div>
+          <div class="task run"><div class="tic tcr">⟳</div><div class="task-txt" id="govTask">Generating ministerial brief — 3 scenarios modelled…</div><div class="task-tm tmr">● Now</div></div>
+          <div class="task wait"><div class="tic tcw">○</div><div class="task-txt">Parliamentary update — compile for committee review</div><div class="task-tm tmw">Queued</div></div>
+        </div>
+        <div class="t-alert"><div style="font-size:13px;flex-shrink:0"><span class="ai-svg-icon-slot" data-ai-icon="alert"></span></div><div><div class="ta-lbl">Freya Alert · 1h ago</div><div class="ta-txt">Department 7 budget utilisation is 23% behind Q2 target. Reallocation recommendation ready for approval.</div></div></div>
+        <div class="t-mets"><div class="tm"><div class="tm-v" id="govDepartments">24</div><div class="tm-l">Departments</div></div><div class="tm"><div class="tm-v" id="govCompliance">87%</div><div class="tm-l">KPI Compliance</div></div><div class="tm"><div class="tm-v" id="govFlags">0</div><div class="tm-l">Audit Flags</div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="trust-strip"><div class="trust-lbl">Built for government operational realities</div><div class="scroll-row"><div class="scroll-inner"><span class="slogo">GIS Integration</span><span class="slogo">HMIS</span><span class="slogo">Power BI</span><span class="slogo">Microsoft 365</span><span class="slogo">Google Workspace</span><span class="slogo">SAP</span><span class="slogo">Oracle ERP</span><span class="slogo">Salesforce</span><span class="slogo">ServiceNow</span><span class="slogo">SharePoint</span><span class="slogo">Tableau</span><span class="slogo">SQL Databases</span><span class="slogo">ODK / KoBo</span><span class="slogo">REST APIs</span><span class="slogo">GIS Integration</span><span class="slogo">HMIS</span><span class="slogo">Power BI</span><span class="slogo">Microsoft 365</span><span class="slogo">Google Workspace</span><span class="slogo">SAP</span><span class="slogo">Oracle ERP</span><span class="slogo">Salesforce</span><span class="slogo">ServiceNow</span><span class="slogo">SharePoint</span><span class="slogo">Tableau</span><span class="slogo">SQL Databases</span></div></div></div>
+
+<!-- PAIN -->
+<section class="gov-problem">
+  <div class="page">
+    <div class="eyebrow reveal">Where Government Departments Lose Efficiency</div>
+    <h2 class="h2 reveal">Data exists across every department.<br><em>Connected intelligence doesn't.</em></h2>
+    <p class="sp w reveal">Government departments don't lack data — they lack the layer that connects it, queries it, and surfaces it to the people who need it. The result: slow decisions, delayed services, and preventable compliance failures.</p>
+    <div class="cost-grid">
+      <div class="cc reveal" style="--cc:var(--red)"><div class="cc-icon">️</div><div class="cc-val">Siloed</div><div class="cc-title">Departmental data</div><div class="cc-desc">Every department operates its own systems. Cross-agency insight requires manual coordination — emails, meetings, manual data pulls.</div></div>
+      <div class="cc reveal d1" style="--cc:var(--amber)"><div class="cc-icon"><span class="ai-svg-icon-slot" data-ai-icon="calendar"></span></div><div class="cc-val">Weeks</div><div class="cc-title">To compile a policy brief</div><div class="cc-desc">Ministerial briefs, parliamentary updates, and inter-agency reports are assembled manually — taking days to weeks instead of hours.</div></div>
+      <div class="cc reveal d2" style="--cc:var(--red)"><div class="cc-icon"><span class="ai-svg-icon-slot" data-ai-icon="chart"></span></div><div class="cc-val">Lagged</div><div class="cc-title">Service delivery data</div><div class="cc-desc">Service performance is reviewed monthly or quarterly. Problems identified in week 12 were visible in week 3 — if someone had looked.</div></div>
+      <div class="cc reveal d3" style="--cc:var(--amber)"><div class="cc-icon"></div><div class="cc-val">Manual</div><div class="cc-title">Compliance reporting</div><div class="cc-desc">Regulatory obligations, audit requirements, and financial reporting are tracked manually — creating risk of omission and non-compliance.</div></div>
+      <div class="cc reveal d1" style="--cc:#660033"><div class="cc-icon"></div><div class="cc-val">∞ Lost</div><div class="cc-title">Institutional knowledge</div><div class="cc-desc">Policy context, implementation history, and departmental decisions live in individuals — eroded by every staff rotation or transition.</div></div>
+      <div class="cc reveal d2" style="--cc:var(--red)"><div class="cc-icon"><span class="ai-svg-icon-slot" data-ai-icon="chat"></span></div><div class="cc-val">Slow</div><div class="cc-title">Public communication</div><div class="cc-desc">Citizen-facing communications, press releases, and public reporting lag behind programme reality — creating perception and trust gaps.</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- BRIDGE -->
+<section class="alt gov-principle">
+  <div class="page">
+    <div class="eyebrow reveal">The Antarious AI Principle</div>
+    <h2 class="h2 reveal">Freya amplifies your civil servants.<br><em>It doesn't replace them.</em></h2>
+    <p class="sp w reveal">Policy expertise, community knowledge, accountability, and democratic oversight — these are irreducibly human. Freya handles the intelligence work that prevents your team from doing what only they can do.</p>
+    <div class="bridge-grid reveal">
+      <div class="b-human"><div class="b-av"><span class="ai-svg-icon-slot" data-ai-icon="user"></span></div><div class="b-name">Your Department Team</div><div class="b-sub">Policy expertise, judgement, accountability, public trust</div><div class="b-items"><div class="b-item"><div class="b-dot" style="background:#0284C7"></div>Policy design &amp; strategic decisions</div><div class="b-item"><div class="b-dot" style="background:#0284C7"></div>Stakeholder &amp; community relations</div><div class="b-item"><div class="b-dot" style="background:#0284C7"></div>Legislative &amp; parliamentary accountability</div><div class="b-item"><div class="b-dot" style="background:#0284C7"></div>Inter-departmental negotiation</div><div class="b-item"><div class="b-dot" style="background:#0284C7"></div>Democratic oversight &amp; public trust</div></div></div>
+      <div class="b-mid"><div class="b-vl"></div><div class="b-plus">+</div><div class="b-vl"></div></div>
+      <div class="b-freya"><div class="b-forb"><div class="bfc"></div><div class="bfi">F</div><div class="bfr1"></div></div><div class="b-name">Freya AI Agent</div><div class="b-sub">Intelligence, monitoring, documentation, compliance — 24/7, no gaps</div><div class="b-items"><div class="b-item"><div class="b-dot" style="background:var(--ac)"></div>Cross-department data synthesis &amp; briefing</div><div class="b-item"><div class="b-dot" style="background:var(--ac)"></div>Service delivery monitoring &amp; alerts</div><div class="b-item"><div class="b-dot" style="background:var(--ac)"></div>Compliance documentation &amp; audit trails</div><div class="b-item"><div class="b-dot" style="background:var(--ac)"></div>Budget tracking &amp; variance reporting</div><div class="b-item"><div class="b-dot" style="background:var(--ac)"></div>Policy brief &amp; document generation</div></div></div>
+    </div>
+    <div class="bridge-note reveal"><strong>Every output passes through human review and approval.</strong><br>Freya prepares. Your team decides. No brief is issued, no communication sent, no action taken without designated officer authorisation. Accountability remains entirely with your team.</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- 8 AGENTS -->
+<section class="gov-agents">
+  <div class="page">
+    <div class="eyebrow reveal" style="justify-content:center;display:flex">The 8 Government Agents</div>
+    <h2 class="h2 reveal" style="text-align:center">Eight specialists built<br><em>for government operations.</em></h2>
+    <p class="sp reveal" style="text-align:center;max-width:620px;margin:0 auto 48px">Each agent is configured for a specific government function — sharing context through Freya, requiring human approval, and building institutional memory over time.</p>
+    <div class="agents-grid">
+      <div class="ag reveal"><div class="ag-num">Agent 01 · Core Intelligence</div><span class="ag-icon">️</span><div class="ag-name">Policy Intelligence Agent</div><p class="ag-body">Answers any natural language question about policy implementation, programme performance, or inter-departmental activity — synthesising data from across the entire system in one cited, auditable answer. Morning briefs auto-compiled for senior leadership daily.</p><div class="ag-feats"><div class="agf">Natural language queries across all departments</div><div class="agf">Persistent institutional memory — never forgets</div><div class="agf">Every answer cites its data source and timestamp</div></div></div>
+      <div class="ag reveal d1"><div class="ag-num">Agent 02 · Service Monitoring</div><span class="ag-icon"><span class="ai-svg-icon-slot" data-ai-icon="signal"></span></span><div class="ag-name">Service Delivery Monitor</div><p class="ag-body">Real-time KPI tracking across all departments and service delivery units. Early warning alerts when a unit falls below performance thresholds — before problems escalate. Geographic heatmaps, trend indicators, and ranked performance dashboards always live.</p><div class="ag-feats"><div class="agf">Continuous monitoring — not monthly reviews</div><div class="agf">Early warning alerts with contextual interpretation</div><div class="agf">Geographic and demographic disaggregation</div></div></div>
+      <div class="ag reveal"><div class="ag-num">Agent 03 · Finance Intelligence</div><span class="ag-icon"></span><div class="ag-name">Budget &amp; Finance Tracker</div><p class="ag-body">Tracks budget utilisation vs. target across all departments and components in real time. Flags under- and over-expenditure with reallocation recommendations. Generates financial performance reports, variance analyses, and quarter-end narratives automatically.</p><div class="ag-feats"><div class="agf">Real-time utilisation vs. target per department</div><div class="agf">Anomaly detection &amp; reallocation recommendations</div><div class="agf">Automated financial narrative generation</div></div></div>
+      <div class="ag reveal d1"><div class="ag-num">Agent 04 · Compliance</div><span class="ag-icon"><span class="ai-svg-icon-slot" data-ai-icon="shield"></span></span><div class="ag-name">Compliance &amp; Audit Sentinel</div><p class="ag-body">Tracks all regulatory obligations, audit requirements, and reporting deadlines across every department. Surfaces open compliance gaps with assigned owners and due dates. Automatically compiles audit evidence portfolios before external reviews — nothing is missed.</p><div class="ag-feats"><div class="agf">All compliance obligations tracked centrally</div><div class="agf">Deadline alerts before they become issues</div><div class="agf">Audit evidence portfolios auto-compiled</div></div></div>
+      <div class="ag reveal"><div class="ag-num">Agent 05 · Communications</div><span class="ag-icon"></span><div class="ag-name">Document &amp; Brief Generator</div><p class="ag-body">Drafts ministerial briefs, parliamentary updates, inter-departmental memos, Cabinet papers, and public-facing reports — all data-sourced, correctly structured, and routed through configured approval workflows. No blank page. No manual data pulling.</p><div class="ag-feats"><div class="agf">Ministerial briefs &amp; Cabinet papers</div><div class="agf">Parliamentary updates, structured for committee</div><div class="agf">Public reports &amp; press release drafts</div></div></div>
+      <div class="ag reveal d1"><div class="ag-num">Agent 06 · Coordination</div><span class="ag-icon"></span><div class="ag-name">Inter-Departmental Coordinator</div><p class="ag-body">Manages cross-agency information sharing, workflow routing, and task coordination — ensuring that actions requiring multiple departments are tracked, escalated, and resolved. Eliminates the coordination overhead that kills cross-government initiatives.</p><div class="ag-feats"><div class="agf">Cross-agency workflow routing &amp; tracking</div><div class="agf">Escalation management with assigned owners</div><div class="agf">Shared action register across departments</div></div></div>
+      <div class="ag reveal"><div class="ag-num">Agent 07 · Citizen Engagement</div><span class="ag-icon"><span class="ai-svg-icon-slot" data-ai-icon="chat"></span></span><div class="ag-name">Public Communication Agent</div><p class="ag-body">Drafts citizen-facing communications, FAQ responses, social media posts, and public updates — always aligned to official policy, approved before publication. Monitors public sentiment signals and flags emerging issues for department leadership.</p><div class="ag-feats"><div class="agf">Citizen-facing content drafts — on-policy</div><div class="agf">Social media &amp; press release generation</div><div class="agf">Public sentiment monitoring &amp; issue alerts</div></div></div>
+      <div class="ag reveal d1"><div class="ag-num">Agent 08 · Strategic Foresight</div><span class="ag-icon"><span class="ai-svg-icon-slot" data-ai-icon="spark"></span></span><div class="ag-name">Strategic Forecasting Agent</div><p class="ag-body">Models policy outcome trajectories — three-scenario analysis (base, optimistic, risk) for key initiatives. Budget and resource utilisation projections. Identifies which departments will need additional support and when. Evidence-based strategy, always current.</p><div class="ag-feats"><div class="agf">3-scenario outcome modelling with confidence levels</div><div class="agf">Resource &amp; capacity forecasting by department</div><div class="agf">Updated weekly from live operational data</div></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- USE CASES -->
+<section class="alt gov-roles">
+  <div class="page">
+    <div class="eyebrow reveal">Use Cases by Role</div>
+    <h2 class="h2 reveal">Built for every <em>government function.</em></h2>
+    <p class="sp reveal">Freya adapts to how your department works — always monitoring, always briefing, always one step ahead.</p>
+    <div class="uc-tabs reveal">
+      <button class="uc-tab on" onclick="showUC('minister',this)">For Ministers</button>
+      <button class="uc-tab" onclick="showUC('senior',this)">Senior Officials</button>
+      <button class="uc-tab" onclick="showUC('ops',this)">Operations Teams</button>
+      <button class="uc-tab" onclick="showUC('compliance',this)">Compliance Officers</button>
+    </div>
+    <div id="uc-minister" class="uc-panel on">
+      <div><h3 class="uc-h3">Full portfolio intelligence.<br><em>Zero briefing assembly.</em></h3><p class="uc-p">Freya compiles a ministerial morning brief at 7am every day — portfolio performance across all departments, anomalies, risks, and recommended actions. Board-ready in seconds, not days.</p><div class="uc-stats"><div><div class="uc-sv">7am</div><div class="uc-sl">Daily ministerial brief</div></div><div class="uc-div"></div><div><div class="uc-sv">&lt;10m</div><div class="uc-sl">Cabinet paper drafted</div></div><div class="uc-div"></div><div><div class="uc-sv">3 scenarios</div><div class="uc-sl">Per policy decision</div></div></div><div class="uc-steps"><div class="uc-step"><div class="uc-sn">1</div><div class="uc-st">Daily 7am brief — all departments, all KPIs, all anomalies, all risks summarised</div></div><div class="uc-step"><div class="uc-sn">2</div><div class="uc-st">Cabinet papers drafted from live data — structured correctly, data-cited, for review</div></div><div class="uc-step"><div class="uc-sn">3</div><div class="uc-st">3-scenario outcome modelling for every major policy decision — base, optimistic, risk</div></div><div class="uc-step"><div class="uc-sn">4</div><div class="uc-st">Parliamentary updates drafted — structured for committee, ready for minister review</div></div></div><button class="btn btn-p" style="font-size:13px;padding:11px 22px">Explore ministerial features →</button></div>
+      <div class="demo-win"><div class="dw-bar"><div class="dw-dots"><div class="dw-dot" style="background:#EF4444"></div><div class="dw-dot" style="background:#F59E0B"></div><div class="dw-dot" style="background:#10B981"></div></div><div class="dw-url">antarious.app / ministerial-brief</div><div class="dw-live"><span class="dw-ldot"></span>LIVE</div></div><div class="dw-prog"><div class="dw-pf"></div></div><div class="dw-body"><div class="f-tick"><div class="f-tick-orb">F</div><div class="f-tick-txt" id="ministerTick">Freya: compiling ministerial morning brief…</div><div class="f-tick-dot"></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px"><div style="background:var(--bg3);border:1px solid var(--bdr2);border-radius:8px;padding:12px"><div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--ink4);letter-spacing:1px;margin-bottom:5px">DEPT KPI COMPLIANCE</div><div style="font-family:'Outfit',sans-serif;font-size:22px;font-weight:900;color:var(--ac)">87%</div><div style="font-size:10px;color:var(--green);margin-top:2px">↑ 12pp vs Q1</div></div><div style="background:var(--bg3);border:1px solid var(--bdr2);border-radius:8px;padding:12px"><div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--ink4);letter-spacing:1px;margin-bottom:5px">OPEN COMPLIANCE FLAGS</div><div style="font-family:'Outfit',sans-serif;font-size:22px;font-weight:900;color:var(--green)">0</div><div style="font-size:10px;color:var(--ink3);margin-top:2px">All obligations current</div></div></div><div style="background:var(--abg);border:1px solid rgba(217,119,6,.2);border-radius:8px;padding:10px;display:flex;gap:8px;margin-bottom:9px"><div style="width:22px;height:22px;border-radius:6px;background:conic-gradient(from var(--ca),#4D0028,#B04A74,#4D0028);animation:conic 4s linear infinite;display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-size:10px;font-weight:900;color:#fff;flex-shrink:0">F</div><div><div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--amber);letter-spacing:1px;margin-bottom:2px;font-weight:700">FREYA ALERT</div><div style="font-size:11.5px;color:var(--ink2);line-height:1.5">Dept 7 budget 23% behind target. Reallocation recommendation ready for your approval.</div></div></div><div style="font-family:'DM Mono',monospace;font-size:9.5px;color:var(--ink3);background:var(--acbg);border:1px solid var(--acbdr);border-radius:8px;padding:9px">24 departments monitored · 3 alerts this week · 0 audit flags · Cabinet paper ready</div></div></div>
+    </div>
+    <div id="uc-senior" class="uc-panel">
+      <div><h3 class="uc-h3">Cross-departmental intelligence.<br><em>No more coordination overhead.</em></h3><p class="uc-p">Senior officials get real-time visibility across all departments — performance, budget, compliance, and risk — without chasing data or convening unnecessary coordination meetings.</p><div class="uc-stats"><div><div class="uc-sv">24/7</div><div class="uc-sl">Cross-dept visibility</div></div><div class="uc-div"></div><div><div class="uc-sv">8 sec</div><div class="uc-sl">To answer any query</div></div><div class="uc-div"></div><div><div class="uc-sv">∞</div><div class="uc-sl">Institutional context</div></div></div><div class="uc-steps"><div class="uc-step"><div class="uc-sn">1</div><div class="uc-st">Ask any question in natural language — get a cited, analysed answer in under 10 seconds</div></div><div class="uc-step"><div class="uc-sn">2</div><div class="uc-st">Cross-agency dashboard always live — no manual data requests from departments</div></div><div class="uc-step"><div class="uc-sn">3</div><div class="uc-st">Every past decision, precedent, and context stored — accessible regardless of staff changes</div></div></div><button class="btn btn-p" style="font-size:13px;padding:11px 22px">Explore senior official features →</button></div>
+      <div class="demo-win"><div class="dw-bar"><div class="dw-dots"><div class="dw-dot" style="background:#EF4444"></div><div class="dw-dot" style="background:#F59E0B"></div><div class="dw-dot" style="background:#10B981"></div></div><div class="dw-url">antarious.app / portfolio-dashboard</div><div class="dw-live"><span class="dw-ldot"></span>LIVE</div></div><div class="dw-prog"><div class="dw-pf"></div></div><div class="dw-body"><div class="f-tick"><div class="f-tick-orb">F</div><div class="f-tick-txt">Freya: cross-departmental Q2 analysis updated…</div><div class="f-tick-dot"></div></div><div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--ink4);letter-spacing:1.5px;margin-bottom:9px;text-transform:uppercase">Department Performance — Q2</div><div style="display:flex;flex-direction:column;gap:6px"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:11.5px;color:var(--ink2);width:100px">Education</span><div style="flex:1;height:18px;background:var(--bg3);border-radius:4px;overflow:hidden"><div style="width:92%;height:100%;background:var(--ac);border-radius:4px"></div></div><span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--ac);width:32px;text-align:right;font-weight:700">92%</span></div><div style="display:flex;align-items:center;gap:10px"><span style="font-size:11.5px;color:var(--ink2);width:100px">Health</span><div style="flex:1;height:18px;background:var(--bg3);border-radius:4px;overflow:hidden"><div style="width:78%;height:100%;background:var(--green);border-radius:4px"></div></div><span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--green);width:32px;text-align:right;font-weight:700">78%</span></div><div style="display:flex;align-items:center;gap:10px"><span style="font-size:11.5px;color:var(--ink2);width:100px">Infrastructure</span><div style="flex:1;height:18px;background:var(--bg3);border-radius:4px;overflow:hidden"><div style="width:63%;height:100%;background:var(--amber);border-radius:4px;opacity:.7"></div></div><span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--amber);width:32px;text-align:right;font-weight:700">63%</span></div></div><div style="margin-top:10px;background:var(--acbg);border:1.5px solid var(--acbdr);border-radius:8px;padding:9px;font-size:11.5px;color:var(--ink2)"> <strong>Freya:</strong> Infrastructure 23% behind target — resource gap in Divisions 4 &amp; 7 identified</div></div></div>
+    </div>
+    <div id="uc-ops" class="uc-panel">
+      <div><h3 class="uc-h3">Service delivery intelligence<br><em>in real time.</em></h3><p class="uc-p">Operations teams get live dashboards, early warning alerts, and anomaly detection across every service delivery unit — enabling corrective action weeks before problems reach executive level.</p><div class="uc-stats"><div><div class="uc-sv">Real-time</div><div class="uc-sl">Delivery tracking</div></div><div class="uc-div"></div><div><div class="uc-sv">Week 3</div><div class="uc-sl">vs. Week 12 alerts</div></div><div class="uc-div"></div><div><div class="uc-sv">100%</div><div class="uc-sl">Audit trail</div></div></div><div class="uc-steps"><div class="uc-step"><div class="uc-sn">1</div><div class="uc-st">All delivery units tracked in real time — KPIs, budgets, activities, outcomes</div></div><div class="uc-step"><div class="uc-sn">2</div><div class="uc-st">Early warning alerts with context — what changed, when, and likely cause</div></div><div class="uc-step"><div class="uc-sn">3</div><div class="uc-st">Corrective action memos drafted by Freya — routed for approval before sending</div></div></div><button class="btn btn-p" style="font-size:13px;padding:11px 22px">Explore ops features →</button></div>
+      <div class="demo-win"><div class="dw-bar"><div class="dw-dots"><div class="dw-dot" style="background:#EF4444"></div><div class="dw-dot" style="background:#F59E0B"></div><div class="dw-dot" style="background:#10B981"></div></div><div class="dw-url">antarious.app / service-delivery</div><div class="dw-live"><span class="dw-ldot"></span>LIVE</div></div><div class="dw-prog"><div class="dw-pf"></div></div><div class="dw-body"><div class="f-tick"><div class="f-tick-orb">F</div><div class="f-tick-txt">Service Delivery Monitor: live across all 24 departments…</div><div class="f-tick-dot"></div></div><div style="display:flex;flex-direction:column;gap:6px"><div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--gbg);border:1px solid var(--gbdr);border-radius:8px"><div style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0"></div><div style="flex:1;font-size:12px;color:var(--ink)">Education — Dept 2</div><div style="font-size:11px;color:var(--green)">↑ 12pp on target</div><div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--green);background:var(--gbg);border:1px solid var(--gbdr);padding:2px 8px;border-radius:4px;font-weight:700">HEALTHY</div></div><div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--abg);border:1px solid rgba(217,119,6,.2);border-radius:8px"><div style="width:8px;height:8px;border-radius:50%;background:var(--amber);flex-shrink:0"></div><div style="flex:1;font-size:12px;color:var(--ink)">Infrastructure — Division 4</div><div style="font-size:11px;color:var(--amber)">23% behind target</div><div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--amber);background:var(--abg);border:1px solid rgba(217,119,6,.2);padding:2px 8px;border-radius:4px;font-weight:700">ALERT</div></div></div></div></div>
+    </div>
+    <div id="uc-compliance" class="uc-panel">
+      <div><h3 class="uc-h3">Zero compliance gaps.<br><em>Audit-ready, always.</em></h3><p class="uc-p">Compliance officers get automated tracking of all obligations, deadline alerts before they become issues, and audit evidence portfolios compiled automatically before external reviews.</p><div class="uc-stats"><div><div class="uc-sv">0</div><div class="uc-sl">Missed obligations</div></div><div class="uc-div"></div><div><div class="uc-sv">Auto</div><div class="uc-sl">Evidence compilation</div></div><div class="uc-div"></div><div><div class="uc-sv">100%</div><div class="uc-sl">Audit trail</div></div></div><div class="uc-steps"><div class="uc-step"><div class="uc-sn">1</div><div class="uc-st">All compliance obligations tracked centrally — one dashboard, all departments</div></div><div class="uc-step"><div class="uc-sn">2</div><div class="uc-st">Automated alerts before deadlines — with assigned owners and escalation paths</div></div><div class="uc-step"><div class="uc-sn">3</div><div class="uc-st">Audit evidence portfolios auto-compiled before each external review or inspection</div></div></div><button class="btn btn-p" style="font-size:13px;padding:11px 22px">Explore compliance features →</button></div>
+      <div class="demo-win"><div class="dw-bar"><div class="dw-dots"><div class="dw-dot" style="background:#EF4444"></div><div class="dw-dot" style="background:#F59E0B"></div><div class="dw-dot" style="background:#10B981"></div></div><div class="dw-url">antarious.app / compliance</div><div class="dw-live"><span class="dw-ldot"></span>LIVE</div></div><div class="dw-prog"><div class="dw-pf"></div></div><div class="dw-body"><div class="f-tick"><div class="f-tick-orb">F</div><div class="f-tick-txt">Compliance Sentinel: 0 open flags · Audit portfolio ready…</div><div class="f-tick-dot"></div></div><div style="display:flex;flex-direction:column;gap:7px"><div style="display:flex;align-items:center;gap:9px;padding:9px 12px;background:var(--gbg);border:1px solid var(--gbdr);border-radius:8px"><div style="font-size:16px"></div><div style="flex:1"><div style="font-size:12px;font-weight:600;color:var(--ink)">Financial Reporting — Q2</div><div style="font-size:11px;color:var(--green);margin-top:1px">Submitted · All 24 departments confirmed</div></div></div><div style="display:flex;align-items:center;gap:9px;padding:9px 12px;background:var(--gbg);border:1px solid var(--gbdr);border-radius:8px"><div style="font-size:16px"></div><div style="flex:1"><div style="font-size:12px;font-weight:600;color:var(--ink)">Environmental Obligations</div><div style="font-size:11px;color:var(--green);margin-top:1px">All 18 obligations current · 0 overdue</div></div></div><div style="background:var(--acbg);border:1.5px solid var(--acbdr);border-radius:8px;padding:9px;font-size:11.5px;color:var(--ink2)"> <strong>Freya:</strong> External audit in 14 days — evidence portfolio compiled, 247 documents indexed</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- OUTCOMES -->
+<section class="gov-outcomes">
+  <div class="page">
+    <div class="eyebrow reveal" style="justify-content:center;display:flex">Measurable Impact</div>
+    <h2 class="h2 reveal" style="text-align:center">Six pillars of government<br><em>operational transformation.</em></h2>
+    <p class="sp reveal" style="text-align:center;max-width:620px;margin:0 auto 48px">Each pillar represents a measurable operational shift — from lag to real-time, from manual to automated, from siloed to connected.</p>
+    <div class="outcomes-grid">
+      <div class="oc reveal"><span class="oc-icon"><span class="ai-svg-icon-slot" data-ai-icon="timer"></span></span><div class="oc-val">60%</div><div class="oc-lbl">Time Recovered</div><p class="oc-desc">Civil servants recover 60% of time currently consumed by routine intelligence tasks — redirected to strategy, community engagement, and policy design.</p></div>
+      <div class="oc reveal d1"><span class="oc-icon"><span class="ai-svg-icon-slot" data-ai-icon="target"></span></span><div class="oc-val">95%+</div><div class="oc-lbl">Data Accuracy</div><p class="oc-desc">Antarious AI eliminates the human error layer from routine data processing — producing output that is consistent, validated, cross-referenced, and auditable.</p></div>
+      <div class="oc reveal d2"><span class="oc-icon"><span class="ai-svg-icon-slot" data-ai-icon="bolt"></span></span><div class="oc-val">Real-time</div><div class="oc-lbl">Intelligence</div><p class="oc-desc">Departments currently operate on quarterly data. Antarious AI makes all performance data live and queryable in real time. Problems identified this week, not next quarter.</p></div>
+      <div class="oc reveal"><span class="oc-icon"><span class="ai-svg-icon-slot" data-ai-icon="brain"></span></span><div class="oc-val">∞</div><div class="oc-lbl">Institutional Memory</div><p class="oc-desc">Every decision is stored in memory. Every policy precedent is accessible. Every officer transition is fully bridged. The organisation learns and retains — permanently.</p></div>
+      <div class="oc reveal d1"><span class="oc-icon"><span class="ai-svg-icon-slot" data-ai-icon="shield"></span></span><div class="oc-val">Zero</div><div class="oc-lbl">Compliance Gaps</div><p class="oc-desc">Automated tracking of all compliance obligations means no deadlines missed, no evidence gaps before audits, no surprises at external reviews.</p></div>
+      <div class="oc reveal d2"><span class="oc-icon"><span class="ai-svg-icon-slot" data-ai-icon="handshake"></span></span><div class="oc-val">Human</div><div class="oc-lbl">Always in Control</div><p class="oc-desc">Every Freya output requires human approval. No action is taken without authorisation. Democratic accountability and human oversight are preserved absolutely.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FAQ -->
+<section>
+  <div class="page">
+    <div class="eyebrow reveal">Government FAQs</div>
+    <h2 class="h2 reveal">Answers for <em>public sector operations.</em></h2>
+    <p class="sp reveal">Common questions from ministers, senior officials, and compliance teams managing multi-department delivery.</p>
+    <div class="reveal" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:26px">
+      <div style="background:var(--bg2);border:1px solid var(--bdr);border-radius:12px;padding:16px"><div style="font-weight:800;color:var(--ink);margin-bottom:8px">How does Freya support ministerial decision-making?</div><p style="color:var(--ink2);font-size:13.5px;line-height:1.65">Freya prepares proactive morning briefs with cross-department performance, risk signals, and recommended actions, then enables natural-language follow-up questions.</p></div>
+      <div style="background:var(--bg2);border:1px solid var(--bdr);border-radius:12px;padding:16px"><div style="font-weight:800;color:var(--ink);margin-bottom:8px">Can departments keep data sovereignty and role boundaries?</div><p style="color:var(--ink2);font-size:13.5px;line-height:1.65">Yes. Deployments are isolated, access is role-scoped, and users only receive answers from data they are authorised to access.</p></div>
+      <div style="background:var(--bg2);border:1px solid var(--bdr);border-radius:12px;padding:16px"><div style="font-weight:800;color:var(--ink);margin-bottom:8px">Will this work across siloed systems?</div><p style="color:var(--ink2);font-size:13.5px;line-height:1.65">Yes. Freya connects multiple departmental sources, reconciles context, and produces a unified intelligence layer without forcing teams into manual consolidation.</p></div>
+      <div style="background:var(--bg2);border:1px solid var(--bdr);border-radius:12px;padding:16px"><div style="font-weight:800;color:var(--ink);margin-bottom:8px">How is audit and compliance evidence handled?</div><p style="color:var(--ink2);font-size:13.5px;line-height:1.65">Compliance Sentinel tracks obligations continuously and compiles evidence portfolios ahead of review windows, preserving full traceability of decisions and approvals.</p></div>
+    </div>
+    <div class="reveal" style="margin-top:18px"><a href="faq-comprehensive.html" class="btn-more">View full FAQ library →</a></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<section class="alt">
+  <div class="page"><div class="cta-card reveal"><div class="cta-dots"></div><div class="cta-c"><div class="cta-ey">Request a Briefing</div><h2 class="cta-h2">Ready to give your department connected intelligence?</h2><p class="cta-p">Purpose-built for government operations. Designed for your accountability requirements, your approval workflows, and your institutional reality.</p><div class="cta-btns"><button class="btn-cta-p">Request a Briefing <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button><button class="btn-cta-g" onclick="location.href='freya.html'">Meet Freya →</button></div></div></div></div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="name"><img fetchpriority="high" decoding="async" loading="eager" class="theme-logo-main" src="assets/logos/antarious-main.svg" alt="Antarious AI"></div>
+        <div class="tagline">The Agentic AI Operating System for business, government, and NGO teams.</div>
+      </div>
+      <div>
+        <div class="footer-col-h">Platform</div>
+        <ul class="footer-links">
+          <li><a class="footer-lnk" href="index.html#hero">Overview</a></li>
+          <li><a class="footer-lnk" href="freya.html">Freya</a></li>
+          <li><a class="footer-lnk" href="index.html#usecases">Workflows</a></li>
+          <li><a class="footer-lnk" href="index.html#comparison">Trust</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-h">Modules</div>
+        <ul class="footer-links">
+          <li><a class="footer-lnk" href="business.html">For Business</a></li>
+          <li><a class="footer-lnk" href="government.html">For Government</a></li>
+          <li><a class="footer-lnk" href="ngo.html">For NGO</a></li>
+          <li><a class="footer-lnk" href="freya.html">Cross-Industry Freya</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-h">Trust</div>
+        <ul class="footer-links">
+          <li class="footer-link-item"><a class="footer-lnk" href="trust-human-approval.html">Human Approval</a><span class="footer-link-desc">How approvals remain with designated human owners.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="trust-audit-trail.html">Audit Trail</a><span class="footer-link-desc">End-to-end logging of actions, context, and decisions.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="trust-role-based-control.html">Role-Based Control</a><span class="footer-link-desc">Access boundaries and permissions by role and function.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="trust-security.html">Security</a><span class="footer-link-desc">Controls, safeguards, and deployment security posture.</span></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-h">Company</div>
+        <ul class="footer-links">
+          <li class="footer-link-item"><a class="footer-lnk" href="company-about.html">About</a><span class="footer-link-desc">Who we are and what we are building.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="company-contact.html">Contact</a><span class="footer-link-desc">How to reach sales, support, and partnerships.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="company-partnerships.html">Partnerships</a><span class="footer-link-desc">Collaboration models for delivery and integration partners.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="company-legal.html">Legal</a><span class="footer-link-desc">Policy, terms, and governance-related notices.</span></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-h">Resources</div>
+        <ul class="footer-links">
+          <li class="footer-link-item"><a class="footer-lnk" href="resources-documentation.html">Documentation</a><span class="footer-link-desc">API reference, SDKs, and integration guides.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="resources-help-center.html">Help Centre</a><span class="footer-link-desc">FAQs, guides, and 24/7 support resources.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="faq-comprehensive.html">FAQ</a><span class="footer-link-desc">Answers on deployment, governance, integrations, and Freya.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="resources-webinars.html">Webinars</a><span class="footer-link-desc">Live training and on-demand learning sessions.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="resources-partner-programme.html">Partner Programme</a><span class="footer-link-desc">Reseller and integration partnership opportunities.</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">(c) 2026 Antarious. All rights reserved.</div>
+      <div class="footer-badges"><span class="footer-badge">HUMAN-IN-THE-LOOP</span><span class="footer-badge">AUDITABLE AI</span><span class="footer-badge">CROSS-INDUSTRY</span><span class="footer-badge">PREMIUM DEPLOYMENT</span></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>60));
+const io=new IntersectionObserver(e=>{e.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.06,rootMargin:'0px 0px -32px 0px'});
+document.querySelectorAll('.reveal').forEach(e=>io.observe(e));
+function showUC(k,b){document.querySelectorAll('.uc-panel').forEach(p=>{p.classList.remove('on');p.style.display='none'});const p=document.getElementById('uc-'+k);if(!p)return;p.style.display='grid';p.classList.add('on');p.style.opacity='0';requestAnimationFrame(()=>{p.style.transition='opacity .35s';p.style.opacity='1'});document.querySelectorAll('.uc-tab').forEach(t=>t.classList.remove('on'));if(b)b.classList.add('on')}
+document.querySelectorAll('.uc-panel').forEach(p=>{if(!p.classList.contains('on'))p.style.display='none'});
+const thoughts=['Compiling inter-departmental Q2 delivery brief…','Policy Intelligence: 3 ministerial queries answered today','Service Delivery Monitor: 0 departments below threshold','Budget Tracker: Q2 utilisation report finalised','Compliance Sentinel: audit portfolio updated — 247 docs indexed','Document Generator: Cabinet paper ready for review','Public Communication Agent: 2 press releases drafted for approval','Forecasting Agent: Q3 trajectory updated — 3 scenarios ready'];
+let tIdx=0;const thEl=document.getElementById('govThink');
+setInterval(()=>{tIdx=(tIdx+1)%thoughts.length;if(!thEl)return;thEl.style.opacity='0';setTimeout(()=>{thEl.innerHTML=thoughts[tIdx]+'&thinsp;<span class="t-cur">|</span>';thEl.style.transition='opacity .4s';thEl.style.opacity='1'},240)},3200);
+const mTs=['Freya: compiling ministerial morning brief…','Policy Intelligence: Cabinet paper ready for review','Forecasting: Q3 scenarios updated — 3 models ready','Brief Generator: parliamentary update drafted for committee'];
+let mi=0;const mEl=document.getElementById('ministerTick');
+if(mEl)setInterval(()=>{mi=(mi+1)%mTs.length;mEl.style.opacity='0';setTimeout(()=>{mEl.textContent=mTs[mi];mEl.style.transition='opacity .4s';mEl.style.opacity='1'},200)},2800);
+const govTasks=['Generating ministerial brief — 3 scenarios modelled…','Coordinating cross-department action register…','Compiling audit evidence pack for external review…','Refreshing service-delivery exception map for leadership…'];
+let gi=0;const govTaskEl=document.getElementById('govTask');
+if(govTaskEl)setInterval(()=>{gi=(gi+1)%govTasks.length;govTaskEl.style.opacity='0';setTimeout(()=>{govTaskEl.textContent=govTasks[gi];govTaskEl.style.transition='opacity .35s';govTaskEl.style.opacity='1'},180)},2600);
+const govMetrics=[{id:'govDepartments',vals:['24','24','24','24']},{id:'govCompliance',vals:['87%','88%','86%','89%']},{id:'govFlags',vals:['0','1','0','0']}];
+govMetrics.forEach(metric=>{const el=document.getElementById(metric.id);if(!el)return;let i=0;setInterval(()=>{i=(i+1)%metric.vals.length;el.style.opacity='0';setTimeout(()=>{el.textContent=metric.vals[i];el.style.transition='opacity .3s';el.style.opacity='1'},150)},4200)});
+const govFastThoughts=['Refreshing cross-department variance map…','Packaging director-ready escalation note…','Linking service backlog to the next brief update…','Syncing audit evidence into the case trail…'];
+let gft=0;if(thEl)setInterval(()=>{gft=(gft+1)%govFastThoughts.length;thEl.style.opacity='0';setTimeout(()=>{thEl.innerHTML=govFastThoughts[gft]+'&thinsp;<span class="t-cur">|</span>';thEl.style.transition='opacity .28s';thEl.style.opacity='1'},150)},1900);
+const govTaskBursts=['Escalating only the affected unit for review…','Refreshing ministerial summary with new service data…','Holding high-risk intervention pack for approval…'];
+let gtb=0;if(govTaskEl)setInterval(()=>{gtb=(gtb+1)%govTaskBursts.length;govTaskEl.style.opacity='0';setTimeout(()=>{govTaskEl.textContent=govTaskBursts[gtb];govTaskEl.style.transition='opacity .28s';govTaskEl.style.opacity='1'},140)},1750);
+document.querySelectorAll('.t-pf,.dw-pf').forEach((bar,idx)=>{let w=57+(idx*7);setInterval(()=>{w=57+((w+Math.floor(Math.random()*17)+8)%34);bar.style.width=w+'%'},1500+(idx*110))});
+</script>
+<script id="antarious-nav-active">
+(function () {
+  var file = (window.location.pathname.split('/').pop() || 'index.html').toLowerCase();
+
+  var map = {
+    'business.html': 'For Business',
+    'government.html': 'For Government',
+    'ngo.html': 'For NGO'
+  };
+
+  var targetLabel = map[file] || null;
+  var navButtons = document.querySelectorAll('.nav-link');
+  for (var i = 0; i < navButtons.length; i++) {
+    var btn = navButtons[i];
+    var text = (btn.textContent || '').trim();
+    if (targetLabel && text === targetLabel) {
+      btn.classList.add('active');
+      btn.setAttribute('aria-current', 'page');
+    } else {
+      btn.classList.remove('active');
+      btn.removeAttribute('aria-current');
+    }
+  }
+
+  var freyaBtn = document.querySelector('.nav-ghost');
+  if (freyaBtn) {
+    var isFreya = file === 'freya.html';
+    freyaBtn.classList.toggle('active', isFreya);
+    if (isFreya) {
+      freyaBtn.setAttribute('aria-current', 'page');
+    } else {
+      freyaBtn.removeAttribute('aria-current');
+    }
+  }
+})();
+</script>
+<script id="antarious-nav-sync-script">
+(function(){
+  var nav = document.getElementById('nav');
+  if(!nav) return;
+  function onScroll(){ nav.classList.toggle('scrolled', window.scrollY > 60); }
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+})();
+</script>
+</body>
+</html>

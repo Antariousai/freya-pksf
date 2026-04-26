@@ -1,0 +1,1681 @@
+const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Frequently Asked Questions | Antarious</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#F8FBFF;--card:#FFFFFF;--ink:#0F172A;--ink2:#334155;--ink3:#64748B;--line:rgba(15,23,42,.08);--teal:#0EA5E9;--teal2:#0284C7;--glow:rgba(14,165,233,.12)}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:"DM Sans",sans-serif;background:linear-gradient(180deg,#FFFFFF 0%,#F8FBFF 100%);color:var(--ink);line-height:1.75}
+    a{text-decoration:none;color:var(--teal2)}
+    .shell{min-height:100vh}
+    .topbar{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:rgba(255,255,255,.9);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+    .brand{display:flex;align-items:center;gap:12px;font-family:"Outfit",sans-serif;font-weight:800;color:var(--ink)}
+    .brand img{height:28px;width:auto;display:block}
+    .top-actions{display:flex;gap:10px;flex-wrap:wrap}
+    .top-link,.top-cta{font-family:"Outfit",sans-serif;font-size:13px;border-radius:12px;padding:9px 16px;transition:all .2s}
+    .top-link{color:var(--ink2);border:1px solid rgba(14,165,233,.14);background:linear-gradient(135deg,rgba(14,165,233,.08),rgba(255,255,255,.02))}
+    .top-cta{color:#fff;background:linear-gradient(135deg,var(--teal),var(--teal2));border:1px solid transparent;box-shadow:0 8px 22px rgba(14,165,233,.18)}
+    .wrap{max-width:1120px;margin:0 auto;padding:40px 24px 72px}
+    .hero{padding:28px 0 26px}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:"DM Mono",monospace;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--teal2);margin-bottom:16px}
+    .eyebrow::before{content:"";width:16px;height:1.5px;background:var(--teal2)}
+    h1{font-family:"Outfit",sans-serif;font-size:clamp(34px,5vw,62px);line-height:.98;letter-spacing:-2px;margin:0 0 16px}
+    .tagline{font-family:"Outfit",sans-serif;font-size:clamp(18px,2.1vw,28px);font-weight:700;line-height:1.28;color:var(--ink2);max-width:860px;margin:0 0 14px}
+    .support{max-width:840px;color:var(--ink3);font-size:16px}
+    html{scroll-behavior:smooth}
+    .faq-layout{display:grid;grid-template-columns:280px minmax(0,1fr);gap:18px;align-items:start}
+    .faq-sidebar{position:sticky;top:92px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px 14px;box-shadow:0 18px 46px rgba(15,23,42,.05);max-height:calc(100vh - 112px);overflow:auto}
+    .faq-sidebar-title{font-family:"Outfit",sans-serif;font-size:14px;font-weight:800;letter-spacing:.2px;margin:2px 8px 10px;color:var(--ink)}
+    .faq-toc{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px}
+    .faq-toc a{display:block;padding:8px 10px;border-radius:10px;font-size:12.5px;line-height:1.35;color:var(--ink2);border:1px solid transparent;transition:all .15s}
+    .faq-toc a:hover{background:rgba(14,165,233,.08);border-color:rgba(14,165,233,.16);color:var(--teal2)}
+    .faq-toc a.is-active{background:rgba(14,165,233,.12);border-color:rgba(14,165,233,.24);color:var(--teal2);font-weight:700}
+    .doc{display:grid;gap:18px;min-width:0}
+    .doc-section{background:var(--card);border:1px solid var(--line);border-radius:28px;padding:28px;box-shadow:0 18px 46px rgba(15,23,42,.05)}
+    .doc-section h2{font-family:"Outfit",sans-serif;font-size:22px;line-height:1.1;letter-spacing:-.6px;margin:0 0 18px}
+    .doc-section h3{font-family:"Outfit",sans-serif;font-size:17px;line-height:1.25;letter-spacing:-.4px;margin:20px 0 10px;color:var(--ink)}
+    .doc-section p{margin:0 0 14px;color:var(--ink2);font-size:15px}
+    .doc-section ul{margin:0 0 10px;padding-left:20px;color:var(--ink2)}
+    .doc-section li{margin:0 0 9px}
+    .doc-section strong{color:var(--ink)}
+    .callout-line{font-family:"Outfit",sans-serif;font-weight:700;color:var(--teal2)!important}
+    .search-mock{margin:0 0 16px;padding:14px 16px;border-radius:16px;border:1px solid rgba(14,165,233,.18);background:linear-gradient(135deg,rgba(14,165,233,.08),rgba(255,255,255,.92));color:var(--ink3)}
+    .disabled-link{color:var(--teal2);font-weight:600}
+    .footer-nav{margin-top:34px;display:flex;gap:12px;flex-wrap:wrap}
+    .footer-nav a{font-family:"Outfit",sans-serif;font-size:13px;font-weight:700;border-radius:999px;padding:9px 14px;border:1px solid var(--line);background:#fff;color:var(--ink2)}
+    @media(max-width:980px){
+      .faq-layout{grid-template-columns:1fr}
+      .faq-sidebar{position:relative;top:0;max-height:none}
+    }
+    @media(max-width:720px){
+      .topbar{padding:16px 18px;align-items:flex-start;flex-direction:column;gap:12px}
+      .wrap{padding:28px 18px 54px}
+      .doc-section{padding:22px}
+      .top-actions{width:100%}
+    }
+  </style>
+<style id="antarious-design-system-overrides">
+/* antarious-design-system-overrides */
+:root,
+[data-theme="light"] {
+  --brand-primary: #0EA5E9;
+  --brand-primary-strong: #0284C7;
+  --brand-primary-soft: #38BDF8;
+  --brand-success: #059669;
+  --brand-danger: #DC2626;
+  --brand-warning: #D97706;
+  --surface-base: #FFFFFF;
+  --surface-muted: #F8FAFC;
+  --text-strong: #0F172A;
+  --text-body: #334155;
+  --text-muted: #64748B;
+  --border-subtle: rgba(15,23,42,.09);
+  --motion-fast: 180ms;
+  --motion-base: 260ms;
+  --motion-slow: 420ms;
+  --ease-standard: cubic-bezier(.22,1,.36,1);
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+}
+
+html[data-theme="dark"] {
+  --surface-base: #07131E;
+  --surface-muted: #0B1722;
+  --text-strong: #E5EEF7;
+  --text-body: #D6E0EA;
+  --text-muted: #9AB0C4;
+  --border-subtle: rgba(255,255,255,.10);
+  --brand-primary: #38BDF8;
+  --brand-primary-strong: #0EA5E9;
+  --brand-primary-soft: #7DD3FC;
+  --brand-success: #34D399;
+  --brand-danger: #F87171;
+  --brand-warning: #FBBF24;
+}
+
+:root {
+  --td: var(--brand-primary);
+  --tdd: var(--brand-primary-strong);
+  --tl: var(--brand-primary-soft);
+  --teal: var(--brand-primary);
+  --teal2: var(--brand-primary-strong);
+  --teal3: var(--brand-primary-soft);
+  --green: var(--brand-success);
+  --red: var(--brand-danger);
+  --amber: var(--brand-warning);
+}
+
+html { font-size: 16px; }
+body {
+  background: var(--surface-base);
+  color: var(--text-strong);
+  line-height: 1.66;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+
+.antarious-wordmark {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-strong, var(--ink, #0F172A));
+  line-height: 1;
+}
+.antarious-wordmark svg {
+  width: clamp(140px, 18vw, 182px);
+  height: auto;
+  display: block;
+}
+html[data-theme="dark"] .antarious-wordmark {
+  color: #F3F8FF;
+}
+
+
+.theme-logo-main {
+  height: 28px;
+  width: auto;
+  display: block;
+}
+.nav-logo .theme-logo-main {
+  height: 28px;
+}
+.footer-brand-img.theme-logo-main,
+.name .theme-logo-main {
+  height: 28px;
+}
+@media (max-width: 768px) {
+  .theme-logo-main { height: 24px; }
+}
+
+
+/* Global nav-footer consistency */
+.nav,
+.topbar,
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 950;
+  min-height: 62px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--border-subtle, var(--bdr, rgba(15,23,42,.09)));
+  background: color-mix(in srgb, var(--surface-base, var(--bg, #fff)) 92%, transparent);
+  backdrop-filter: blur(20px);
+}
+
+.nav-logo,
+.brand {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.theme-logo-main {
+  height: 28px;
+  width: auto;
+  display: block;
+}
+
+.nav-links,
+.nav-r,
+.nav-right,
+.top-actions,
+.header-actions,
+.primary-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-r,
+.nav-right,
+.top-actions,
+.header-actions { margin-left: auto; }
+
+.nl,
+.nav-link,
+.top-link,
+.primary-nav a,
+.nav-sector-btn,
+.nav-freya-btn,
+.nav-ghost,
+.btn-back {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-body, var(--ink2, #334155));
+  background: color-mix(in srgb, var(--surface-base, #fff) 90%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand-primary, #0EA5E9) 18%, var(--border-subtle, rgba(15,23,42,.09)));
+  border-radius: 10px;
+  padding: 8px 14px;
+  white-space: nowrap;
+}
+
+.nav-cta,
+.btn-nav-cta,
+.top-cta {
+  font-size: 13px;
+  font-weight: 800;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 9px 18px;
+  background: linear-gradient(135deg, var(--brand-primary, #0EA5E9), var(--brand-primary-strong, #0284C7));
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--brand-primary, #0EA5E9) 35%, transparent);
+}
+
+footer,
+.site-footer,
+.footer,
+.footer-inner,
+.footer-top,
+.footer-grid,
+.footer-nav,
+.footer-bottom {
+  color: var(--text-body, var(--ink2, #334155));
+}
+
+footer,
+.site-footer,
+.footer {
+  background: color-mix(in srgb, var(--surface-muted, var(--bg2, #f8fafc)) 90%, var(--surface-base, #fff));
+  border-top: 1px solid var(--border-subtle, var(--bdr, rgba(15,23,42,.09)));
+  margin-top: 56px;
+}
+
+.footer-inner,
+.shell > .wrap + .footer-nav,
+.footer-nav {
+  width: min(1200px, calc(100% - 40px));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.footer-top,
+.footer-grid,
+.footer-nav {
+  padding-top: 24px;
+  padding-bottom: 20px;
+}
+
+.footer-links,
+.footer-list {
+  display: grid;
+  gap: 8px;
+}
+
+.footer-col-h,
+.footer-title,
+.footer-head {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-muted, var(--ink4, #94A3B8));
+  margin-bottom: 10px;
+}
+
+.footer-lnk,
+.footer-list a,
+.footer-nav a {
+  color: var(--text-body, var(--ink2, #334155));
+}
+
+.footer-link-desc,
+.footer-brand-copy,
+.footer-copy {
+  color: var(--text-muted, var(--ink3, #64748B));
+}
+
+.footer-bottom {
+  border-top: 1px solid var(--border-subtle, var(--bdr2, rgba(15,23,42,.06)));
+  padding-top: 14px;
+  padding-bottom: 18px;
+}
+
+@media (max-width: 860px) {
+  .nav,
+  .topbar,
+  .site-header {
+    padding: 10px 14px;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .nav-links,
+  .primary-nav,
+  .top-actions {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 2px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .nav-links::-webkit-scrollbar,
+  .primary-nav::-webkit-scrollbar,
+  .top-actions::-webkit-scrollbar { display: none; }
+
+  .nav-r,
+  .nav-right,
+  .header-actions {
+    width: auto;
+    margin-left: auto;
+  }
+
+  .theme-logo-main { height: 24px; }
+
+  .footer-top,
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+
+  .footer-nav {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+/* Keep common shells centered and screen-balanced */
+.page,
+.hero-inner,
+.nav,
+section > .container,
+section > .page,
+section > .inner,
+.nav-inner,
+.footer-inner {
+  width: min(1200px, calc(100% - 2 * var(--space-6)));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Base readability and overflow safety */
+h1, h2, h3, h4, p, li { overflow-wrap: anywhere; }
+.h2,
+.hero-h1,
+.section-title,
+.display {
+  letter-spacing: -0.02em;
+  line-height: 1.06;
+  text-wrap: balance;
+}
+.sp,
+.hero-sub,
+.hero-body,
+.uc-p,
+p,
+li { color: var(--text-body); }
+
+/* Improve dark hero legibility (Freya/Government variants) */
+html[data-theme="dark"] .hero-h1,
+html[data-theme="dark"] .hero-sub,
+html[data-theme="dark"] .hero-body {
+  color: #EAF2FF !important;
+  text-shadow: 0 1px 1px rgba(0,0,0,.32);
+}
+
+html[data-theme="dark"] .hero-h1 .ac {
+  background: none !important;
+  -webkit-text-fill-color: var(--brand-primary-soft) !important;
+  color: var(--brand-primary-soft) !important;
+}
+html[data-theme="dark"] .hero-h1 .dim,
+html[data-theme="dark"] .hero-h1 em {
+  color: #BBD0E6 !important;
+}
+
+/* Uniform interaction feel */
+.btn,
+.btn-primary,
+.btn-p,
+.nav-cta,
+.btn-nav-cta,
+.button-primary,
+.pc-btn.featured-btn,
+.nav-link,
+.nl,
+.primary-nav a {
+  transition: transform var(--motion-base) var(--ease-standard), box-shadow var(--motion-base) var(--ease-standard), background-color var(--motion-base) var(--ease-standard), border-color var(--motion-base) var(--ease-standard), color var(--motion-base) var(--ease-standard);
+}
+
+.btn:hover,
+.btn-primary:hover,
+.btn-p:hover,
+.nav-cta:hover,
+.btn-nav-cta:hover,
+.button-primary:hover,
+.pc-btn.featured-btn:hover { transform: translateY(-2px); }
+
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
+/* Smooth reveal defaults */
+.reveal,
+.reveal.in,
+.reveal.is-visible {
+  transition-duration: var(--motion-slow);
+  transition-timing-function: var(--ease-standard);
+}
+
+/* Never leave key content invisible if JS reveal logic fails */
+html:not(.js) .reveal,
+body:not(.js) .reveal {
+  opacity: 1 !important;
+  transform: none !important;
+}
+/* Section rhythm */
+section {
+  padding: clamp(56px, 7vw, 96px) 0 !important;
+}
+
+/* Tablet layout harmonization */
+@media (max-width: 1100px) {
+  .page,
+  .hero-inner,
+  .nav,
+  section > .container,
+  section > .page,
+  section > .inner,
+  .nav-inner,
+  .footer-inner { width: calc(100% - 2 * var(--space-5)); }
+
+  .hero-inner,
+  .uc-panel,
+  .ft-hero,
+  .bridge-grid,
+  .hero-grid,
+  .split-hero,
+  .agents-grid,
+  .cost-grid,
+  .bo-strip,
+  .footer-grid,
+  .hero-stage-grid,
+  .grid-4,
+  .stack-grid { grid-template-columns: 1fr !important; }
+
+  .grid-3,
+  .workflow-grid,
+  .benefit-grid,
+  .stats-band,
+  .ft-live-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+
+  .h2,
+  .hero-h1,
+  .section-title,
+  .display { font-size: clamp(2.15rem, 5.3vw, 3.4rem) !important; }
+}
+
+/* Mobile-first finishing */
+@media (max-width: 768px) {
+  html { font-size: 15px; }
+
+  .page,
+  .hero-inner,
+  .nav,
+  section > .container,
+  section > .page,
+  section > .inner,
+  .nav-inner,
+  .footer-inner { width: calc(100% - 2 * var(--space-4)) !important; }
+
+  /* Reduce heavy decorative effects on small screens */
+  .hero-grid-bg,
+  .hero-glow,
+  .hero-glow1,
+  .hero-glow2,
+  .hero-dots,
+  .hero::before,
+  .hero::after { display: none !important; }
+
+  .nav {
+    height: auto !important;
+    min-height: 62px;
+    padding: 10px var(--space-4) !important;
+    gap: 8px !important;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .nav-logo { margin-right: 8px !important; }
+
+  .nav-links,
+  .primary-nav {
+    order: 3;
+    width: 100%;
+    margin: 6px 0 0 0 !important;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 8px;
+    padding-bottom: 2px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .nav-links::-webkit-scrollbar,
+  .primary-nav::-webkit-scrollbar { display: none; }
+
+  .nav-link,
+  .nl,
+  .primary-nav a { white-space: nowrap; flex: 0 0 auto; }
+
+  .nav-right,
+  .header-actions {
+    margin-left: auto;
+    width: auto;
+    display: flex;
+    gap: 8px;
+  }
+
+  .hero,
+  .hero-wrap { min-height: auto !important; padding-top: 92px !important; }
+  .hero-inner { gap: var(--space-6) !important; }
+
+  .hero-h1,
+  .display,
+  .h2,
+  .section-title {
+    font-size: clamp(1.95rem, 9vw, 2.9rem) !important;
+    line-height: 1.08 !important;
+  }
+
+  .hero-sub,
+  .hero-body,
+  .sp,
+  .section-subtitle,
+  .uc-p,
+  .task-text {
+    font-size: 0.98rem !important;
+    line-height: 1.72 !important;
+  }
+
+  .hero-btns,
+  .button-row,
+  .hero-actions {
+    display: grid !important;
+    grid-template-columns: 1fr;
+    gap: 10px !important;
+    width: 100%;
+  }
+
+  .hero-btns > *,
+  .button-row > *,
+  .hero-actions > *,
+  .btn,
+  .btn-primary,
+  .btn-p,
+  .btn-g,
+  .button,
+  .button-link,
+  .nav-cta,
+  .btn-nav-cta,
+  .nav-ghost,
+  .btn-back,
+  .pc-btn,
+  .uc-tab {
+    min-height: 46px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .hero-metrics,
+  .uc-stats,
+  .hero-stats,
+  .stats-band {
+    gap: var(--space-4) !important;
+    flex-wrap: wrap;
+  }
+
+  .hero-sep,
+  .hs-sep,
+  .uc-div { display: none !important; }
+
+  .cost-grid,
+  .agents-grid,
+  .bo-strip,
+  .grid-2,
+  .grid-3,
+  .grid-4,
+  .workflow-grid,
+  .benefit-grid,
+  .ft-live-grid,
+  .t-mets,
+  .stats-band { grid-template-columns: 1fr !important; }
+
+  .feature-card,
+  .workflow-card,
+  .quote-card,
+  .cta-panel,
+  .surface,
+  .footer-cta,
+  .hero-stage,
+  .terminal,
+  .freya-terminal,
+  .demo-win { padding: 20px !important; border-radius: 14px !important; }
+}
+
+/* Extra-large screens */
+@media (min-width: 1600px) {
+  .page,
+  .hero-inner,
+  .nav,
+  section > .container,
+  section > .page,
+  section > .inner,
+  .nav-inner,
+  .footer-inner { width: min(1320px, calc(100% - 120px)); }
+}
+
+
+
+/* Final hero readability safeguards */
+.hero-h1,
+.hero-sub,
+.hero-body {
+  opacity: 1 !important;
+}
+
+html[data-theme="dark"] .hero,
+html[data-theme="dark"] .hero-wrap {
+  background: linear-gradient(180deg, #061427 0%, #0A1E35 100%) !important;
+}
+
+html[data-theme="dark"] .hero-kicker,
+html[data-theme="dark"] .eyebrow {
+  color: #8FD9FF !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>
+
+<style id="antarious-svg-icon-theme">
+.ai-svg-icon {
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  vertical-align: -0.12em;
+  color: var(--brand-primary-strong, var(--teal2, #0284C7));
+}
+.ai-svg-icon svg { width: 100%; height: 100%; display: block; }
+.ai-icon-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+}
+.ai-icon-inline .ai-svg-icon {
+  width: 1.1em;
+  height: 1.1em;
+}
+html[data-theme="dark"] .ai-svg-icon {
+  color: var(--brand-primary-soft, var(--teal3, #7DD3FC));
+}
+</style>
+<script id="antarious-svg-icon-runtime">
+(function () {
+  var ICON_SVGS = {
+    alert: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3L21 19H3L12 3Z" stroke="currentColor" stroke-width="1.8"/><path d="M12 9V13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="16.5" r="1" fill="currentColor"/></svg>',
+    brain: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 5a3 3 0 016 0 3 3 0 012.8 4.1A3 3 0 0118 15a3 3 0 01-2.5 2.96A3.5 3.5 0 0112 21a3.5 3.5 0 01-3.5-3.04A3 3 0 016 15a3 3 0 01.2-5.9A3 3 0 019 5z" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v8M9.5 10.5h2.5M12 13h2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+    eye: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.5 12S6 6.5 12 6.5 21.5 12 21.5 12 18 17.5 12 17.5 2.5 12 2.5 12Z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="2.8" stroke="currentColor" stroke-width="1.8"/></svg>',
+    bolt: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.5 2L5 13h5l-1.5 9L19 10h-5L13.5 2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+    chart: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 19.5h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M6.5 16v-4M12 16V8M17.5 16v-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    target: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></svg>',
+    pen: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 20l4.5-1 9-9a1.8 1.8 0 000-2.5l-1-1a1.8 1.8 0 00-2.5 0l-9 9L4 20z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12.5 7.5l4 4" stroke="currentColor" stroke-width="1.8"/></svg>',
+    shield: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3l7 3v5c0 5.2-3.5 8.8-7 10-3.5-1.2-7-4.8-7-10V6l7-3z" stroke="currentColor" stroke-width="1.8"/><path d="M9.5 12.5l1.8 1.8 3.5-3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    megaphone: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 14V10l11-4v12L4 14z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M15 10h3a2 2 0 012 2 2 2 0 01-2 2h-3" stroke="currentColor" stroke-width="1.8"/><path d="M7.5 14.5l1.2 4h2.3l-1.1-3.5" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
+    phone: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.5 4h3l1 4-2 1.5a13 13 0 005 5L17 12l4 1v3c0 1.1-.9 2-2 2C10 18 6 14 6 7c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+    folder: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 7.5h7l2 2h9v7.5a2 2 0 01-2 2H5a2 2 0 01-2-2V7.5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+    signal: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 18h2M8 16h2M12 13h2M16 10h2M20 7h1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M4 18l16-11" stroke="currentColor" stroke-width="1.8"/></svg>',
+    timer: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="13" r="7.5" stroke="currentColor" stroke-width="1.8"/><path d="M12 9v4l2.8 1.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9 3h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    calendar: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="5" width="16" height="15" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M8 3.5v3M16 3.5v3M4 9h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    money: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/></svg>',
+    settings: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M19 12a7 7 0 00-.1-1l2-1.5-2-3.4-2.4.8a7.2 7.2 0 00-1.7-1L14.5 3h-5l-.3 2.9a7.2 7.2 0 00-1.7 1l-2.4-.8-2 3.4 2 1.5a7 7 0 000 2L3 14.5l2 3.4 2.4-.8a7.2 7.2 0 001.7 1L9.5 21h5l.3-2.9a7.2 7.2 0 001.7-1l2.4.8 2-3.4-2-1.5c.1-.3.1-.7.1-1z" stroke="currentColor" stroke-width="1.4"/></svg>',
+    puzzle: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 4h4a2 2 0 012 2v1h2a2 2 0 012 2v3h-2a2 2 0 100 4h2v2a2 2 0 01-2 2h-3v-2a2 2 0 10-4 0v2H7a2 2 0 01-2-2v-3h2a2 2 0 100-4H5V8a2 2 0 012-2h2V4z" stroke="currentColor" stroke-width="1.8"/></svg>',
+    user: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.8"/><path d="M5 19c1.6-3 4-4.5 7-4.5s5.4 1.5 7 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    flame: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3c1 3-1 4.5-2.2 5.8C9.4 10.2 8 11.7 8 14a4 4 0 008 0c0-2.5-1.4-4.2-2.6-5.8C12.2 7 11 5.5 13 3z" stroke="currentColor" stroke-width="1.8"/></svg>',
+    compass: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/><path d="M14.8 9.2l-1.8 5.6-5.6 1.8 1.8-5.6 5.6-1.8z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+    search: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="1.8"/><path d="M16 16l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    leaf: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 4c-7 0-12 4.5-12 10 0 3 2 6 6 6 5.5 0 10-5 10-12 0-2.3-1.7-4-4-4z" stroke="currentColor" stroke-width="1.8"/><path d="M8 16c2-2 4.8-4.2 9-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    mobile: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="7" y="3" width="10" height="18" rx="2" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="17.5" r="0.9" fill="currentColor"/></svg>',
+    mail: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M4 8l8 6 8-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    spark: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8L12 3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+    chat: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 6h14a2 2 0 012 2v7a2 2 0 01-2 2H10l-4 3v-3H5a2 2 0 01-2-2V8a2 2 0 012-2z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+    link: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 14l4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M8 16H6a4 4 0 010-8h2M16 8h2a4 4 0 010 8h-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    handshake: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 10l4-4 3 3 3-3 6 6-4 4-3-3-2 2-5-5-2 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+  };
+
+  function render() {
+    var nodes = document.querySelectorAll('.ai-svg-icon-slot[data-ai-icon]');
+    for (var i = 0; i < nodes.length; i++) {
+      var node = nodes[i];
+      var icon = node.getAttribute('data-ai-icon');
+      var svg = ICON_SVGS[icon];
+      if (!svg) continue;
+      node.classList.add('ai-svg-icon');
+      node.setAttribute('aria-hidden', 'true');
+      node.innerHTML = svg;
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', render);
+  } else {
+    render();
+  }
+})();
+</script>
+
+
+<link rel="preload" as="image" href="/assets/logos/antarious-main.svg">
+<style id="antarious-nav-sync-style">
+.theme-logo-main{height:28px;width:auto;display:block}
+.nav-logo .theme-logo-main{height:28px}
+.footer-brand-img.theme-logo-main,.name .theme-logo-main{height:28px}
+
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:999;
+  height:62px;display:flex;align-items:center;
+  padding:0 clamp(14px,3.2vw,48px);
+  gap:clamp(10px,1.7vw,24px);
+  background:color-mix(in srgb,var(--surface-base,var(--bg,#fff)) 92%, transparent);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(15,23,42,.07);
+  transition:all .3s;
+  width:min(1200px,calc(100% - 2 * clamp(14px,3vw,24px)));
+  margin:0 auto;
+}
+.nav.scrolled{height:54px;box-shadow:0 1px 12px rgba(15,23,42,.06)}
+
+.nav-logo{display:flex;align-items:center;gap:9px;cursor:pointer;flex-shrink:0}
+.nav-links{display:flex;list-style:none;gap:2px;margin-left:clamp(8px,2vw,28px);padding:0}
+
+.nav-link{
+  font-size:13px;font-weight:700;color:var(--text-body,var(--ink2,#334155));
+  padding:8px 16px;border-radius:12px;transition:all .2s;cursor:pointer;
+  border:1px solid rgba(14,165,233,.14);
+  background:linear-gradient(135deg,rgba(14,165,233,.08),rgba(255,255,255,.02));
+  box-shadow:0 4px 14px rgba(15,23,42,.04);
+  white-space:nowrap;
+}
+.nav-link:hover,.nav-link.active{color:var(--brand-primary-strong,var(--teal2,#0284C7));border-color:rgba(14,165,233,.26);background:linear-gradient(135deg,rgba(14,165,233,.12),rgba(56,189,248,.05));transform:translateY(-1px)}
+
+.nav-right{display:flex;align-items:center;gap:10px;margin-left:auto;flex-shrink:0}
+.nav-ghost{
+  font-size:13px;font-weight:700;color:var(--brand-primary-strong,var(--teal2,#0284C7));
+  background:linear-gradient(135deg,rgba(14,165,233,.14),rgba(56,189,248,.08));
+  border:1px solid rgba(14,165,233,.24);padding:8px 18px;border-radius:12px;cursor:pointer;
+  transition:all .2s;box-shadow:0 8px 22px rgba(14,165,233,.12);white-space:nowrap;
+}
+.nav-ghost:hover{border-color:rgba(14,165,233,.38);color:var(--brand-primary,var(--teal,#0EA5E9));transform:translateY(-1px);box-shadow:0 12px 28px rgba(14,165,233,.18)}
+.nav-cta{
+  font-size:13px;font-weight:800;color:#fff;
+  border:none;padding:9px 22px;border-radius:12px;cursor:pointer;transition:all .22s;
+  background:linear-gradient(135deg,var(--brand-primary,var(--teal,#0EA5E9)),var(--brand-primary-strong,var(--teal2,#0284C7)));
+  box-shadow:0 6px 18px rgba(14,165,233,.26),0 0 0 1px rgba(14,165,233,.08);
+  white-space:nowrap;
+}
+.nav-cta:hover{background:linear-gradient(135deg,var(--brand-primary-strong,var(--teal2,#0284C7)),#0369A1);transform:translateY(-1px);box-shadow:0 10px 24px rgba(14,165,233,.34)}
+
+body{padding-top:62px}
+
+/* Large laptop / small desktop */
+@media (max-width:1100px){
+  .nav{width:calc(100% - 2 * 20px);padding:0 20px;gap:12px}
+  .nav-links{margin-left:10px}
+  .nav-link{padding:8px 13px;font-size:12.5px}
+  .nav-ghost{padding:8px 14px}
+  .nav-cta{padding:9px 16px}
+}
+
+/* Tablet and below */
+@media (max-width:860px){
+  .theme-logo-main{height:24px}
+  .nav{width:calc(100% - 2 * 14px);padding:10px 14px;gap:8px;flex-wrap:wrap;height:auto;min-height:62px}
+  .nav-links{order:3;width:100%;margin:6px 0 0 0;overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px;-ms-overflow-style:none;scrollbar-width:none}
+  .nav-links::-webkit-scrollbar{display:none}
+  .nav-right{width:auto;margin-left:auto;gap:8px}
+  .nav-link{flex:0 0 auto}
+}
+
+/* Mobile */
+@media (max-width:768px){
+  .nav{width:calc(100% - 2 * 16px);padding:10px 12px;gap:8px;align-items:center}
+  .nav-logo{margin-right:8px}
+  .nav-links{margin:6px 0 0 0;gap:8px}
+  .nav-link{padding:7px 11px;font-size:12px}
+  .nav-right{display:flex;gap:8px;margin-left:auto;width:auto}
+  .nav-ghost{padding:7px 11px;font-size:12px}
+  .nav-cta{padding:8px 12px;font-size:12px}
+}
+
+/* Very small devices */
+@media (max-width:420px){
+  .nav-right{width:100%;justify-content:flex-end}
+  .nav-ghost,.nav-cta{padding:7px 10px;font-size:11.5px}
+}
+</style>
+<style id="antarious-footer-sync-style">
+footer,
+.site-footer,
+.footer,
+.footer-inner,
+.footer-top,
+.footer-grid,
+.footer-nav,
+.footer-bottom {
+  color: var(--text-body, var(--ink2, #334155));
+}
+
+footer,
+.site-footer,
+.footer {
+  background: color-mix(in srgb, var(--surface-muted, var(--bg2, #f8fafc)) 90%, var(--surface-base, #fff));
+  border-top: 1px solid var(--border-subtle, var(--bdr, rgba(15,23,42,.09)));
+  margin-top: 56px;
+}
+
+.footer-inner,
+.shell > .wrap + .footer-nav,
+.footer-nav {
+  width: min(1200px, calc(100% - 40px));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.footer-top,
+.footer-grid,
+.footer-nav {
+  padding-top: 24px;
+  padding-bottom: 20px;
+}
+
+.footer-links,
+.footer-list {
+  display: grid;
+  gap: 8px;
+}
+
+.footer-col-h,
+.footer-title,
+.footer-head {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-muted, var(--ink4, #94A3B8));
+  margin-bottom: 10px;
+}
+
+.footer-lnk,
+.footer-list a,
+.footer-nav a {
+  color: var(--text-body, var(--ink2, #334155));
+}
+
+.footer-link-desc,
+.footer-brand-copy,
+.footer-copy {
+  color: var(--text-muted, var(--ink3, #64748B));
+}
+
+.footer-bottom {
+  border-top: 1px solid var(--border-subtle, var(--bdr2, rgba(15,23,42,.06)));
+  padding-top: 14px;
+  padding-bottom: 18px;
+}
+
+@media (max-width: 860px) {
+  .footer-top,
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+  .footer-nav {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+</style>
+<script>(function(){try{var storedTheme=localStorage.getItem('antarious-theme');document.documentElement.dataset.theme=storedTheme==='dark'?'dark':'light';}catch(error){document.documentElement.dataset.theme='light';}})();</script></head>
+<body>
+  <div class="shell">
+    <nav class="nav" id="nav">
+  <div class="nav-logo" onclick="window.location='/'"><img fetchpriority="high" decoding="async" loading="eager" class="theme-logo-main" src="/assets/logos/antarious-main.svg" alt="Antarious AI"></div>
+  <ul class="nav-links">
+    <li><button class="nav-link" onclick="window.location='/business'">For Business</button></li>
+    <li><button class="nav-link" onclick="window.location='/government'">For Government</button></li>
+    <li><button class="nav-link" onclick="window.location='/ngo'">For NGO</button></li>
+  </ul>
+  <div class="nav-right">
+    <button class="nav-ghost" onclick="window.location='/freya'">Meet Freya</button>
+    <button class="nav-cta" onclick="window.location='/#cta'">Request Demo</button>
+  </div>
+</nav>
+<main class="wrap">
+      <header class="hero">
+        <div class="eyebrow">Comprehensive FAQ</div>
+        <h1>Frequently Asked Questions</h1>
+        <p class="tagline">Every question we have been asked about Antarious AI — answered fully, in one place.</p>
+        <p class="support">This FAQ covers the complete range of questions asked by procurement teams, technical architects, programme officers, government officials, compliance leads, NGO directors, enterprise GTM teams, and partners. Use the navigation below to jump to the section most relevant to you, or search the page for a specific term.</p>
+      </header>
+      <div class="faq-layout">
+        <aside class="faq-sidebar" aria-label="FAQ section navigation">
+          <div class="faq-sidebar-title">On This Page</div>
+          <ul class="faq-toc" id="faq-toc">
+            <li><a href="#section-01">Section 01 — Understanding Antarious AI</a></li>
+            <li><a href="#section-02">Section 02 — Freya: The Autonomous Agent</a></li>
+            <li><a href="#section-03">Section 03 — The Agent Architecture</a></li>
+            <li><a href="#section-04">Section 04 — Human Approval and Governance</a></li>
+            <li><a href="#section-05">Section 05 — Audit Trail and Accountability</a></li>
+            <li><a href="#section-06">Section 06 — Role-Based Control and Access</a></li>
+            <li><a href="#section-07">Section 07 — Security and Data Protection</a></li>
+            <li><a href="#section-08">Section 08 — Deployment and Implementation</a></li>
+            <li><a href="#section-09">Section 09 — Integrations and Data Sources</a></li>
+            <li><a href="#section-10">Section 10 — Sector: Business and GTM Teams</a></li>
+            <li><a href="#section-11">Section 11 — Sector: Government Departments</a></li>
+            <li><a href="#section-12">Section 12 — Sector: NGO and Development Organisations</a></li>
+            <li><a href="#section-13">Section 13 — Pricing and Commercial</a></li>
+            <li><a href="#section-14">Section 14 — Compliance and Regulatory</a></li>
+            <li><a href="#section-15">Section 15 — AI Ethics and Responsible Use</a></li>
+            <li><a href="#section-16">Section 16 — Technical Architecture</a></li>
+            <li><a href="#section-17">Section 17 — Support and Customer Success</a></li>
+            <li><a href="#section-18">Section 18 — Partnership Programme</a></li>
+          </ul>
+        </aside>
+        <div class="doc">
+<section class="doc-section" id="section-01">
+<h2>Section 01 — Understanding Antarious AI {#section-01}</h2>
+<h3>The Fundamentals</h3>
+<p class="callout-line"><strong>Q: What is Antarious AI?</strong></p>
+<p>Antarious AI is an agentic AI operating system designed for organisations that run complex operations — enterprise and GTM teams, government departments and agencies, and NGO and development organisations.</p>
+<p>At the heart of Antarious is Freya — an autonomous AI agent that operates as a persistent intelligence and execution layer for your organisation. Freya monitors your operations continuously, surfaces problems and opportunities proactively, executes complex multi-step workflows, and retains institutional knowledge across every decision your organisation makes — all while requiring human approval before any external action is taken.</p>
+<p>Unlike productivity tools that help individuals work faster, Antarious is designed to change how organisations operate — connecting data sources, automating workflows, and producing the intelligence that better decisions require.</p>
+<p class="callout-line"><strong>Q: How is Antarious different from a chatbot or AI assistant?</strong></p>
+<p>The difference is fundamental, not cosmetic.</p>
+<p>A chatbot or AI assistant waits for a human to ask it something. It responds to the question and stops. It has no memory of previous sessions, no awareness of what is happening in your organisation, and no ability to initiate action on its own behalf.</p>
+<p>Freya is autonomous. She does not wait to be asked. She monitors your operations continuously, identifies problems and opportunities without being prompted, prepares the analysis and recommendations your team needs before they know they need them, and executes complex multi-step workflows from beginning to end — halting only to request human approval before any external action is taken.</p>
+<p>The practical consequence is significant: a chatbot is a tool you use. Freya is a layer of operational intelligence that runs continuously alongside your organisation, whether or not anyone is actively interacting with it.</p>
+<p class="callout-line"><strong>Q: How is Antarious different from a copilot or productivity AI?</strong></p>
+<p>Copilot tools are designed to assist humans while they work — suggesting text, summarising documents, answering questions in the flow of an existing task. They are human-initiated and human-sustained.</p>
+<p>Antarious is designed to run operations autonomously between human decision points — not to assist while a human is working, but to handle the work that would otherwise consume a human&#39;s time. The human&#39;s role is to direct, approve, and decide — not to participate in every step of execution.</p>
+<p>A copilot makes each individual task faster. Antarious removes large categories of task from your team&#39;s plate entirely.</p>
+<p class="callout-line"><strong>Q: What does &quot;agentic AI&quot; mean?</strong></p>
+<p>Agentic AI refers to AI systems that can take sequences of actions autonomously, in pursuit of a goal, without requiring a human to direct each individual step.</p>
+<p>A non-agentic AI answers a question. An agentic AI receives an objective — &quot;generate and send a personalised outreach sequence to this list of prospects&quot;, or &quot;compile a donor report from this quarter&#39;s field data&quot; — and executes every step required to complete it, including gathering data, making decisions within its parameters, sequencing sub-tasks, and handling exceptions along the way.</p>
+<p>Antarious adds a critical constraint to the agentic model: every agentic sequence that concludes with an external action requires human approval before execution. The autonomous capability and the human control requirement are not in tension — they are the design.</p>
+<p class="callout-line"><strong>Q: What kinds of organisations use Antarious?</strong></p>
+<p>Antarious is built for three operating environments:</p>
+<p><strong>Enterprise and GTM teams</strong> — organisations running go-to-market functions: marketing, sales, SDR operations, revenue operations, and agencies managing multiple clients. The platform replaces fragmented multi-tool stacks with a single connected operating system.</p>
+<p><strong>Government departments and agencies</strong> — organisations implementing policy, delivering public services, managing compliance, and producing ministerial and inter-departmental intelligence across multiple departments and data systems.</p>
+<p><strong>NGO and development organisations</strong> — organisations delivering funded programmes, managing partner networks, reporting to donors, tracking beneficiaries, and operating with distributed field teams in low-resource environments.</p>
+<p>The common thread is operational complexity: multiple data sources, multiple workflows, multiple stakeholders, and the need for governance over automated processes.</p>
+<p class="callout-line"><strong>Q: Is Antarious a SaaS product or a professional services engagement?</strong></p>
+<p>Both. Access to the Antarious platform is subscription-based (SaaS), but every deployment is implemented through a structured professional services engagement. The platform requires configuration — connecting your data sources, mapping your authority structures, setting up your approval workflows, and training agents on your operational context — before it operates effectively.</p>
+<p>Antarious is not a self-serve product where you sign up and configure everything yourself. It is an operating system, and like any operating system, it is set up by people who understand both the platform and your operational environment before it is handed over to your team to run.</p>
+<p class="callout-line"><strong>Q: What is the relationship between Antarious and Freya?</strong></p>
+<p>Antarious AI is the company and the platform. Freya is the autonomous agent at the centre of the platform — the persistent intelligence layer that your team interacts with and that orchestrates all specialist agents.</p>
+<p>You can think of it this way: Antarious is the operating system. Freya is the agent that runs it, the intelligence that powers it, and the name your team will use every day.</p>
+<p class="callout-line"><strong>Q: Can Antarious replace our existing team?</strong></p>
+<p>No — and this is a deliberate design principle, not a limitation.</p>
+<p>Antarious is built on the conviction that AI should amplify human capability, not replace human judgement. The work that matters most in complex organisations — strategic decisions, community relationships, policy design, creative direction, negotiation, democratic oversight — is irreducibly human. Freya is designed to handle everything that does not require a human, so your team can spend their time on everything that does.</p>
+<p>The practical outcome is not a smaller team — it is the same team producing significantly more, with better information, and with their time reclaimed from the routine work that previously consumed it.</p>
+</section>
+<section class="doc-section" id="section-02">
+<h2>Section 02 — Freya: The Autonomous Agent {#section-02}</h2>
+<p class="callout-line"><strong>Q: What does Freya actually do?</strong></p>
+<p>Freya performs four core functions:</p>
+<p><strong>1. Continuous monitoring.</strong> Freya monitors your connected data sources in real time — tracking KPIs, surfacing anomalies, detecting patterns, and identifying problems and opportunities as they emerge. She does not wait for a scheduled report or a human to spot something unusual.</p>
+<p><strong>2. Proactive alerting.</strong> When Freya detects something that requires attention, she surfaces it — with context, analysis, and a recommended action — to the right person at the right time. Not a raw data alert, but an intelligence package that tells you what happened, why it matters, and what to do about it.</p>
+<p><strong>3. End-to-end workflow execution.</strong> Freya executes complex multi-step workflows from initiation to completion — gathering data, drafting content, enriching records, generating reports, routing approvals, and triggering actions across connected systems. She handles the full chain, not just individual steps.</p>
+<p><strong>4. Institutional memory.</strong> Freya retains every decision, context, and outcome in a persistent memory that grows with every day of operation. She remembers what your organisation has decided, why, and what happened as a result — and she makes that knowledge accessible to your team, indefinitely, regardless of staff changes.</p>
+<p class="callout-line"><strong>Q: How does Freya know what to monitor and when to alert?</strong></p>
+<p>Freya&#39;s monitoring is configured during deployment. Working with your team, the Antarious implementation team configures:</p>
+<ul>
+<li>Which data sources Freya monitors</li>
+<li>Which KPIs and metrics matter for your operations</li>
+<li>What thresholds or conditions trigger an alert</li>
+<li>Who receives each type of alert</li>
+<li>What context and analysis should accompany each alert type</li>
+</ul>
+<p>Once configured, Freya monitors continuously and alerts based on conditions — not on a schedule. If a condition is met at 3am on a Sunday, Freya alerts at 3am on Sunday.</p>
+<p>Alert sensitivity can be adjusted after deployment. If Freya is alerting too frequently on a specific condition, the threshold is adjusted. If a new condition needs monitoring, it is added through the configuration interface.</p>
+<p class="callout-line"><strong>Q: What is the &quot;morning brief&quot; and how does it work?</strong></p>
+<p>The morning brief is a proactive daily intelligence summary that Freya prepares for relevant leadership — typically delivered at a configured time before the working day begins (default: 7am in the recipient&#39;s time zone).</p>
+<p>The brief is generated fresh each day from live data and contains:</p>
+<ul>
+<li>Key metrics and KPI status across relevant operational areas</li>
+<li>Anomalies or changes from the previous 24 hours</li>
+<li>Actions pending approval and their priority</li>
+<li>Decisions required in the upcoming period</li>
+<li>Upcoming deadlines or milestones</li>
+<li>Freya&#39;s recommendations on priorities</li>
+</ul>
+<p>The brief is not a template with static fields — it is a dynamic intelligence document that reflects what is actually happening in your operations on that specific day.</p>
+<p>Recipients can respond to the brief by asking follow-up questions in natural language — Freya answers from the same data that informed the brief.</p>
+<p class="callout-line"><strong>Q: How does Freya handle natural language questions?</strong></p>
+<p>Freya interprets natural language questions and answers them by querying your connected data sources, synthesising the results, and producing a cited, analysed response.</p>
+<p>For example: &quot;How is our northern region partner performing against Q3 targets, and is the trend improving or worsening?&quot; Freya queries the relevant data, calculates performance against target, analyses the trend, and returns an answer that includes the figures, the trend direction, and the sources.</p>
+<p>Natural language interaction is available to users with the appropriate permission level for the data their question touches. A user cannot receive an answer to a question that draws on data outside their access scope — the query is answered from within the boundaries of their permission profile.</p>
+<p class="callout-line"><strong>Q: What happens if Freya gets something wrong?</strong></p>
+<p>Freya can produce outputs that are incorrect, incomplete, or not aligned with what you intended. This is why human review exists at every output before external action.</p>
+<p>If a Freya output is incorrect:</p>
+<ul>
+<li>The reviewing human catches it in the approval interface and either rejects it, requests a revision, or edits it before approving</li>
+<li>The incorrect output is logged — the reasoning that produced it is recorded and available for review</li>
+<li>If the error reflects a data quality issue in a connected source, Freya flags this and the source data can be corrected</li>
+<li>If the error reflects a configuration problem — a threshold set incorrectly, an agent parameter misconfigured — this can be corrected through the configuration interface</li>
+</ul>
+<p>Freya does not learn from a single error correction in real time in the same way a human does — changes to her behaviour come through configuration updates and, over time, through the accumulation of context in her memory. If a pattern of similar errors occurs, the Antarious support team should be engaged to investigate the root cause.</p>
+<p class="callout-line"><strong>Q: Does Freya work 24/7?</strong></p>
+<p>Yes. Freya operates continuously — monitoring, alerting, preparing workflows, and executing approved actions at any hour. She does not have working hours, does not need rest, and does not experience performance degradation from sustained operation.</p>
+<p>Actions that require human approval will queue if the approver is unavailable and be actioned when the approver returns — Freya does not self-approve or proceed without authorisation. But the monitoring, analysis, and preparation functions continue around the clock regardless.</p>
+</section>
+<section class="doc-section" id="section-03">
+<h2>Section 03 — The Agent Architecture {#section-03}</h2>
+<p class="callout-line"><strong>Q: What are agents, and how do they relate to Freya?</strong></p>
+<p>Freya is the central intelligence layer — the orchestrator, the memory system, the interface your team interacts with. The agents are specialist functions that Freya directs.</p>
+<p>Each agent is designed to perform a specific operational function exceptionally well: one agent handles lead prospecting, another handles content generation, another monitors partner performance, another drafts compliance documentation. When a complex workflow requires multiple functions — for example, prospecting leads, enriching their records, drafting personalised outreach, and scheduling sends — Freya orchestrates the relevant agents in sequence, passing context between them.</p>
+<p>The agent model means that each function benefits from focused specialisation, and complex multi-function workflows benefit from the coordination that Freya provides.</p>
+<p class="callout-line"><strong>Q: How many agents are there?</strong></p>
+<p>The number of agents varies by sector:</p>
+<ul>
+<li><strong>Business / GTM deployments:</strong> Up to 13 specialist agents</li>
+<li><strong>Government deployments:</strong> 8 specialist agents</li>
+<li><strong>NGO / Development deployments:</strong> 10 specialist agents</li>
+</ul>
+<p>Not all agents are active in every deployment — agents are configured based on the operational functions your organisation needs.</p>
+<p class="callout-line"><strong>Q: What are the 13 business agents?</strong></p>
+<p>The 13 business agents cover the full GTM function:</p>
+<p>1. <strong>Strategy Agent</strong> — Builds campaign strategy from brief to launch-ready plan<br>2. <strong>Content Agent</strong> — Generates content variants across formats, optimises messaging, tests performance<br>3. <strong>Lead Agent</strong> — Sources, qualifies, and scores prospects against the ICP<br>4. <strong>Outreach Agent</strong> — Personalises and sends sequences across email and LinkedIn, 24/7<br>5. <strong>Analytics Agent</strong> — Tracks attribution across all channels, surfaces anomalies and insights<br>6. <strong>Optimisation Agent</strong> — Tests variants, learns from performance, improves continuously<br>7. <strong>Reporting Agent</strong> — Drafts reports and briefings from live data on any schedule<br>8. <strong>Alert Agent</strong> — Monitors KPIs, surfaces risk early, triggers escalation workflows<br>9. <strong>CRM Agent</strong> — Keeps CRM data clean, current, and enriched from connected sources<br>10. <strong>Ad Management Agent</strong> — Monitors campaign performance, flags underperformance, prepares optimisation recommendations<br>11. <strong>SEO and Content Intelligence Agent</strong> — Tracks keyword performance, surfaces content opportunities, monitors competitor content<br>12. <strong>Pipeline Agent</strong> — Tracks deal progression, flags stalled deals, surfaces pipeline risk<br>13. <strong>Client Reporting Agent</strong> (for agencies) — Generates client-facing reports and dashboards automatically</p>
+<p class="callout-line"><strong>Q: What are the 8 government agents?</strong></p>
+<p>1. <strong>Policy Intelligence Agent</strong> — Answers natural language policy questions, compiles morning briefs for leadership<br>2. <strong>Service Delivery Monitor</strong> — Real-time KPI tracking across departments, early warning alerts<br>3. <strong>Budget and Finance Tracker</strong> — Tracks utilisation vs. target, flags variances, generates financial reports<br>4. <strong>Compliance and Audit Sentinel</strong> — Tracks obligations, auto-compiles audit evidence portfolios<br>5. <strong>Document and Brief Generator</strong> — Drafts ministerial briefs, Cabinet papers, parliamentary updates<br>6. <strong>Inter-Departmental Coordinator</strong> — Manages cross-agency information sharing and workflow routing<br>7. <strong>Public Communication Agent</strong> — Drafts citizen-facing communications, monitors public sentiment<br>8. <strong>Strategic Forecasting Agent</strong> — Three-scenario outcome modelling for policy initiatives</p>
+<p class="callout-line"><strong>Q: What are the 10 NGO / development agents?</strong></p>
+<p>1. <strong>Programme Intelligence Agent</strong> — Answers natural language programme queries, compiles daily leadership briefs<br>2. <strong>M&amp;E Report Generator</strong> — Auto-drafts full donor report narratives from live MIS data<br>3. <strong>Partner Performance Monitor</strong> — Real-time target vs. actual tracking, early warning alerts<br>4. <strong>Field Data Analyst</strong> — Ingests, validates, and consolidates partner submissions from any format<br>5. <strong>Beneficiary Analytics Agent</strong> — Tracks beneficiary journeys, dropout analysis, vulnerability mapping<br>6. <strong>Loan and Portfolio Monitor</strong> — Real-time portfolio health for microfinance and credit programmes<br>7. <strong>Document Drafting Agent</strong> — Drafts donor updates, board briefings, field visit reports<br>8. <strong>Compliance and Risk Sentinel</strong> — Tracks ESS standards, grievance mechanisms, safeguarding<br>9. <strong>Programme Forecasting Agent</strong> — Three-scenario DLI achievement and budget utilisation projections<br>10. <strong>Psychometric Profiling Agent</strong> — AI-supported creditworthiness assessment across 7 dimensions</p>
+<p class="callout-line"><strong>Q: Do agents share information with each other?</strong></p>
+<p>Yes — context sharing between agents is fundamental to how the platform works.</p>
+<p>When one agent completes its part of a workflow, it passes its context — the data it worked with, the outputs it produced, the decisions it made — to the next agent in the sequence. This means that, for example, the Lead Agent&#39;s prospect analysis informs the Outreach Agent&#39;s personalisation, which in turn informs the Analytics Agent&#39;s attribution analysis. The workflow is coherent from end to end, not a series of disconnected steps.</p>
+<p>Freya manages the context-sharing layer — she ensures that each agent receives the context it needs and that the overall workflow maintains coherence across multiple agents and multiple steps.</p>
+</section>
+<section class="doc-section" id="section-04">
+<h2>Section 04 — Human Approval and Governance {#section-04}</h2>
+<p class="callout-line"><strong>Q: What requires human approval in Antarious?</strong></p>
+<p>Human approval is required for every external action — any action that has a consequence outside the Antarious platform itself. This includes:</p>
+<ul>
+<li>External communications sent (emails, messages, press releases, citizen-facing updates)</li>
+<li>Document publications (donor reports, board papers, policy briefs)</li>
+<li>Data submissions to external systems</li>
+<li>Financial actions (budget reallocations, procurement triggers)</li>
+<li>Campaign executions (ad campaigns activated, outreach sequences launched)</li>
+<li>Compliance filings (regulatory submissions, audit evidence submitted)</li>
+<li>Escalations (risk alerts sent to external stakeholders)</li>
+<li>System changes (new integrations activated, configurations updated)</li>
+</ul>
+<p>Internal operations — monitoring, draft preparation, data processing, dashboard updates, anomaly detection — run autonomously. They carry no external consequence and require no approval.</p>
+<p class="callout-line"><strong>Q: What happens if the approver does not respond?</strong></p>
+<p>Antarious holds the action in a pending state. It does not auto-execute or proceed on assumed approval under any circumstances.</p>
+<p>When an approval deadline is approaching:<br>1. Freya sends a reminder to the approver through their configured notification channel<br>2. If a secondary approver is configured for deadline escalation, Freya routes the request to them after a defined window<br>3. If no decision is made and no escalation path is available, the action remains held until an authorised person acts</p>
+<p>If the action is time-sensitive and the window has passed, Freya logs the missed window and, depending on configuration, either retains the action for human decision on restart or cancels and logs it with a note that the time-sensitivity window was exceeded.</p>
+<p class="callout-line"><strong>Q: Can approval requirements be turned off for speed?</strong></p>
+<p>Approval requirements for external actions are an architectural constraint in Antarious — they cannot be disabled. This is intentional: the human approval principle is not a configurable feature, it is the foundation of the platform&#39;s governance model.</p>
+<p>What can be done to reduce approval friction without removing the requirement:</p>
+<ul>
+<li><strong>Single-click approval</strong> for low-risk routine actions where the review package is brief</li>
+<li><strong>Pre-approved templates</strong> for categories of output that are consistently approved without modification — the approver is confirming template selection rather than reviewing from scratch</li>
+<li><strong>Delegated approval</strong> for periods when primary approvers are unavailable</li>
+<li><strong>Threshold-based routing</strong> that sends routine lower-stakes actions to junior approvers, freeing senior approvers for consequential decisions</li>
+</ul>
+<p class="callout-line"><strong>Q: What does the approver actually see when they receive an approval request?</strong></p>
+<p>Every approval request contains:</p>
+<p>1. <strong>Action Summary</strong> — a plain-language description of what Freya is proposing to do and why<br>2. <strong>Supporting Context</strong> — the data, analysis, and reasoning behind the recommendation, with sources cited<br>3. <strong>Proposed Output</strong> — the exact content that will be executed if approved (the email text, report draft, outreach sequence, etc.)<br>4. <strong>Risk Flags</strong> — any anomalies or uncertainties Freya has identified that the approver should consider<br>5. <strong>Decision Options</strong> — Approve / Approve with edits / Request revision / Reject — with a free-text field for instructions<br>6. <strong>Deadline Indicator</strong> — where the action is time-sensitive, the window within which a decision is needed</p>
+<p>The review package is designed to be actionable in under five minutes for routine approvals — everything the approver needs is in the package, no additional research is required.</p>
+<p class="callout-line"><strong>Q: Can multiple people be required to approve a single action?</strong></p>
+<p>Yes. Antarious supports multi-level approval chains — sequential (each approver acts in turn), parallel (multiple approvers act simultaneously, execution triggers on quorum or unanimity), and hybrid combinations.</p>
+<p>In a sequential chain:</p>
+<ul>
+<li>Approver A receives the request first</li>
+<li>Once Approver A decides (approve, approve with edits, or escalate), the request routes to Approver B</li>
+<li>Each approver sees the previous approver&#39;s decision and comments</li>
+<li>Execution only occurs once all stages of the chain are complete</li>
+</ul>
+<p>In a parallel chain:</p>
+<ul>
+<li>All designated approvers receive the request simultaneously</li>
+<li>Execution triggers when the configured quorum (e.g., 2 of 3, or all 3) is reached</li>
+<li>If any approver rejects, the action is halted regardless of other approvals</li>
+</ul>
+<p class="callout-line"><strong>Q: Who is accountable when Freya makes a mistake?</strong></p>
+<p>The human who approved the action is accountable for the outcome.</p>
+<p>Freya prepares recommendations — the human decides whether to act on them. The approval record permanently identifies who approved what, when, having been presented with exactly what information. If an approved action produces an undesired outcome, the accountability chain is clear and documented.</p>
+<p>This is not a limitation of the platform — it is the correct answer. Accountability in consequential environments cannot rest with software. It rests with the person whose authority, judgement, and signature authorised the action.</p>
+</section>
+<section class="doc-section" id="section-05">
+<h2>Section 05 — Audit Trail and Accountability {#section-05}</h2>
+<p class="callout-line"><strong>Q: What does the audit trail record?</strong></p>
+<p>Every event in the Antarious system generates an audit record across seven layers:</p>
+<p>1. <strong>The Trigger</strong> — what initiated the chain of events (scheduled task, live anomaly, user instruction, data feed)<br>2. <strong>Freya&#39;s Reasoning</strong> — the full analytical reasoning chain, including data sources queried and conclusions reached<br>3. <strong>The Review Package</strong> — the exact content presented to the approver at the point of delivery<br>4. <strong>The Human Decision</strong> — who approved, rejected, or revised the action, at what time, with what commentary<br>5. <strong>The Executed Output</strong> — the exact final version of what was executed<br>6. <strong>The Outcome Signal</strong> — measurable outcomes linked back to the originating action<br>7. <strong>The Exception Record</strong> — rejected actions, failed executions, unresolved escalations</p>
+<p class="callout-line"><strong>Q: Can audit records be deleted or edited?</strong></p>
+<p>No. The Antarious audit trail is write-once by architecture. Once a record is created, it cannot be edited, deleted, or overwritten by any user at any permission level — including system administrators and Antarious personnel.</p>
+<p>Records are cryptographically timestamped at creation and the hash changes if any field is altered — providing independent verifiability. New information (such as linked outcome signals) is added as new linked records, not as edits to the original.</p>
+<p class="callout-line"><strong>Q: How long are audit records retained?</strong></p>
+<p>The default retention period is seven years, aligned with common regulatory and donor requirements. Retention is configurable — organisations with longer retention obligations (such as public records legislation requirements in some jurisdictions) can configure longer periods.</p>
+<p>Where multiple retention requirements apply, Antarious applies the longest applicable period unless specifically instructed otherwise.</p>
+<p class="callout-line"><strong>Q: How do I retrieve audit records for a donor review or regulatory inspection?</strong></p>
+<p>Audit records can be retrieved through the Antarious platform by users with the appropriate audit access permission. Retrieval can be filtered by time period, action type, approver, agent, outcome, or any combination.</p>
+<p>For formal review purposes, records can be exported in:</p>
+<ul>
+<li><strong>PDF</strong> — formatted audit report suitable for committee presentation and formal submission</li>
+<li><strong>CSV / Excel</strong> — structured data for analysis and reconciliation</li>
+<li><strong>JSON</strong> — machine-readable format for integration with external audit management systems</li>
+<li><strong>Narrative summary</strong> — Freya can generate a narrative audit summary for any scope, structured to the requirements of a specific review body or donor</li>
+</ul>
+<p>For organisations preparing for a donor review mission or regulatory inspection, Freya can compile an audit evidence portfolio on demand — drawing together all relevant records, structuring them to the review framework, and flagging any gaps.</p>
+<p class="callout-line"><strong>Q: Can an external auditor be given direct access to the audit trail?</strong></p>
+<p>Yes. Temporary, scoped, read-only access can be granted to external auditors for the duration of a review. The access:</p>
+<ul>
+<li>Is bounded to the data scope relevant to the audit</li>
+<li>Has a defined expiry date and automatically revokes at expiry</li>
+<li>Is fully logged in the audit trail (the auditor&#39;s access is itself audited)</li>
+<li>Does not require Antarious as an intermediary — the auditor accesses records directly</li>
+</ul>
+</section>
+<section class="doc-section" id="section-06">
+<h2>Section 06 — Role-Based Control and Access {#section-06}</h2>
+<p class="callout-line"><strong>Q: How does role-based access control work in Antarious?</strong></p>
+<p>Every user in Antarious is assigned a role profile that defines six dimensions of their access:</p>
+<p>1. <strong>Data access scope</strong> — which data sources, dashboards, and outputs they can see<br>2. <strong>Workflow initiation authority</strong> — which workflows they can instruct Freya to begin<br>3. <strong>Approval authority</strong> — which actions they can approve, at what scale<br>4. <strong>Freya interaction mode</strong> — how they can communicate with and direct Freya<br>5. <strong>Configuration authority</strong> — what they can change about how the system operates<br>6. <strong>Audit and reporting access</strong> — which audit records and governance reports they can access</p>
+<p>No user has access to more than their role profile defines. Access is enforced at the data query level — not just at the interface level.</p>
+<p class="callout-line"><strong>Q: Can a user grant themselves additional access?</strong></p>
+<p>No. Permission self-escalation is structurally prevented. A user cannot modify their own permission profile or approve actions on their own behalf. Configuration authority is separated from approval authority, and both are separated from audit access.</p>
+<p class="callout-line"><strong>Q: What happens when an employee leaves or changes role?</strong></p>
+<p>Their access is revoked immediately upon role change in the Antarious system. The institutional knowledge they held — programme context, decision history, operational precedents — is retained in Freya&#39;s memory and remains accessible to the organisation. The knowledge does not leave with the individual.</p>
+<p>The new person in the role is granted their own access profile, configured to reflect their specific responsibilities. They benefit immediately from the accumulated institutional memory of their predecessor.</p>
+<p class="callout-line"><strong>Q: How do we handle approval authority during annual leave or extended absence?</strong></p>
+<p>Formal delegation can be configured. The delegating authority specifies:</p>
+<ul>
+<li>The deputy to whom authority is delegated</li>
+<li>The scope of the delegation (all their approval authority, or a specific subset)</li>
+<li>The duration (start and end date)</li>
+</ul>
+<p>The delegation is recorded in the audit trail and automatically expires at the defined end date — no manual revocation is required.</p>
+<p>The deputy cannot exceed the scope of the delegation, and cannot delegate authority to a third party.</p>
+</section>
+<section class="doc-section" id="section-07">
+<h2>Section 07 — Security and Data Protection {#section-07}</h2>
+<p class="callout-line"><strong>Q: How is our data encrypted?</strong></p>
+<p>Data at rest is encrypted using AES-256. Data in transit is encrypted using TLS 1.3. Encryption keys are managed using a dedicated key management service with HSM backing and are rotated on a defined schedule.</p>
+<p>Customer-managed encryption keys (CMEK) are available for organisations with specific key sovereignty requirements.</p>
+<p class="callout-line"><strong>Q: Where is our data stored?</strong></p>
+<p>Data residency is configured during deployment. Supported geographic regions are confirmed during pre-deployment planning. Government and high-sensitivity deployments can be configured for specific jurisdictions to meet data sovereignty requirements.</p>
+<p class="callout-line"><strong>Q: Does Antarious use our data to train its AI models?</strong></p>
+<p>No. Customer data is not used to train Antarious AI models or shared with third parties for any model training purpose. This commitment is documented in the Data Processing Agreement executed prior to deployment.</p>
+<p class="callout-line"><strong>Q: What happens to our data when we end our contract?</strong></p>
+<p>On contract termination:<br>1. The customer can export their data in standard formats within a defined transition period<br>2. Following the transition period, Antarious securely deletes all customer data from its systems<br>3. Written confirmation of deletion is provided<br>4. Audit records subject to legally mandated retention may be retained for the required period, after which they are deleted</p>
+<p class="callout-line"><strong>Q: What security certifications does Antarious hold?</strong></p>
+<p>Antarious&#39;s security programme is aligned with ISO 27001, SOC 2 Type II, UK Cyber Essentials, and the NCSC Cloud Security Principles. Certification programmes are in progress for ISO 27001 and SOC 2 Type II. UK government customers can request an assessment against all 14 NCSC Cloud Security Principles.</p>
+<p>Detailed compliance documentation is available to enterprise and government customers under NDA as part of the security due diligence process. Contact the security team.</p>
+<p class="callout-line"><strong>Q: Has Antarious been penetration tested?</strong></p>
+<p>Yes. Antarious undergoes regular penetration testing by independent third-party specialists, covering application-layer and infrastructure-layer security. Penetration test summaries (redacted) are available to enterprise and government customers under NDA.</p>
+<p class="callout-line"><strong>Q: What is Antarious&#39;s incident response process?</strong></p>
+<p>In the event of a confirmed security incident:<br>1. The affected system is isolated within minutes of confirmation<br>2. Scope and impact are assessed<br>3. Affected customers are notified within 72 hours of confirmed detection<br>4. The vulnerability is remediated and affected systems restored<br>5. A post-incident review report is shared with affected customers</p>
+<p class="callout-line"><strong>Q: Is a Data Processing Agreement available?</strong></p>
+<p>Yes. A DPA is executed with every customer prior to go-live. It covers data categories processed, purposes and legal bases, sub-processor details, security measures, breach notification (72 hours), data subject rights support, and deletion obligations. Contact the legal team to request the standard DPA or to submit your organisation&#39;s DPA for review.</p>
+</section>
+<section class="doc-section" id="section-08">
+<h2>Section 08 — Deployment and Implementation {#section-08}</h2>
+<p class="callout-line"><strong>Q: How long does a deployment take?</strong></p>
+<p>Deployment timelines vary by organisational complexity, the number of integrations required, and the governance configuration needed. Typical ranges:</p>
+<ul>
+<li><strong>Smaller NGO or single-department government deployment:</strong> 4–6 weeks from signed agreement to go-live</li>
+<li><strong>Mid-size enterprise GTM deployment:</strong> 6–10 weeks</li>
+<li><strong>Large or complex deployment (multiple departments, many integrations, complex governance structures):</strong> 10–16 weeks</li>
+</ul>
+<p>These timelines assume active participation from the customer&#39;s technical, governance, and operational leads. The most common cause of deployment delay is unavailability of internal resources for discovery and configuration work, not platform-side complexity.</p>
+<p class="callout-line"><strong>Q: What does the deployment process look like?</strong></p>
+<p>The Antarious deployment process has five phases:</p>
+<p><strong>Phase 1 — Discovery and Mapping (1–2 weeks)</strong><br>Working sessions with your operations, IT, and governance leads to map data sources, workflows, authority structures, and reporting requirements. This produces the deployment blueprint.</p>
+<p><strong>Phase 2 — Configuration and Integration (2–6 weeks)</strong><br>Antarious&#39;s implementation team (or a certified partner) configures the platform: connecting data sources, setting up agent parameters, mapping roles and permissions, and designing approval workflows.</p>
+<p><strong>Phase 3 — Testing and Validation (1–2 weeks)</strong><br>End-to-end testing of all configured workflows, approval chains, and integrations. A pre-go-live checklist is completed and signed off.</p>
+<p><strong>Phase 4 — Onboarding and Go-Live (1 week)</strong><br>Training for all user roles, go-live communication to your team, and a supervised go-live period with Antarious support available.</p>
+<p><strong>Phase 5 — Post-Deployment Review and Optimisation (ongoing)</strong><br>30-day and 90-day reviews. Workflow refinement based on real operational experience. Expansion of capabilities as confidence builds.</p>
+<p class="callout-line"><strong>Q: Do we need our own technical team to deploy Antarious?</strong></p>
+<p>You need to make your technical team available to support the deployment — particularly for integration configuration (API access, credential provision, data schema documentation) and for IT security and access management decisions.</p>
+<p>You do not need your technical team to do the configuration work — that is handled by Antarious&#39;s implementation team or a certified implementation partner. But internal IT involvement is required to approve and enable the connections between Antarious and your existing systems.</p>
+<p class="callout-line"><strong>Q: Can we use an implementation partner instead of Antarious directly?</strong></p>
+<p>Yes. Antarious has a certified implementation partner programme. Partners complete comprehensive training and certification and are qualified to deliver Antarious deployments independently. For organisations that prefer to work with an existing technology partner or a sector specialist, this is often the preferred route.</p>
+<p>See the <span class="disabled-link">Partner Programme →</span> for information on the partner network.</p>
+<p class="callout-line"><strong>Q: What ongoing support is provided after go-live?</strong></p>
+<p>Post-deployment support includes:</p>
+<ul>
+<li>Access to the Help Centre and documentation library</li>
+<li>Platform support via the support team (response SLAs by issue priority)</li>
+<li>Scheduled 30-day and 90-day review sessions</li>
+<li>Access to all webinars and training materials</li>
+<li>Ongoing product updates and new features (delivered without requiring re-deployment)</li>
+</ul>
+<p>Enterprise and Strategic customers have access to enhanced support arrangements, including dedicated customer success managers.</p>
+</section>
+<section class="doc-section" id="section-09">
+<h2>Section 09 — Integrations and Data Sources {#section-09}</h2>
+<p class="callout-line"><strong>Q: What systems can Antarious integrate with?</strong></p>
+<p>Antarious integrates with a wide range of systems across categories:</p>
+<p><strong>CRM and Sales:</strong> Salesforce, HubSpot, Salesforce NPSP<br><strong>Lead and Prospecting:</strong> Apollo.io, ZoomInfo, Clearbit<br><strong>Marketing and Ads:</strong> Meta Ads, Google Ads, LinkedIn, Klaviyo, Instantly<br><strong>Analytics and BI:</strong> Google Analytics 4, Snowflake, Power BI, Tableau, SEMrush<br><strong>Communication:</strong> Slack, Microsoft Teams<br><strong>Productivity:</strong> Microsoft 365, Google Workspace, SharePoint<br><strong>Field Data (NGO):</strong> ODK Collect, KoBoToolbox, SurveyCTO, CommCare, DHIS2<br><strong>ERP and Finance:</strong> SAP, Oracle ERP<br><strong>ITSM and Service:</strong> ServiceNow<br><strong>Databases:</strong> SQL databases (standard connectors), REST APIs (custom integration)<br><strong>Donor Reporting Frameworks:</strong> World Bank, USAID, DFID/FCDO, UNDP, ADB data structures<br><strong>GIS and Spatial:</strong> GIS Integration</p>
+<p>For systems not on this list, Antarious supports REST API integration for custom connections.</p>
+<p class="callout-line"><strong>Q: How are integration credentials stored and secured?</strong></p>
+<p>Integration credentials (API keys, OAuth tokens, service account credentials) are stored encrypted using the same AES-256 standard applied to all customer data. They are never logged in plaintext and are accessible only to the specific agent or process that requires them. Credential rotation schedules are configurable.</p>
+<p class="callout-line"><strong>Q: What if a connected system is unavailable?</strong></p>
+<p>Antarious monitors integration health continuously. If a connected system is unavailable:</p>
+<ul>
+<li>Freya pauses workflows that depend on that integration</li>
+<li>An alert is generated to the system administrator</li>
+<li>Workflows resume automatically once connectivity is restored</li>
+<li>No data is lost — Freya queues pending processing for the affected integration</li>
+</ul>
+<p class="callout-line"><strong>Q: Can we build a custom integration for a system not on the standard list?</strong></p>
+<p>Yes, using the Antarious REST API. The API reference documentation (available in the Documentation library and Partner Portal) covers authentication, available endpoints, request/response schemas, and webhook configuration for custom integrations.</p>
+<p class="callout-line"><strong>Q: How does Antarious handle data quality issues in connected sources?</strong></p>
+<p>Freya validates data as it is ingested. When quality issues are detected — missing fields, format mismatches, unexpected values, duplicate records — Freya flags them, logs the issue, and, depending on configuration, either pauses processing pending resolution or proceeds with the available data while flagging the gap in any output that draws on the affected data.</p>
+<p>Data quality flags are surfaced in the dashboard and can generate alerts to the responsible data owner.</p>
+</section>
+<section class="doc-section" id="section-10">
+<h2>Section 10 — Sector: Business and GTM Teams {#section-10}</h2>
+<p class="callout-line"><strong>Q: What does Antarious replace in a GTM tech stack?</strong></p>
+<p>Antarious is designed to replace the fragmented multi-tool stack that most GTM teams operate — typically 15–20 tools covering strategy, content, prospecting, outreach, ad management, analytics, attribution, and reporting.</p>
+<p>Common tools that Antarious consolidates:</p>
+<ul>
+<li>Content and copy tools (replaced by the Content Agent)</li>
+<li>Prospecting and enrichment tools (replaced by the Lead Agent)</li>
+<li>Outreach sequencing tools (replaced by the Outreach Agent)</li>
+<li>Multi-touch attribution tools (replaced by the Analytics Agent)</li>
+<li>Reporting and dashboard assembly (replaced by the Reporting Agent)</li>
+<li>Campaign monitoring and alerting tools (replaced by the Alert Agent)</li>
+</ul>
+<p>The consolidation benefit is not only cost — it is the elimination of the data handoff gaps between tools that create errors, delays, and context loss.</p>
+<p class="callout-line"><strong>Q: How does the SDR workflow work with Freya?</strong></p>
+<p>The SDR workflow in Antarious operates as follows:</p>
+<p>1. <strong>ICP brief submitted</strong> → Lead Agent sources and scores prospects matching the ICP from connected data sources<br>2. <strong>Enriched prospect list</strong> → Lead Agent delivers a scored, enriched prospect list in under 5 minutes (a list of 482 prospects, for example, that would previously take hours to compile)<br>3. <strong>Sequence personalisation</strong> → Outreach Agent drafts personalised sequences for each prospect, drawing on enrichment data for context<br>4. <strong>Human approval</strong> → SDR Lead reviews and approves the sequences before sending begins<br>5. <strong>Automated sending</strong> → Outreach Agent sends sequences 24/7, handles follow-up cadences, and monitors for replies<br>6. <strong>Reply classification</strong> → Outreach Agent classifies replies by intent (interested, not interested, more information, unsubscribe) and surfaces hot leads with a drafted response<br>7. <strong>SDR briefing card</strong> → Before each call, Freya prepares a briefing card for the SDR — intelligence, pain signals, company context, and a suggested talk track</p>
+<p>The SDR&#39;s time is spent on calls, relationships, and closing — not on list building, data entry, or manual follow-up.</p>
+<p class="callout-line"><strong>Q: How does the 5-model attribution work?</strong></p>
+<p>Antarious implements multi-touch attribution using five models simultaneously:</p>
+<p>1. <strong>First touch</strong> — full credit to the first channel that generated the prospect<br>2. <strong>Last touch</strong> — full credit to the final touchpoint before conversion<br>3. <strong>Linear</strong> — equal credit distributed across all touchpoints in the journey<br>4. <strong>Time decay</strong> — more credit to touchpoints closer to conversion<br>5. <strong>Data-driven (algorithmic)</strong> — credit distributed based on the statistical contribution of each touchpoint, derived from historical conversion patterns</p>
+<p>Running all five simultaneously allows the Analytics Agent to answer &quot;what campaign closed this deal?&quot; from multiple analytical perspectives — giving leadership a complete picture rather than a single model&#39;s partial view.</p>
+<p class="callout-line"><strong>Q: How does the agency multi-client deployment work?</strong></p>
+<p>Agencies can configure separate workspaces for each client within a single Antarious deployment. Each workspace has:</p>
+<ul>
+<li>Full data isolation — one client cannot see another client&#39;s data</li>
+<li>Brand memory — Freya learns and retains each client&#39;s brand voice, messaging, and strategic context separately</li>
+<li>Separate approval workflows — each client&#39;s approver structure is independent</li>
+<li>White-label client portal — accessible to the client with the agency&#39;s branding, not Antarious branding</li>
+<li>Automated client reporting — Freya generates reports in the client&#39;s required format on any schedule</li>
+</ul>
+<p>The result is the operational capacity to serve 10 clients with a team of 3 — each client receiving the quality of output that would previously require a dedicated team.</p>
+</section>
+<section class="doc-section" id="section-11">
+<h2>Section 11 — Sector: Government Departments {#section-11}</h2>
+<p class="callout-line"><strong>Q: How does Antarious handle data sovereignty and classification requirements?</strong></p>
+<p>Data residency for government deployments is configured to the specific jurisdiction required. UK government deployments can be configured to store data exclusively in UK data centres. For classified environments, deployment architecture options — including private cloud and dedicated deployment — are available.</p>
+<p>Data sensitivity classification tiers can be mapped to Antarious role-based access control, ensuring that data at different classification levels is accessible only to roles with the appropriate clearance.</p>
+<p>Detailed architecture documentation for government security requirements, including an assessment against the NCSC Cloud Security Principles, is available on request.</p>
+<p class="callout-line"><strong>Q: How does Freya help with ministerial briefing?</strong></p>
+<p>Freya&#39;s Document and Brief Generator, working with the Policy Intelligence Agent, automates the ministerial briefing process:</p>
+<p>1. Freya ingests data from across all connected departmental systems each morning<br>2. The Policy Intelligence Agent synthesises this into a draft ministerial brief — metrics, anomalies, wins, risks, and recommendations — structured to the department&#39;s briefing format<br>3. The brief is delivered to the designated briefing officer for review and approval<br>4. Once approved, it is routed through the configured approval chain (typically: briefing officer → Permanent Secretary or Director General → Minister)<br>5. The approved brief is delivered to the Minister at the configured time</p>
+<p>The brief contains live data — not data that was current when the brief was commissioned, but data as of the moment of final approval. Freya flags anything that changed materially between draft and delivery.</p>
+<p>Cabinet papers follow the same workflow, structured to the relevant Cabinet committee format.</p>
+<p class="callout-line"><strong>Q: How does Antarious support inter-departmental coordination?</strong></p>
+<p>The Inter-Departmental Coordinator Agent manages cross-agency information sharing, workflow routing, and task coordination. In practice this means:</p>
+<ul>
+<li>Actions that require input or approval from multiple departments are tracked in a single workflow — not lost in email chains</li>
+<li>Each department&#39;s contribution is logged and the overall workflow status is visible to all involved parties</li>
+<li>Escalation paths are configured for when coordination stalls — Freya surfaces overdue cross-departmental actions automatically</li>
+<li>All inter-departmental communication and coordination is captured in the audit trail, creating accountability across the collaboration</li>
+</ul>
+<p class="callout-line"><strong>Q: How does Antarious work across siloed departmental systems?</strong></p>
+<p>Freya is designed to operate across multiple data silos simultaneously. Each department&#39;s systems are connected to Antarious as separate integrations. Freya queries across all connected sources when synthesising intelligence — a question about cross-departmental service delivery performance is answered from data that spans every relevant departmental system, assembled in real time.</p>
+<p>Data access boundaries are preserved — the cross-departmental synthesis is performed by Freya, not by making one department&#39;s raw data accessible to another. Each department&#39;s data remains within its configured access scope; Freya produces synthesised intelligence that draws on all of it.</p>
+<p class="callout-line"><strong>Q: Is Antarious suitable for Freedom of Information response management?</strong></p>
+<p>The audit trail and document generation capabilities in Antarious support FOI management. All records generated by Freya are retrievable and exportable. However, Antarious is not a dedicated FOI management system, and organisations with significant FOI volumes should confirm with the Antarious team how the platform&#39;s retrieval and export capabilities can best support their FOI process.</p>
+</section>
+<section class="doc-section" id="section-12">
+<h2>Section 12 — Sector: NGO and Development Organisations {#section-12}</h2>
+<p class="callout-line"><strong>Q: Which donor report formats does the M&amp;E Report Generator support?</strong></p>
+<p>The M&amp;E Report Generator is trained on the reporting structures of major international donors, including:</p>
+<ul>
+<li><strong>World Bank / IDA</strong> — PDO indicator reporting, ISR format, DLI milestone documentation</li>
+<li><strong>USAID</strong> — Performance Monitoring Plan format, PEPFAR reporting structures</li>
+<li><strong>DFID / FCDO</strong> — Logframe-based reporting, Programme Completion Report structure</li>
+<li><strong>UNDP</strong> — Results-based management reporting frameworks</li>
+<li><strong>Asian Development Bank (ADB)</strong> — Design and Monitoring Framework reporting</li>
+</ul>
+<p>For donors not on this list, the agent can be configured with a custom report template provided by the organisation.</p>
+<p class="callout-line"><strong>Q: How does Freya handle partner data submitted in different formats?</strong></p>
+<p>The Field Data Analyst Agent is specifically designed for this problem. It accepts data submissions in:</p>
+<ul>
+<li>Web portal submissions</li>
+<li>Excel / CSV uploads (any column structure — Freya maps fields)</li>
+<li>ODK Collect, KoBoToolbox, SurveyCTO (direct integration or exported data)</li>
+<li>CommCare and DHIS2 (API integration)</li>
+<li>Email attachments (where email parsing is configured)</li>
+</ul>
+<p>When submissions arrive in different formats, Freya validates and maps them to a consistent data model, flags data quality issues, prevents double-counting, and presents a single consolidated dashboard regardless of the underlying format variety.</p>
+<p class="callout-line"><strong>Q: What is the Psychometric Profiling Agent and how does it work?</strong></p>
+<p>The Psychometric Profiling Agent supports lending decisions in microfinance and credit-linked programmes — specifically for applicants who do not have a formal credit history.</p>
+<p>The process:<br>1. The applicant completes a structured assessment in their local language on a smartphone. The assessment is designed to be accessible without financial literacy or digital experience.<br>2. Freya analyses responses across 7 psychometric dimensions: Entrepreneurial Spirit, Financial Discipline, Risk Appetite, Business Knowledge, Resilience, Community Integration, and Repayment Motivation.<br>3. Freya produces a creditworthiness profile, a risk score, and a lending recommendation — including suggested loan amount and tenure.<br>4. A human loan officer reviews the recommendation and makes the final lending decision. Freya does not approve loans.</p>
+<p>The system is designed to extend credit access to populations excluded by conventional credit assessment, while maintaining human accountability for every lending decision.</p>
+<p class="callout-line"><strong>Q: How does early warning detection work for partner performance?</strong></p>
+<p>The Partner Performance Monitor tracks actual performance against target for every partner organisation in real time. Anomaly detection uses a combination of:</p>
+<ul>
+<li><strong>Threshold alerts</strong> — when a metric falls below a defined percentage of target</li>
+<li><strong>Trend detection</strong> — when a metric is on a trajectory to miss target even if it has not yet crossed the threshold</li>
+<li><strong>Comparative analysis</strong> — when a partner&#39;s performance diverges significantly from the cohort</li>
+</ul>
+<p>When an anomaly is detected, Freya generates an alert that includes:</p>
+<ul>
+<li>Which partner and which indicator</li>
+<li>The current performance vs. target</li>
+<li>The trend and projected trajectory</li>
+<li>A draft corrective action memo, pre-structured for the officer&#39;s review and approval</li>
+</ul>
+<p>The key outcome: problems are detected and actioned in week 3, not at the quarterly review in week 13.</p>
+<p class="callout-line"><strong>Q: How does Antarious handle low-connectivity field environments?</strong></p>
+<p>Field data in Antarious is ingested when it arrives — Freya does not require continuous connectivity from field systems. Data collected offline through ODK or KoBoToolbox, for example, is processed when it is synced.</p>
+<p>For environments where field teams submit data intermittently, Freya&#39;s consolidation and validation runs when the submission is received, not on a fixed schedule. Dashboard updates reflect the most recent available data, with a visible timestamp indicating when each source was last updated.</p>
+</section>
+<section class="doc-section" id="section-13">
+<h2>Section 13 — Pricing and Commercial {#section-13}</h2>
+<p class="callout-line"><strong>Q: How is Antarious priced?</strong></p>
+<p>Antarious pricing is based on a subscription model with fees that reflect the scope of the deployment — the number of active agents, the number of integrations, the level of institutional memory, and the support tier.</p>
+<p>Pricing is not published publicly because deployments vary significantly in scope and the right commercial structure depends on factors specific to each organisation. The best starting point is a discovery conversation with the Antarious team, from which a tailored proposal can be produced.</p>
+<p>Contact the Antarious team to initiate a commercial discussion.</p>
+<p class="callout-line"><strong>Q: Is there a minimum contract term?</strong></p>
+<p>Standard Antarious agreements are annual subscriptions. Multi-year agreements are available and typically include pricing benefits. Shorter initial terms may be available in specific circumstances — discuss with the Antarious commercial team.</p>
+<p class="callout-line"><strong>Q: Is implementation included in the subscription price?</strong></p>
+<p>Implementation services are typically separate from the platform subscription. The implementation engagement — discovery, configuration, integration, and go-live — is scoped and priced as a professional services engagement. For organisations using a certified implementation partner, the partner manages the implementation services commercially.</p>
+<p class="callout-line"><strong>Q: Is Antarious available through government procurement frameworks?</strong></p>
+<p>Antarious is working towards inclusion on relevant public procurement frameworks in key markets. For specific framework availability in your jurisdiction, contact the Antarious team with your procurement framework requirement.</p>
+<p class="callout-line"><strong>Q: Can Antarious be included in a donor-funded programme budget?</strong></p>
+<p>Yes. Antarious has been structured into donor-funded programme budgets in development sector deployments. The M&amp;E and reporting time savings typically produce a strong ROI case within existing programme management cost lines.</p>
+<p>The Antarious team can provide documentation to support a budget justification for inclusion in a programme&#39;s operational cost budget. Contact the Antarious team.</p>
+</section>
+<section class="doc-section" id="section-14">
+<h2>Section 14 — Compliance and Regulatory {#section-14}</h2>
+<p class="callout-line"><strong>Q: Is Antarious compliant with UK GDPR and EU GDPR?</strong></p>
+<p>Antarious is designed to support GDPR compliance. Key relevant features:</p>
+<ul>
+<li><strong>Article 22 (automated decision-making):</strong> The human approval architecture means no significant automated decision is taken without human review — the design is Article 22 compliant by structure.</li>
+<li><strong>Data minimisation:</strong> Antarious processes only the data necessary for configured functions.</li>
+<li><strong>Data subject rights:</strong> Antarious supports data subject rights requests (access, erasure, portability) as documented in the Data Processing Agreement.</li>
+<li><strong>Accountability:</strong> The audit trail provides the accountability documentation required under Article 5(2).</li>
+<li><strong>Data Processing Agreement:</strong> A DPA is executed with every customer prior to go-live.</li>
+</ul>
+<p>GDPR compliance is ultimately the responsibility of the data controller (the customer organisation). Antarious provides the infrastructure to support compliance; the compliance determination is the customer&#39;s.</p>
+<p class="callout-line"><strong>Q: How does Antarious align with the EU AI Act?</strong></p>
+<p>The EU AI Act imposes requirements on high-risk AI systems, including logging, transparency, and human oversight. Antarious&#39;s design aligns with these requirements:</p>
+<ul>
+<li><strong>Logging (Article 12):</strong> The Antarious audit trail records system operation sufficient for post-hoc monitoring and assessment of outputs</li>
+<li><strong>Transparency:</strong> Every Freya recommendation includes its reasoning, sources, and assumptions — no black boxes</li>
+<li><strong>Human oversight:</strong> The approve-before-execute model provides the human oversight mechanism required for high-risk AI applications</li>
+<li><strong>Robustness and accuracy:</strong> The audit trail, data validation, and anomaly detection all contribute to the robustness requirements</li>
+</ul>
+<p>Organisations should confirm their specific AI Act obligations with their legal advisors. Antarious can provide technical documentation to support an AI Act compliance assessment.</p>
+<p class="callout-line"><strong>Q: How does Antarious support donor compliance for World Bank-funded programmes?</strong></p>
+<p>Antarious supports World Bank donor compliance through:</p>
+<ul>
+<li>Complete audit trail of all programme actions, approvals, and submissions</li>
+<li>M&amp;E Report Generator producing PDO indicator reports in World Bank ISR format</li>
+<li>DLI milestone tracking with early warning of at-risk milestones</li>
+<li>Compliance and Risk Sentinel tracking ESS standards, fiduciary requirements, and safeguarding obligations</li>
+<li>Audit evidence portfolio compilation before World Bank supervision missions</li>
+</ul>
+<p>Antarious has worked with development sector organisations on World Bank-funded programmes and can provide specific guidance on compliance documentation. Contact the Antarious team.</p>
+<p class="callout-line"><strong>Q: What is Antarious&#39;s position on the NCSC Cloud Security Principles?</strong></p>
+<p>Antarious has been assessed against all 14 NCSC Cloud Security Principles. Detailed documentation of this assessment is available to UK government customers on request. This is typically provided as part of the security due diligence process for government procurement.</p>
+</section>
+<section class="doc-section" id="section-15">
+<h2>Section 15 — AI Ethics and Responsible Use {#section-15}</h2>
+<p class="callout-line"><strong>Q: What is Antarious&#39;s position on AI replacing human jobs?</strong></p>
+<p>Antarious is built on a principled position: AI should amplify human capability, not replace human judgement. This is not just a marketing statement — it is reflected in the architecture.</p>
+<p>Freya handles work that does not require human judgement: data aggregation, report drafting, monitoring, routine workflow execution. These are tasks that consume human time without benefiting from human insight.</p>
+<p>The work that benefits from human insight — strategy, relationships, negotiation, creativity, accountability, democratic oversight — remains with humans by design. Antarious does not seek to automate these functions.</p>
+<p>The observable outcome is not job elimination — it is capacity expansion. The same team achieves more, the important work receives more attention, and the routine work no longer crowds out the consequential work.</p>
+<p class="callout-line"><strong>Q: How does Antarious ensure its AI recommendations are not biased?</strong></p>
+<p>Freya&#39;s recommendations are derived from the data your organisation provides and the configurations your team applies. This means that biases in your data — historical patterns, sampling gaps, measurement limitations — can be reflected in Freya&#39;s outputs.</p>
+<p>Antarious addresses this through:</p>
+<ul>
+<li><strong>Transparent reasoning:</strong> Freya always shows the data and logic behind a recommendation — this makes potential bias visible rather than hidden</li>
+<li><strong>Human review:</strong> Every consequential output is reviewed by a human before action — the human can identify and correct biased outputs</li>
+<li><strong>Data quality flags:</strong> Freya flags data quality issues that could affect the reliability of an output</li>
+<li><strong>Diverse data sourcing:</strong> Where multiple data sources are available, Freya draws on all of them rather than a single source</li>
+</ul>
+<p>Organisations should actively consider the potential for historical bias in their data and configure Freya&#39;s outputs accordingly. The Antarious implementation team can provide guidance on data quality and bias mitigation during deployment.</p>
+<p class="callout-line"><strong>Q: Is Antarious suitable for decisions that directly affect individuals?</strong></p>
+<p>Antarious is designed to support decisions that affect individuals — including beneficiary selection, credit decisions, service delivery prioritisation, and public communications — by providing intelligence and recommendations that improve the quality of those decisions.</p>
+<p>Critically: Freya does not make these decisions. She prepares recommendations that a designated human reviews and approves. The human decision-maker retains full accountability.</p>
+<p>For decisions with significant individual impact (lending decisions, beneficiary exclusions, service eligibility), the human review step is particularly important and should be configured with the appropriate level of scrutiny.</p>
+<p class="callout-line"><strong>Q: What is Antarious&#39;s policy on politically sensitive intelligence?</strong></p>
+<p>Freya produces intelligence based on the data she has access to. She does not apply political judgement, advocate for political positions, or make politically motivated recommendations.</p>
+<p>In government contexts, politically sensitive outputs — policy recommendations, public communications, strategic assessments — are always subject to human review and approval before any action. The human officer brings political judgement to the review; Freya provides the analytical foundation.</p>
+<p>Data sensitivity classification can be configured to ensure that politically sensitive data is accessible only to roles with the appropriate authority.</p>
+</section>
+<section class="doc-section" id="section-16">
+<h2>Section 16 — Technical Architecture {#section-16}</h2>
+<p class="callout-line"><strong>Q: What AI models does Freya use?</strong></p>
+<p>Antarious does not disclose the specific AI models underlying the Freya architecture. The platform uses a combination of large language model capabilities and specialised analytical models, configured and orchestrated by the Antarious platform layer.</p>
+<p>The relevant characteristic for customers is not which underlying models are used, but how the platform behaves: transparent reasoning, cited sources, consistent output quality, and human review at every consequential step.</p>
+<p class="callout-line"><strong>Q: Is Antarious cloud-based or can it be deployed on-premises?</strong></p>
+<p>Antarious is primarily a cloud-based platform. Private cloud and dedicated cloud deployment options are available for government and enterprise customers with specific infrastructure requirements.</p>
+<p>On-premises deployment is not currently a standard offering, but dedicated cloud deployment in a customer&#39;s own cloud environment can be configured for organisations with strict data sovereignty or network isolation requirements.</p>
+<p class="callout-line"><strong>Q: What are the uptime and availability commitments?</strong></p>
+<p>Uptime commitments and service level agreements are specified in customer agreements and vary by deployment tier. The platform is designed for high availability with redundancy across infrastructure availability zones.</p>
+<p>For specific SLA requirements, contact the Antarious team during commercial discussions.</p>
+<p class="callout-line"><strong>Q: Can we access Antarious through an API?</strong></p>
+<p>Yes. The Antarious API enables integration with your existing systems and workflows — data ingestion, output delivery, approval triggers, and audit record retrieval. Full API reference documentation is available in the Documentation library.</p>
+<p class="callout-line"><strong>Q: Does Antarious support single sign-on?</strong></p>
+<p>Yes. Antarious supports SSO integration with enterprise identity providers including Microsoft Azure AD, Google Workspace, Okta, and SAML 2.0-compliant providers. SSO configuration is covered in the deployment process and documented in the Integration Guide — SSO and Identity Providers.</p>
+</section>
+<section class="doc-section" id="section-17">
+<h2>Section 17 — Support and Customer Success {#section-17}</h2>
+<p class="callout-line"><strong>Q: What support is available after go-live?</strong></p>
+<p>All customers receive:</p>
+<ul>
+<li>Access to the Help Centre and full documentation library</li>
+<li>Platform support via the support team</li>
+<li>Access to webinars and training materials</li>
+<li>Ongoing product updates (no reinstallation required)</li>
+<li>Scheduled 30-day and 90-day post-deployment reviews</li>
+</ul>
+<p>Response targets for platform support:</p>
+<ul>
+<li>Critical issues (platform unavailable, data loss risk): 4 business hours</li>
+<li>High priority (significant feature impaired): 8 business hours</li>
+<li>Standard queries: 1 business day</li>
+<li>Documentation and guidance: 2 business days</li>
+</ul>
+<p class="callout-line"><strong>Q: Is there a dedicated customer success manager?</strong></p>
+<p>Dedicated customer success managers are available for enterprise and strategic customers. For standard deployments, the account relationship is managed through the Antarious commercial team with access to the support channel.</p>
+<p class="callout-line"><strong>Q: How are product updates delivered?</strong></p>
+<p>Product updates are delivered continuously to the Antarious platform without requiring customer action or reinstallation. Customers are notified of significant updates, new features, and any configuration changes required through the platform notification system and by email.</p>
+<p>Release notes are published for every update in the Documentation library.</p>
+<p class="callout-line"><strong>Q: What happens if a new feature requires changes to our configuration?</strong></p>
+<p>Antarious aims to deliver updates in a backwards-compatible manner — new features do not break existing configurations. Where a major update requires configuration changes, Antarious provides advance notice (minimum 30 days), migration documentation, and support from the customer success team.</p>
+</section>
+<section class="doc-section" id="section-18">
+<h2>Section 18 — Partnership Programme {#section-18}</h2>
+<p class="callout-line"><strong>Q: What types of partnerships does Antarious offer?</strong></p>
+<p>Antarious offers three partnership tiers:</p>
+<p><strong>Referral Partner</strong> — Introduce Antarious to prospective clients and receive commission on successful deployments. No implementation responsibility. Requires platform orientation training and a signed agreement.</p>
+<p><strong>Implementation Partner</strong> — Deliver Antarious deployments for clients directly. Requires Antarious Implementation Certification and a signed agreement. Earns implementation margin and referral commission.</p>
+<p><strong>Strategic Partner</strong> — Deep partnership for organisations building Antarious as a flagship practice. Requires a team of certified specialists, an annual volume commitment, and a signed strategic agreement. Includes enhanced commercial terms, a dedicated partner success manager, and product roadmap input.</p>
+<p class="callout-line"><strong>Q: How do I become a certified Antarious implementation specialist?</strong></p>
+<p>Antarious Implementation Certification is delivered through the Partner Portal. The curriculum covers:</p>
+<ul>
+<li>Platform architecture (4 hours)</li>
+<li>Deployment configuration (6 hours, including live lab)</li>
+<li>Sector configuration — Government, NGO, or Business (4 hours per sector)</li>
+<li>Governance and trust architecture (3 hours)</li>
+<li>Client onboarding and change management (3 hours)</li>
+<li>Practical and written assessment</li>
+</ul>
+<p>Total: approximately 20 hours plus assessment. Certification is valid for 12 months with annual renewal.</p>
+<p class="callout-line"><strong>Q: How does deal registration work?</strong></p>
+<p>Partners register opportunities through the Partner Portal. Once an opportunity is registered:</p>
+<ul>
+<li>The referral is attributed to your organisation</li>
+<li>Referral commission applies to any resulting deployment, regardless of the commercial route the client takes</li>
+<li>The Antarious commercial team can be engaged to support the opportunity on request</li>
+</ul>
+<p>Deal registration is available from the point of initial partner agreement — you do not need to be certified to register a referral.</p>
+<p class="callout-line"><strong>Q: What territories does the partnership programme cover?</strong></p>
+<p>The Antarious partner programme is global. There are no geographic restrictions on where partners can operate. Partners with sector expertise in specific geographies — particularly in the development sector where regional expertise is particularly valuable — are actively sought.</p>
+<p class="callout-line"><strong>Q: How do I apply to become an Antarious partner?</strong></p>
+<p>Contact the partnerships team with a brief description of your organisation, the sector(s) you operate in, and the type of partnership you are exploring. The partnerships team will respond within two business days and suggest appropriate next steps.</p>
+</section>
+<section class="doc-section" id="still-have-a-question">
+<h2>Still Have a Question?</h2>
+<p>If your question is not answered above, there are several ways to get an answer:</p>
+<p><strong>Help Centre:</strong> For operational and platform questions — <a href="/resources/help-center">Visit Help Centre →</a></p>
+<p><strong>Documentation:</strong> For technical and configuration questions — <a href="/resources/documentation">Visit Documentation →</a></p>
+<p><strong>Contact Us:</strong> For commercial, security, legal, or partnership questions — the Antarious team</p>
+<p><strong>Request a Demo:</strong> To see Antarious in action and have your questions answered by the team — <a href="/#cta">Request a Demo →</a></p>
+<p><strong>Webinars:</strong> Many frequently asked questions are addressed in depth in our live and on-demand sessions — <a href="/resources/webinars">View Webinars →</a></p>
+<p><em>Antarious AI &#183; Frequently Asked Questions</em><br><em>Last reviewed: April 2026</em><br><em>This FAQ is updated continuously as new questions arise. If you have a question that is not addressed here, contact the Antarious team — your question may appear in a future update.</em></p>
+</section>
+
+        </div>
+      </div>
+      <footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="name"><img fetchpriority="high" decoding="async" loading="eager" class="theme-logo-main" src="/assets/logos/antarious-main.svg" alt="Antarious AI"></div>
+        <div class="tagline">The Agentic AI Operating System for business, government, and NGO teams.</div>
+      </div>
+      <div>
+        <div class="footer-col-h">Platform</div>
+        <ul class="footer-links">
+          <li><a class="footer-lnk" href="/#hero">Overview</a></li>
+          <li><a class="footer-lnk" href="/freya">Freya</a></li>
+          <li><a class="footer-lnk" href="/#usecases">Workflows</a></li>
+          <li><a class="footer-lnk" href="/#comparison">Trust</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-h">Modules</div>
+        <ul class="footer-links">
+          <li><a class="footer-lnk" href="/business">For Business</a></li>
+          <li><a class="footer-lnk" href="/government">For Government</a></li>
+          <li><a class="footer-lnk" href="/ngo">For NGO</a></li>
+          <li><a class="footer-lnk" href="/freya">Cross-Industry Freya</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-h">Trust</div>
+        <ul class="footer-links">
+          <li class="footer-link-item"><a class="footer-lnk" href="/trust/human-approval">Human Approval</a><span class="footer-link-desc">How approvals remain with designated human owners.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="/trust/audit-trail">Audit Trail</a><span class="footer-link-desc">End-to-end logging of actions, context, and decisions.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="/trust/role-based-control">Role-Based Control</a><span class="footer-link-desc">Access boundaries and permissions by role and function.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="/trust/security">Security</a><span class="footer-link-desc">Controls, safeguards, and deployment security posture.</span></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-h">Company</div>
+        <ul class="footer-links">
+          <li class="footer-link-item"><a class="footer-lnk" href="/company/about">About</a><span class="footer-link-desc">Who we are and what we are building.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="/company/contact">Contact</a><span class="footer-link-desc">How to reach sales, support, and partnerships.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="/company/partnerships">Partnerships</a><span class="footer-link-desc">Collaboration models for delivery and integration partners.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="/company/legal">Legal</a><span class="footer-link-desc">Policy, terms, and governance-related notices.</span></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-h">Resources</div>
+        <ul class="footer-links">
+          <li class="footer-link-item"><a class="footer-lnk" href="/resources/documentation">Documentation</a><span class="footer-link-desc">API reference, SDKs, and integration guides.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="/resources/help-center">Help Centre</a><span class="footer-link-desc">FAQs, guides, and 24/7 support resources.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="/faq/comprehensive">FAQ</a><span class="footer-link-desc">Answers on deployment, governance, integrations, and Freya.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="/resources/webinars">Webinars</a><span class="footer-link-desc">Live training and on-demand learning sessions.</span></li>
+          <li class="footer-link-item"><a class="footer-lnk" href="/resources/partner-programme">Partner Programme</a><span class="footer-link-desc">Reseller and integration partnership opportunities.</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">(c) 2026 Antarious. All rights reserved.</div>
+      <div class="footer-badges"><span class="footer-badge">HUMAN-IN-THE-LOOP</span><span class="footer-badge">AUDITABLE AI</span><span class="footer-badge">CROSS-INDUSTRY</span><span class="footer-badge">PREMIUM DEPLOYMENT</span></div>
+    </div>
+  </div>
+</footer>
+    </main>
+  </div>
+  <script>
+    (function () {
+      var toc = document.getElementById('faq-toc');
+      if (!toc) return;
+
+      var links = Array.prototype.slice.call(toc.querySelectorAll('a[href^="#section-"]'));
+      var sections = links
+        .map(function (link) { return document.querySelector(link.getAttribute('href')); })
+        .filter(Boolean);
+
+      if (!sections.length) return;
+
+      function setActive(id) {
+        links.forEach(function (link) {
+          var isActive = link.getAttribute('href') === '#' + id;
+          link.classList.toggle('is-active', isActive);
+          if (isActive) {
+            link.setAttribute('aria-current', 'true');
+          } else {
+            link.removeAttribute('aria-current');
+          }
+        });
+      }
+
+      var observer = new IntersectionObserver(function (entries) {
+        var visible = entries
+          .filter(function (entry) { return entry.isIntersecting; })
+          .sort(function (a, b) { return b.intersectionRatio - a.intersectionRatio; });
+
+        if (visible.length > 0) {
+          setActive(visible[0].target.id);
+        }
+      }, {
+        rootMargin: '-25% 0px -60% 0px',
+        threshold: [0.1, 0.25, 0.5, 0.75]
+      });
+
+      sections.forEach(function (section) { observer.observe(section); });
+      setActive(sections[0].id);
+    })();
+  </script>
+<script id="antarious-nav-active">
+(function () {
+  var file = (window.location.pathname.split('/').pop() || '/').toLowerCase();
+
+  var map = {
+    '/business': 'For Business',
+    '/government': 'For Government',
+    '/ngo': 'For NGO'
+  };
+
+  var targetLabel = map[file] || null;
+  var navButtons = document.querySelectorAll('.nav-link');
+  for (var i = 0; i < navButtons.length; i++) {
+    var btn = navButtons[i];
+    var text = (btn.textContent || '').trim();
+    if (targetLabel && text === targetLabel) {
+      btn.classList.add('active');
+      btn.setAttribute('aria-current', 'page');
+    } else {
+      btn.classList.remove('active');
+      btn.removeAttribute('aria-current');
+    }
+  }
+
+  var freyaBtn = document.querySelector('.nav-ghost');
+  if (freyaBtn) {
+    var isFreya = file === '/freya';
+    freyaBtn.classList.toggle('active', isFreya);
+    if (isFreya) {
+      freyaBtn.setAttribute('aria-current', 'page');
+    } else {
+      freyaBtn.removeAttribute('aria-current');
+    }
+  }
+})();
+</script>
+<script id="antarious-nav-sync-script">
+(function(){
+  var nav = document.getElementById('nav');
+  if(!nav) return;
+  function onScroll(){ nav.classList.toggle('scrolled', window.scrollY > 60); }
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+})();
+</script>
+</body>
+</html>
+`;
+
+export default html;

@@ -1,0 +1,16 @@
+{
+  "name": "antarious-next",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "generate": "node scripts/build-from-legacy.mjs",
+    "parity:check": "node scripts/check-parity.mjs"
+  },
+  "dependencies": {
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest"
+  }
+}
